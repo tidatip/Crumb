@@ -40,6 +40,7 @@ a{color:var(--accent)}
 h1,h2,h3{margin:0;font-weight:500;line-height:1.25}
 h1,.hero h2,.cover h2,.tcard h3{font-family:var(--fh);font-weight:400}
 input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%;min-width:0;-webkit-appearance:none;appearance:none}
+input.up{text-transform:uppercase}
 input[type=date]{display:block;min-height:44px;-webkit-appearance:none}
 input[type=checkbox]{-webkit-appearance:checkbox;appearance:checkbox}
 textarea{min-height:70px;resize:vertical}
@@ -56,7 +57,7 @@ label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
 .search{height:46px}
 .seg.wide{height:46px}.seg.wide button{font-size:14px;padding:6px 4px}.seg.wide.four button{font-size:13px}
 .head .sub{color:var(--muted);font-size:14px}
-.head .logo{width:44px;height:44px;border-radius:12px;flex:0 0 auto;border:1px solid var(--line)}
+.head .logo{width:72px;height:72px;border-radius:18px;flex:0 0 auto;border:1px solid var(--line);object-fit:cover;background:var(--surface)}
 .head .lead{display:flex;align-items:center;gap:12px}
 .clock{text-align:right;font-variant-numeric:tabular-nums}
 .clock b{display:block;font-size:22px;font-weight:600}
@@ -75,7 +76,7 @@ label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
 .cover{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:12px;background:var(--cover-fallback);color:#fff;width:100%;text-align:left;display:block}
 .cover{min-height:220px;display:flex;flex-direction:column;justify-content:flex-end}
 .cover.pic{min-height:230px}
-.cover .cam{position:absolute;top:12px;left:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.7);color:#2A2622;display:grid;place-items:center;z-index:2}
+.cover .cam{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.7);color:#2A2622;display:grid;place-items:center;z-index:2}
 .cover .cam svg{width:16px;height:16px}
 .cover.pic .cam{background:rgba(42,38,34,.45);color:#fff}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
@@ -84,18 +85,19 @@ label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
 .cover:not(.pic){color:var(--cover-ink)}
 .cover:not(.pic) h2{color:var(--cover-ink);text-shadow:none}
 .cover:not(.pic) .pill{background:rgba(42,38,34,.09);color:var(--cover-ink)}
+.cover .bot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:0;height:22px}
 .cover .pill{margin-left:auto;background:rgba(42,38,34,.62);color:#fff;font-size:12.5px;padding:3px 10px;border-radius:999px;white-space:nowrap}
 .cover .txt{position:relative;padding:16px 16px 14px;width:100%;text-align:left;color:inherit;display:block}
 .cover.pic .txt{padding-top:100px}
-.cover h2{font-size:24px;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.3)}
-.cover .dt{font-size:14px;opacity:.95;margin-top:2px}
-.cover .meta{display:flex;gap:14px;align-items:center;font-size:12.5px;opacity:.95;margin-top:10px}
+.cover h2{font-size:24px;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.3);line-height:1.2}
+.cover .dt{font-size:14px;opacity:.95;margin-top:2px;line-height:1.3}
+.cover .meta{display:flex;gap:14px;align-items:center;font-size:12.5px;opacity:.95;margin-top:0;line-height:20px}
+.cover .spend{font-size:12.5px;opacity:.9;line-height:22px}
 .cover .meta svg{width:13px;height:13px;vertical-align:-2px;margin-right:3px}
-.cover .cam{position:absolute;left:12px;top:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,253,247,.85);color:var(--ink);display:grid;place-items:center;cursor:pointer;z-index:2}
 .cover .cam svg{width:17px;height:17px}
 .cover .cam input{display:none}
-.cover.sm{min-height:110px}.cover.sm .cam{left:auto;right:10px;top:10px;width:28px;height:28px}.cover.sm .cam svg{width:14px;height:14px}.cover.sm h2{padding-right:34px}.cover.sm .meta span:not(.pill){display:none}.cover.sm .meta{margin-top:6px}
-.cover.sm.pic{min-height:115px}.cover.sm.pic .txt{padding-top:40px;padding-bottom:10px}.cover.sm h2{font-size:18px}.cover.sm .txt{padding:12px 14px 12px}.cover.sm .pill{font-size:12px;padding:3px 9px}
+.cover.sm{min-height:120px}.cover.sm .cam{right:10px;top:10px;left:auto;width:28px;height:28px}.cover.sm .cam svg{width:14px;height:14px}.cover.sm h2{padding-right:34px}.cover.sm .dt{margin-top:2px}
+.cover.sm.pic{min-height:115px}.cover.sm.pic .txt{padding-top:40px;padding-bottom:10px}.cover.sm h2{font-size:18px}.cover.sm .txt{padding:14px 14px 10px}.cover.sm .pill{font-size:12px;padding:3px 9px;line-height:18px}
 .tcard{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;background:var(--surface);border-radius:16px;padding:10px;margin-bottom:8px;width:100%;text-align:left}
 .tcard .th{width:76px;height:76px;border-radius:12px;background:var(--cover-fallback);overflow:hidden}
 .tcard .th img{width:100%;height:100%;object-fit:cover;display:block}
@@ -242,7 +244,10 @@ label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
 .start img{position:absolute;inset:0;width:100%;height:100%;display:block}
 .start .go{position:absolute;left:50%;top:58.5%;transform:translateX(-50%);background:#2A2622;color:#FBF7EC;font-family:var(--fb);font-weight:500;font-size:16px;padding:12px 34px;border-radius:999px;box-shadow:0 8px 22px rgba(42,38,34,.28);white-space:nowrap}
 body.starting .nav{display:none}
-.avatar{width:64px;height:64px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-family:var(--fh);font-size:26px;flex:0 0 auto}
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--surface-2);overflow:hidden;position:relative;flex:0 0 auto;cursor:pointer;border:1px solid var(--line)}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar .ed{position:absolute;right:0;bottom:0;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
+.avatar .ed svg{width:12px;height:12px}
 .prof{display:flex;gap:14px;align-items:center;background:var(--surface);border-radius:16px;padding:14px;margin-bottom:12px}
 .prof input{flex:1}
 /* nav */
@@ -267,7 +272,7 @@ body.starting .nav{display:none}
   <button data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span data-i="nav_home"></span></button>
   <button data-go="trips"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l6-2 6 2 6-2v13l-6 2-6-2-6 2zM9 5v13M15 7v13"/></svg><span data-i="nav_trips"></span></button>
   <button data-go="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><span data-i="nav_check"></span></button>
-  <button data-go="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span data-i="nav_set"></span></button>
+  <button data-go="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span data-i="nav_set"></span></button>
 </div></nav>
 <div class="sheet-bg" id="sheetBg"></div>
 <div class="sheet" id="sheet"></div>
@@ -498,7 +503,7 @@ const I={
  th:{nav_home:'หน้าแรก',nav_trips:'ทริป',nav_check:'เช็คลิสต์',nav_set:'โปรไฟล์',get_started:'เริ่มกันเลย',your_name:'ชื่อเรียก',name_h:'ใช้ทักทายบนหน้าแรก',greet_m:'อรุณสวัสดิ์',greet_a:'สวัสดี',greet_e:'สวัสดีตอนเย็น',explore:'ไปเก็บเศษเล็กเศษน้อยกัน',search_ph:'ค้นหาทริป สถานที่ หรือโน้ต…',no_match:'ไม่พบที่ตรงกับคำค้น',
   upcoming:'กำลังจะถึง',past:'ที่ผ่านมา',planning:'กำลังวางแผน',today:'วันนี้',in_days:'อีก {n} วัน',day_of:'วันที่ {a} จาก {b}',ended:'จบทริปแล้ว',ongoing:'กำลังเที่ยว',
   no_trips:'ยังไม่มีทริปในหมวดนี้',no_trips_h:'กดปุ่ม + ในหน้าทริปเพื่อสร้างทริปใหม่',trips:'ทริปของเรา',new_trip:'ทริปใหม่',edit_trip:'แก้ไขทริป',name:'ชื่อทริป',dest:'จุดหมาย',start:'วันไป',end:'วันกลับ',members:'จำนวนคน',
-  dates:'วันเดินทาง',pick_dates:'แตะวันไป แล้วแตะวันกลับ',cover:'รูปประจำทริป',pick_photo:'เลือกรูปจากอัลบั้ม',remove:'ลบรูป',is_planning:'ยังวางแผนอยู่ (ไม่ล็อกวันที่)',save:'บันทึก',cancel:'ยกเลิก',delete:'ลบ',confirm_del:'ลบทริปนี้ทั้งหมด?',
+  dates:'วันเดินทาง',pick_dates:'แตะวันไป แล้วแตะวันกลับ',spend:'ค่าใช้จ่ายต่อคน',spend_h:'หน่วยบาท ใส่หรือไม่ใส่ก็ได้ — ถ้าไม่ใส่ จะประมาณการจากค่าใช้จ่ายของแต่ละจุดในแผน',pp:'คน',budget:'งบ',spent:'ใช้ไป',estimate:'ประมาณการ',cost_est:'ค่าใช้จ่ายโดยประมาณ',cost_act:'ค่าใช้จ่ายจริง',cost_act_h:'ใส่เมื่อจอง/จ่ายแล้ว จะใช้แทนค่าประมาณ',cur:'สกุลเงินของทริป',rate:'อัตราแลกเปลี่ยน (บาทต่อ 1 หน่วย)',cover:'รูปประจำทริป',pick_photo:'เลือกรูปจากอัลบั้ม',remove:'ลบรูป',is_planning:'ยังวางแผนอยู่ (ไม่นับเป็นกำลังจะถึง)',not_booked:'ยังไม่จองตั๋ว',booked:'จองตั๋วแล้ว',booked_h:'ทริปจะขึ้น "กำลังจะถึง" เมื่อมีเที่ยวเดินทางที่จองแล้วอย่างน้อย 1 ขา',save:'บันทึก',cancel:'ยกเลิก',delete:'ลบ',confirm_del:'ลบทริปนี้ทั้งหมด?',
   cities:'{n} เมือง',days:'{n} วัน',people:'{n} คน',next_stop:'จุดถัดไป',in_min:'อีก {n} นาที',in_hm:'อีก {h} ชม. {m} นาที',no_next:'ไม่มีจุดถัดไปที่ระบุเวลาแล้ววันนี้',recap:'สรุป',stay:'คืนนี้พัก',
   daily:'รายวัน',stays:'ที่พัก',all_days:'ทุกวัน',day:'วัน',notes:'โน้ตประจำวัน',add_stop:'เพิ่มจุดแวะ',edit_stop:'แก้ไขจุดแวะ',time:'เวลา',title:'ชื่อจุด',detail:'รายละเอียด',kind:'ประเภท',map:'ค้นหาในแผนที่',cost:'ค่าใช้จ่าย',cash:'จ่ายเงินสด',ref:'เลขจอง',
   map_btn:'แผนที่',transport:'การเดินทาง',add_leg:'เพิ่มเที่ยวเดินทาง',edit_leg:'แก้ไขเที่ยวเดินทาง',mode:'เดินทางโดย',from:'จาก',to:'ถึง',code:'เที่ยวบิน/ขบวน',dep:'ออก',arr:'ถึง',main_mode:'เดินทางหลักโดย',edit:'แก้ไข',before:'ก่อนเดินทาง',add_item:'เพิ่มรายการ',item:'รายการ',note:'หมายเหตุ',due:'กำหนด',no_check:'ยังไม่มีรายการ — กดเพิ่มได้เลย',choose_trip:'เลือกทริป',
@@ -507,11 +512,11 @@ const I={
   hint:'เปิดใน Safari/Chrome แล้ว "เพิ่มไปยังหน้าจอโฮม" จะได้ไอคอนแอป · ข้อมูลทั้งหมดอยู่ในเครื่อง ใช้ได้แม้ไม่มีเน็ต · ซิงก์กับเพื่อนมาใน v3',
   jst:'เวลาท้องถิ่น',saved:'บันทึกแล้ว',deleted:'ลบแล้ว',checked:'ติ๊กแล้ว',unchecked:'เลิกติ๊ก',photo_big:'รูปใหญ่เกินไป เลือกรูปอื่น',need_name:'ใส่ชื่อทริปก่อน',need_date:'ใส่วันไป–กลับ หรือติ๊ก "ยังวางแผนอยู่"',
   mon:['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],dow:['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'],
-  kinds:{fly:'เครื่องบิน',train:'รถไฟ',bus:'รถบัส',car:'ขับรถ',lift:'ลิฟท์/กระเช้า',hike:'เดินเขา',walk:'เดินเล่น',see:'เที่ยวชม',photo:'จุดถ่ายรูป',food:'อาหาร',cafe:'คาเฟ่',stay:'ที่พัก',shop:'ช้อปปิ้ง'}},
+  kinds:{fly:'เครื่องบิน',train:'รถไฟ',bus:'รถบัส',car:'ขับรถ',lift:'ลิฟท์/กระเช้า',hike:'เดินเขา',walk:'เดินเล่น',see:'เที่ยวชม',photo:'จุดถ่ายรูป',food:'อาหาร',cafe:'คาเฟ่',stay:'ที่พัก',shop:'ช้อปปิ้ง',ferry:'เรือ'}},
  en:{nav_home:'Home',nav_trips:'Trips',nav_check:'Checklist',nav_set:'Profile',get_started:'Get started',your_name:'Your name',name_h:'Used for the greeting on Home',greet_m:'Good morning',greet_a:'Good afternoon',greet_e:'Good evening',explore:"Let's collect some crumbs",search_ph:'Search trips, places, or notes…',no_match:'No matches',
   upcoming:'Upcoming',past:'Past',planning:'Planning',today:'Today',in_days:'In {n} days',day_of:'Day {a} of {b}',ended:'Trip ended',ongoing:'On the road',
   no_trips:'No trips here yet',no_trips_h:'Tap + on the Trips tab to create one',trips:'Your trips',new_trip:'New trip',edit_trip:'Edit trip',name:'Trip name',dest:'Destination',start:'Start date',end:'End date',members:'Travelers',
-  dates:'Travel dates',pick_dates:'Tap start day, then end day',cover:'Cover photo',pick_photo:'Choose from album',remove:'Remove',is_planning:'Still planning (no fixed dates)',save:'Save',cancel:'Cancel',delete:'Delete',confirm_del:'Delete this whole trip?',
+  dates:'Travel dates',pick_dates:'Tap start day, then end day',spend:'Cost per person',spend_h:'THB, optional — if empty, estimated from the costs on each stop',pp:'pp',budget:'Budget',spent:'Spent',estimate:'Est.',cost_est:'Estimated cost',cost_act:'Actual cost',cost_act_h:'Fill in once booked/paid — replaces the estimate',cur:'Trip currency',rate:'Exchange rate (THB per 1 unit)',cover:'Cover photo',pick_photo:'Choose from album',remove:'Remove',is_planning:'Still planning (keep out of Upcoming)',not_booked:'Not booked yet',booked:'Ticket booked',booked_h:'A trip moves to Upcoming once at least one leg is booked',save:'Save',cancel:'Cancel',delete:'Delete',confirm_del:'Delete this whole trip?',
   cities:'{n} places',days:'{n} days',people:'{n} travelers',next_stop:'Next stop',in_min:'in {n} min',in_hm:'in {h} h {m} min',no_next:'No more timed stops today',recap:'Recap',stay:'Tonight at',
   daily:'Day by day',stays:'Stays',all_days:'All days',day:'Day',notes:'Day notes',add_stop:'Add stop',edit_stop:'Edit stop',time:'Time',title:'Title',detail:'Details',kind:'Type',map:'Map search',cost:'Cost',cash:'Cash only',ref:'Booking ref',
   map_btn:'Map',transport:'Getting there',add_leg:'Add leg',edit_leg:'Edit leg',mode:'Travel by',from:'From',to:'To',code:'Flight / train no.',dep:'Departs',arr:'Arrives',main_mode:'Main transport',edit:'Edit',before:'Before the trip',add_item:'Add item',item:'Item',note:'Note',due:'Due',no_check:'Nothing yet — add an item',choose_trip:'Choose trip',
@@ -520,7 +525,7 @@ const I={
   hint:'Open in Safari/Chrome and "Add to Home Screen" for an app icon · Everything is stored on this device and works offline · Sharing with friends arrives in v3',
   jst:'Local time',saved:'Saved',deleted:'Deleted',checked:'Checked',unchecked:'Unchecked',photo_big:'Photo too large, pick another',need_name:'Give the trip a name',need_date:'Set start and end dates, or tick "Still planning"',
   mon:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],dow:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
-  kinds:{fly:'Flight',train:'Train',bus:'Bus',car:'Drive',lift:'Lift / cable car',hike:'Hike',walk:'Walk',see:'Sightseeing',photo:'Photo spot',food:'Food',cafe:'Café',stay:'Stay',shop:'Shopping'}}
+  kinds:{fly:'Flight',train:'Train',bus:'Bus',car:'Drive',lift:'Lift / cable car',hike:'Hike',walk:'Walk',see:'Sightseeing',photo:'Photo spot',food:'Food',cafe:'Café',stay:'Stay',shop:'Shopping',ferry:'Ferry'}}
 };
 let S=load();
 const t=(k,v={})=>{let s=I[S.lang][k]??I.th[k]??k;if(typeof s!=='string')return s;return s.replace(/\{(\w+)\}/g,(_,x)=>v[x])};
@@ -529,7 +534,7 @@ const t=(k,v={})=>{let s=I[S.lang][k]??I.th[k]??k;if(typeof s!=='string')return 
 function seed(){
   const d=TRIP;
   return {id:'perfectcrown',name:d.name,dest:'Japan Alps → Tokyo',start:d.start,end:d.end,members:d.members,tz:d.tz,planning:false,cover:'',seed:true,
-    legs:d.flights.map(f=>({id:uid(),mode:'fly',code:f.code,from:f.from,to:f.to,dep:f.dep,arr:f.arr,dur:f.dur})),mode:'fly',stays:d.stays,
+    legs:d.flights.map(f=>({id:uid(),mode:'fly',code:f.code,from:f.from,to:f.to,dep:f.dep,arr:f.arr,dur:f.dur,booked:true})),mode:'fly',cur:'JPY',rate:0.23,stays:d.stays,
     days:d.days.map(x=>({date:x.date,title:x.title,area:x.area,stay:x.stay,recap:x.recap,items:x.items.map(i=>Object.assign({id:uid(),done:false},i)),notes:x.notes||[],checks:[]})),
     checklist:[...d.bookings.map(b=>({id:b.id,title:b.title,note:[b.price,b.note].filter(Boolean).join(' · '),due:b.due?b.due.slice(0,10):'',dueLabel:b.dueLabel||'',done:!!b.done,ref:b.ref||''})),...d.checklist.map(c=>({id:c.id,title:c.title,note:c.note,done:false}))]};
 }
@@ -538,15 +543,19 @@ function samples(){
   const day=(date,title,area,stay,items)=>({date,title,area,stay,recap:'',notes:[],checks:[],items:items.map(i=>Object.assign({id:uid(),done:false,k:'see'},i))});
   return [
     mk('hk2026','Hong Kong Foodie','Hong Kong','2026-12-11','2026-12-14',3,false,[
-      day('2026-12-11','ถึงฮ่องกง · เดินมงก๊ก','Kowloon','Hotel Stage, Jordan',[{t:'13:30',title:'ถึงสนามบิน HKG',k:'fly'},{t:'16:00',title:'เช็คอิน Hotel Stage',k:'stay',map:'Hotel Stage Hong Kong'},{t:'18:30',title:'ติ่มซำ One Dim Sum',k:'food',map:'One Dim Sum Prince Edward'}]),
-      day('2026-12-12','Victoria Peak · Central','Hong Kong Island','Hotel Stage, Jordan',[{t:'09:00',title:'Peak Tram → The Peak',k:'lift'},{t:'12:30',title:'Kau Kee Beef Brisket',k:'food'},{t:'17:30',title:'Star Ferry blue hour',k:'photo'}]),
+      day('2026-12-11','ถึงฮ่องกง · เดินมงก๊ก','Kowloon','Hotel Stage, Jordan',[{t:'13:30',title:'ถึงสนามบิน HKG',k:'fly'},{t:'14:30',title:'Airport Express → Kowloon',k:'train',cost:105},{t:'16:00',title:'เช็คอิน Hotel Stage',k:'stay',map:'Hotel Stage Hong Kong',cost:2400},{t:'18:30',title:'ติ่มซำ One Dim Sum',k:'food',map:'One Dim Sum Prince Edward',cost:120}]),
+      day('2026-12-12','Victoria Peak · Central','Hong Kong Island','Hotel Stage, Jordan',[{t:'09:00',title:'Peak Tram → The Peak',k:'lift',cost:148},{t:'12:30',title:'Kau Kee Beef Brisket',k:'food',cost:90},{t:'17:30',title:'Star Ferry blue hour',k:'photo',cost:5}]),
       day('2026-12-13','Sham Shui Po · ช้อปปิ้ง','Kowloon','Hotel Stage, Jordan',[{t:'10:00',title:'Tim Ho Wan',k:'food'},{t:'15:00',title:'Apliu Street',k:'shop'}]),
       day('2026-12-14','กลับกรุงเทพฯ','HKG → BKK','',[{t:'11:00',title:'Airport Express → HKG',k:'train'},{t:'14:20',title:'บินกลับ',k:'fly'}])]),
     mk('cnx2026','Chiang Mai Slow Life','Chiang Mai','2026-02-06','2026-02-08',2,false,[
       day('2026-02-06','คาเฟ่นิมมาน','Nimman','Akyra Manor',[{t:'10:00',title:'Ristr8to',k:'cafe'},{t:'18:00',title:'ข้าวซอยแม่สาย',k:'food'}]),
       day('2026-02-07','ดอยสุเทพ · แม่กำปอง','Doi Suthep',"Akyra Manor",[{t:'06:30',title:'วัดพระธาตุดอยสุเทพ',k:'see'},{t:'12:00',title:'แม่กำปอง',k:'see'}]),
       day('2026-02-08','ถนนคนเดิน · กลับ','Old Town','',[{t:'09:00',title:'วัดเชียงมั่น',k:'see'},{t:'17:00',title:'บินกลับ',k:'fly'}])]),
-    mk('tw2027','Taiwan Spring 2027','Taipei · Jiufen · Taichung','','',4,true,[]),
+    mk('tw2027','Taiwan Spring 2027','Taipei · Jiufen · Taichung','2027-03-20','2027-03-25',4,false,[
+      day('2027-03-20','ถึงไทเป · Ximending','Taipei','Hotel Midtown Richardson',[{t:'12:00',title:'ถึง TPE',k:'fly'},{t:'14:00',title:'Airport MRT → Taipei Main',k:'train',cost:160},{t:'18:00',title:'Ay-Chung Flour-Rice Noodle',k:'food',cost:75}]),
+      day('2027-03-21','Jiufen · Shifen','Jiufen','Hotel Midtown Richardson',[{t:'09:00',title:'บัส 1062 → Jiufen',k:'bus',cost:100},{t:'11:00',title:'A-Mei Tea House',k:'cafe',cost:300},{t:'15:00',title:'ปล่อยโคม Shifen',k:'see',cost:200}]),
+      day('2027-03-22','Taichung · Gaomei Wetland','Taichung','',[{t:'08:30',title:'HSR Taipei → Taichung',k:'train',cost:700},{t:'17:00',title:'Gaomei Wetland sunset',k:'photo'}]),
+      day('2027-03-23','','','',[]),day('2027-03-24','','','',[]),day('2027-03-25','กลับ','TPE → BKK','',[{t:'15:00',title:'บินกลับ',k:'fly'}])],'fly',[{mode:'fly',from:'BKK',to:'TPE',dep:'20 มี.ค. 07:30',arr:'20 มี.ค. 12:10',dur:'3 ชม. 40 นาที',code:'ยังไม่จอง',booked:false}]),
     mk('kyoto2025','Kyoto Autumn 2025','Kyoto · Osaka','2025-11-20','2025-11-24',4,false,[
       day('2025-11-20','ถึงคันไซ · Gion','Kyoto','Hotel Resol Kyoto',[{t:'15:00',title:'เช็คอิน',k:'stay'},{t:'18:00',title:'เดิน Gion ยามค่ำ',k:'walk'}]),
       day('2025-11-21','Arashiyama','Kyoto','Hotel Resol Kyoto',[{t:'07:00',title:'ป่าไผ่',k:'see'},{t:'10:00',title:'Tenryu-ji',k:'see'}]),
@@ -557,10 +566,11 @@ function samples(){
 }
 function load(){
   let s={};try{s=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
-  s=Object.assign({q:'',tq:'',tripTab:'all',name:'',lang:'th',theme:'auto',simDate:'',view:'home',homeTab:'upcoming',tripId:null,dayView:null,checkTrip:null,trips:[]},s);
+  s=Object.assign({avatar:'',q:'',tq:'',tripTab:'all',name:'',lang:'th',theme:'auto',simDate:'',view:'home',homeTab:'upcoming',tripId:null,dayView:null,checkTrip:null,trips:[]},s);
   if(!s.trips.length)s.trips=[seed()];
   if(!s.seedv||s.seedv<3){const keep=new Set(['perfectcrown',...samples().map(x=>x.id)]);const seen=new Set();s.trips=s.trips.filter(x=>{if(seen.has(x.id))return false;seen.add(x.id);return keep.has(x.id)||(!x.sample&&!x.seed)});const have=new Set(s.trips.map(x=>x.id));samples().forEach(x=>{if(!have.has(x.id))s.trips.push(x)});s.seedv=3;delete s.samplesAdded}
-  s.trips.forEach(x=>{if(!x.legs)x.legs=(x.flights||[]).map(f=>Object.assign({id:uid(),mode:'fly'},f));if(!x.mode)x.mode=x.legs[0]?x.legs[0].mode:'fly';if(x.id==='cnx2026'&&!x.legs.length)x.legs=[{id:uid(),mode:'car',from:'กรุงเทพฯ',to:'เชียงใหม่',dep:'5 ก.พ. 20:00',arr:'6 ก.พ. 06:00',dur:'~10 ชม.',code:'ขับเอง'},{id:uid(),mode:'train',from:'เชียงใหม่',to:'กรุงเทพฯ',dep:'8 ก.พ. 18:00',arr:'9 ก.พ. 06:50',dur:'12 ชม.',code:'ด่วนพิเศษ 10'}]})
+  if(!s.seedv4){const tw=s.trips.find(x=>x.id==='tw2027');if(tw&&tw.sample){const i=s.trips.indexOf(tw);s.trips[i]=samples().find(x=>x.id==='tw2027')}const hk=s.trips.find(x=>x.id==='hk2026');if(hk&&hk.sample){const i=s.trips.indexOf(hk);s.trips[i]=samples().find(x=>x.id==='hk2026')}s.trips.forEach(x=>{if(x.seed)(x.legs||[]).forEach(l=>l.booked=true)});s.seedv4=true}
+  s.trips.forEach(x=>{const CURS={perfectcrown:['JPY',0.23],hk2026:['HKD',4.3],tw2027:['TWD',1.05],kyoto2025:['JPY',0.23],cnx2026:['THB',1]};if(!x.cur&&CURS[x.id]){x.cur=CURS[x.id][0];x.rate=CURS[x.id][1]}if(!x.cur)x.cur='THB';if(!x.legs)x.legs=(x.flights||[]).map(f=>Object.assign({id:uid(),mode:'fly'},f));if(!x.mode)x.mode=x.legs[0]?x.legs[0].mode:'fly';if(x.spend&&!x.spendPP){x.spendPP=Math.round(x.spend/(x.members||1));delete x.spend}if(x.id==='cnx2026'&&!x.spendPP)x.spendPP=4900;if(x.id==='kyoto2025'&&!x.spendPP)x.spendPP=38000;if(x.id==='hk2026'&&!x.legs.length)x.legs=[{id:uid(),mode:'fly',from:'BKK',to:'HKG',dep:'11 ธ.ค. 08:40',arr:'11 ธ.ค. 12:25',dur:'2 ชม. 45 นาที',code:'HK EXPRESS UO707',booked:true}];if(x.id==='cnx2026'&&!x.legs.length)x.legs=[{id:uid(),mode:'car',from:'กรุงเทพฯ',to:'เชียงใหม่',dep:'5 ก.พ. 20:00',arr:'6 ก.พ. 06:00',dur:'~10 ชม.',code:'ขับเอง'},{id:uid(),mode:'train',from:'เชียงใหม่',to:'กรุงเทพฯ',dep:'8 ก.พ. 18:00',arr:'9 ก.พ. 06:50',dur:'12 ชม.',code:'ด่วนพิเศษ 10'}]})
   return s;
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast(t('photo_big'))}}
@@ -581,9 +591,18 @@ function tmin(s){const m=/(\d{1,2}):(\d{2})/.exec(s||'');if(m)return +m[1]*60+ +
 function dUntil(iso,tz){const a=new Date(iso+'T00:00:00'),b=new Date(now(tz).date+'T00:00:00');return Math.round((a-b)/86400000)}
 function fdate(iso,withDow){if(!iso)return '';const [y,m,d]=iso.split('-');const dt=new Date(iso+'T00:00:00');const yy=S.lang==='th'?+y+543:+y;return `${withDow?t('dow')[dt.getDay()]+' ':''}${+d} ${t('mon')[+m-1]} ${yy}`}
 function frange(a,b){if(!a)return t('planning');const [y1,m1,d1]=a.split('-'),[y2,m2,d2]=b.split('-');const yy=S.lang==='th'?+y2+543:+y2;return m1===m2?`${+d1} – ${+d2} ${t('mon')[+m2-1]} ${yy}`:`${+d1} ${t('mon')[+m1-1]} – ${+d2} ${t('mon')[+m2-1]} ${yy}`}
-function status(tr){if(tr.planning||!tr.start)return 'planning';const N=now(tr.tz);if(N.date>tr.end)return 'past';return 'upcoming'}
+function booked(tr){return (tr.legs||[]).some(l=>l.booked)}
+function status(tr){if(!tr.start)return 'planning';const N=now(tr.tz);if(N.date>tr.end)return 'past';if(tr.planning)return 'planning';return booked(tr)?'upcoming':'planning'}
 function dayIdx(tr){if(!tr.start)return -1;const N=now(tr.tz);const i=tr.days.findIndex(d=>d.date===N.date);if(i>=0)return i;return N.date<tr.start?-1:tr.days.length}
-function pill(tr){const s=status(tr);if(s==='planning')return t('planning');if(s==='past')return t('ended');const i=dayIdx(tr);return i<0?t('in_days',{n:dUntil(tr.start,tr.tz)}):t('day_of',{a:i+1,b:tr.days.length})}
+function pill(tr){const s=status(tr);if(s==='planning')return tr.start?t('not_booked'):t('planning');if(s==='past')return t('ended');const i=dayIdx(tr);return i<0?t('in_days',{n:dUntil(tr.start,tr.tz)}):t('day_of',{a:i+1,b:tr.days.length})}
+const CUR={THB:'฿',JPY:'¥',HKD:'HK$',TWD:'NT$',USD:'$',EUR:'€',GBP:'£',KRW:'₩',SGD:'S$',MYR:'RM',VND:'₫',CNY:'CN¥',AUD:'A$'};
+function num(v){if(v==null||v==='')return 0;if(typeof v==='number')return v;const m=/([\d][\d,]*\.?\d*)/.exec(String(v));return m?parseFloat(m[1].replace(/,/g,'')):0}
+function sym(tr){return CUR[tr.cur||'THB']||tr.cur||'฿'}
+function fmt(tr,v){return `${sym(tr)}${Math.round(v).toLocaleString()}`}
+function toTHB(tr,v){return (tr.cur||'THB')==='THB'?v:v*(tr.rate||0)}
+function estimateOLD(tr){let sum=0,cur='';tr.days.forEach(d=>d.items.forEach(it=>{if(!it.cost)return;const m=/^([^\d]*)([\d,\.]+)/.exec(String(it.cost).trim());if(!m)return;const v=parseFloat(m[2].replace(/,/g,''));if(!isNaN(v)){sum+=v;if(!cur)cur=m[1].trim()||'฿'}}));return sum?{sum,cur}:null}
+function money(v,cur){return `${cur||'฿'}${Math.round(v).toLocaleString()}`}
+function estimate(tr){let sum=0,n=0;tr.days.forEach(d=>d.items.forEach(it=>{const v=num(it.actual!=null&&it.actual!==''?it.actual:it.cost);if(v){sum+=v;n++}}));return n?{sum,thb:toTHB(tr,sum)}:null}
 function cities(tr){return new Set(tr.days.map(d=>(d.area||'').split(/→|⇄/)[0].trim()).filter(Boolean)).size||1}
 
 // ---------- icons ----------
@@ -594,9 +613,13 @@ const svg=(p,cls='ico')=>`<svg class="${cls}" viewBox="0 0 24 24" fill="none" st
 // ---------- shared pieces ----------
 function coverCard(tr,{small=false,btn=true}={}){
   const cam=btn?`<label class="cam" data-cam aria-label="photo">${svg(P.photo,'')}<input type="file" accept="image/*" data-cam-for="${tr.id}" hidden></label>`:'';
+  const st=status(tr);let money_='';
+  if(tr.spendPP)money_=`${st==='past'?t('spent'):t('budget')} ฿${Math.round(tr.spendPP).toLocaleString()}/${t('pp')}`;
+  else{const e=estimate(tr);if(e){const foreign=(tr.cur||'THB')!=='THB';const thb=foreign&&tr.rate?`฿${Math.round(e.thb).toLocaleString()}`:(foreign?'':`฿${Math.round(e.sum).toLocaleString()}`);money_=`${st==='past'?t('spent'):t('estimate')} ${thb||fmt(tr,e.sum)}/${t('pp')}${foreign&&thb?` · ${fmt(tr,e.sum)}`:''}`}}
   return `<div class="cover ${small?'sm':''} ${tr.cover?'pic':''}" ${btn?`data-open="${tr.id}" role="button" tabindex="0"`:''}>${tr.cover?`<img src="${tr.cover}" alt="">`:''}<div class="grad"></div>${cam}
     <div class="txt"><h2>${esc(tr.name)}</h2><div class="dt">${esc(frange(tr.start,tr.end))}${tr.dest?' · '+esc(tr.dest):''}</div>
-    <div class="meta"><span>${svg(P.pin,'')}${t('cities',{n:cities(tr)})}</span><span>${svg(P.cal,'')}${t('days',{n:tr.days.length})}</span><span>${svg(P.ppl,'')}${t('people',{n:tr.members||1})}</span><span class="pill">${esc(pill(tr))}</span></div></div></div>`;
+    <div class="meta"><span>${svg(P.pin,'')}${t('cities',{n:cities(tr)})}</span><span>${svg(P.cal,'')}${t('days',{n:tr.days.length})}</span><span>${svg(P.ppl,'')}${t('people',{n:tr.members||1})}</span></div>
+    <div class="bot"><span class="spend">${money_}</span><span class="pill">${esc(pill(tr))}</span></div></div></div>`;
 }
 function tripCard(tr){
   return `<button class="tcard" data-open="${tr.id}"><div class="th">${tr.cover?`<img src="${tr.cover}" alt="">`:''}</div><div><h3>${esc(tr.name)}</h3><div class="st">${esc(frange(tr.start,tr.end))}${tr.dest?' · '+esc(tr.dest):''}</div><span class="badge">${esc(pill(tr))}</span></div>${svg(P.chev,'')}</button>`;
@@ -612,7 +635,7 @@ function timeline(tr,di){
   day.items.forEach((it,i)=>{
     const cls=['stop',i===0?'first':'',i===day.items.length-1?'last':'',it.done?'done':'',(i===nowIdx&&!it.done)?'now':''].join(' ');
     const tags=[];
-    if(it.cost)tags.push(`<span class="tag cost">${esc(it.cost)}</span>`);
+    if(it.actual!==''&&it.actual!=null)tags.push(`<span class="tag ref">${fmt(tr,num(it.actual))}</span>`);else if(it.cost)tags.push(`<span class="tag cost">~${fmt(tr,num(it.cost))}</span>`);
     if(it.cash)tags.push(`<span class="tag cash">${t('cash')}</span>`);
     if(it.ref)tags.push(`<span class="tag ref">${esc(it.ref)}</span>`);
     if(it.res)tags.push(`<span class="tag res">${esc(it.res)}</span>`);
@@ -648,7 +671,7 @@ function renderHome(){
   const q=(S.q||'').trim().toLowerCase();
   const hit=tr=>!q||[tr.name,tr.dest,...tr.days.flatMap(d=>[d.title,d.area,d.stay,...d.items.map(i=>i.title+' '+(i.d||'')),...(d.notes||[]).map(n=>n.title+' '+(n.text||''))])].join(' ').toLowerCase().includes(q);
   const list=S.trips.filter(tr=>hit(tr)&&(q||status(tr)===S.homeTab)).sort((a,b)=>{const x=a.start||'9',y=b.start||'9';const c=x<y?-1:x>y?1:0;return S.homeTab==='past'?-c:c});
-  let h=`<div class="head"><div class="lead"><img class="logo" src="${LOGO}" alt=""><div><h1>Crumb</h1><div class="sub">${t(g)}${S.name?' '+esc(S.name):''},<br>${t('explore')}.</div></div></div></div>
+  let h=`<div class="head"><div class="lead"><img class="logo" src="${S.avatar||LOGO}" alt=""><div><h1>Crumb</h1><div class="sub">${t(g)}${S.name?' '+esc(S.name):''},<br>${t('explore')}.</div></div></div></div>
   <div class="search"><span>${svg('M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4','')}</span><input id="q" type="search" value="${esc(S.q||'')}" placeholder="${t('search_ph')}"></div>
   <div class="seg wide">${tabs.map(x=>`<button class="${S.homeTab===x?'on':''}" data-tab="${x}">${t(x)}</button>`).join('')}</div>`;
   if(!list.length)h+=q?`<div class="empty"><b>${t('no_match')}</b></div>`:`<div class="empty"><b>${t('no_trips')}</b>${t('no_trips_h')}</div>`;
@@ -670,7 +693,7 @@ function renderTrips(){
         ${daypick(tr,di)}${dayHead(tr,di).replace('__NEXT__',ns?`<div class="next"><div><div class="lbl">${t('next_stop')} ${esc(ns.it.t)}</div><div class="val">${esc(ns.it.title)}</div></div><div class="in">${ns.txt}</div></div>`:'')}${timeline(tr,di)}`;
       return;}
     const N=now(tr.tz);
-    const f=`<div class="sec" style="margin-top:4px"><h3>${t('transport')}<button class="back" style="margin:0" data-add-leg>${svg(P.plus,'')}${t('add_leg')}</button></h3>${(tr.legs||[]).map(x=>`<button class="flight" data-edit-leg="${x.id}"><div><b>${esc(x.from)}</b><small>${esc(x.dep||'')}</small></div><div class="mid">${svg(ICO[x.mode]||ICO.fly,'')}<br>${esc(x.code||'')}${x.dur?'<br>'+esc(x.dur):''}</div><div class="r"><b>${esc(x.to)}</b><small>${esc(x.arr||'')}</small></div></button>`).join('')}</div>`;
+    const f=`<div class="sec" style="margin-top:4px"><h3>${t('transport')}<button class="back" style="margin:0" data-add-leg>${svg(P.plus,'')}${t('add_leg')}</button></h3>${(tr.legs||[]).map(x=>`<button class="flight" data-edit-leg="${x.id}"><div><b>${esc(x.from)}</b><small>${esc(x.dep||'')}</small></div><div class="mid">${svg(ICO[x.mode]||ICO.fly,'')}<br>${esc(x.code||'')}${x.dur?'<br>'+esc(x.dur):''}${x.booked?`<br><span class="tag ref">${t('booked')}</span>`:''}</div><div class="r"><b>${esc(x.to)}</b><small>${esc(x.arr||'')}</small></div></button>`).join('')}</div>`;
     const days=tr.days.map((d,i)=>`<button class="dayrow ${d.date===N.date?'today':''}" data-day="${i}"><div class="n">${i+1}<small>${esc(fdate(d.date,true).replace(/ \d{4}$/,''))}</small></div><div><div class="ti">${esc(d.title||(S.lang==='th'?'ยังไม่ได้วางแผน':'Not planned yet'))}</div><div class="st">${esc(d.stay||'')}</div></div>${svg(P.chev,'')}</button>`).join('');
     const stays=(tr.stays||[]).map(s=>`<div class="note"><h4>${esc(s.name)}</h4><p>${esc(s.dates)} · ${s.nights} ${S.lang==='th'?'คืน':'nights'} · ${esc(s.note)}</p></div>`).join('');
     el.innerHTML=`<div class="head"><button class="back" style="margin:0" data-tripback>${svg(P.back,'')}${t('trips')}</button><button class="ibtn ghost" data-edit-trip="${tr.id}" aria-label="edit">${svg(P.edit,'')}</button></div>
@@ -711,7 +734,7 @@ function renderCheck(){
 function renderSet(){
   const days=S.trips.flatMap(tr=>tr.days.map((d,i)=>({v:d.date,l:`${esc(tr.name)} · ${t('day')} ${i+1} · ${esc(fdate(d.date,true))}`}))).filter(x=>x.v);
   $('#s-set').innerHTML=`<div class="head"><div><h1>${t('nav_set')}</h1><div class="sub">Crumb v2.0</div></div></div>
-  <div class="prof"><div class="avatar">${esc((S.name||'C').trim().charAt(0).toUpperCase())}</div><div style="flex:1"><label class="f" style="margin-top:0">${t('your_name')}</label><input id="profName" value="${esc(S.name)}" placeholder="Tidatip"><div class="hint" style="margin-top:4px;padding:0">${t('name_h')}</div></div></div>
+  <div class="prof"><label class="avatar" data-cam aria-label="avatar"><img src="${S.avatar||LOGO}" alt=""><span class="ed">${svg(P.photo,'')}</span><input type="file" accept="image/*" id="avatarFile" hidden></label><div style="flex:1"><label class="f" style="margin-top:0">${t('your_name')}</label><input id="profName" value="${esc(S.name)}" placeholder="Tidatip"><div class="hint" style="margin-top:4px;padding:0">${t('name_h')}${S.avatar?` · <button class="danger" data-rm-avatar style="font-size:13px">${t('remove')}</button>`:''}</div></div></div>
   <div class="set">
     <div class="row"><div class="l">${t('lang')}</div><div class="seg">${['th','en'].map(l=>`<button class="${S.lang===l?'on':''}" data-lang="${l}">${l==='th'?'ไทย':'English'}</button>`).join('')}</div></div>
     <div class="row"><div class="l">${t('theme')}</div><div class="seg">${['auto','light','dark'].map(x=>`<button class="${S.theme===x?'on':''}" data-t="${x}">${t(x)}</button>`).join('')}</div></div>
@@ -737,6 +760,8 @@ function tripForm(tr){
     <label class="chk"><input id="f-plan" type="checkbox" ${tr.planning?'checked':''}>${t('is_planning')}</label>
     <label class="f">${t('members')}</label><input id="f-mem" type="number" min="1" value="${tr.members||1}">
     <label class="f">${t('main_mode')}</label>${modeChips(tr.mode||'fly','f-mainmode')}
+    <div class="grid2"><div><label class="f">${t('cur')}</label><select id="f-cur">${Object.keys(CUR).map(c=>`<option value="${c}" ${(tr.cur||'THB')===c?'selected':''}>${c} ${CUR[c]}</option>`).join('')}</select></div><div><label class="f">${t('rate')}</label><input id="f-rate" type="number" inputmode="decimal" step="0.0001" min="0" value="${tr.rate||''}" placeholder="0.23"></div></div>
+    <label class="f">${t('spend')}</label><input id="f-spend" type="number" inputmode="numeric" min="0" value="${tr.spendPP||''}" placeholder="38000"><div class="hint" style="margin-top:4px">${t('spend_h')}</div>
     <label class="f">${t('cover')}</label><div class="photo"><div class="pv" id="f-pv">${pendingCover?`<img src="${pendingCover}" alt="">`:''}</div><div><label class="up">${t('pick_photo')}<input id="f-photo" type="file" accept="image/*"></label> ${pendingCover?`<button class="danger" data-rm-photo style="margin-left:8px;font-size:14px">${t('remove')}</button>`:''}</div></div>
     <div class="btns">${!isNew&&!tr.seed?`<button class="btn del" data-del-trip="${tr.id}">${t('delete')}</button>`:''}<button class="btn" data-close>${t('cancel')}</button><button class="btn pri" data-save-trip="${tr.id||''}">${t('save')}</button></div>`);
 }
@@ -759,10 +784,11 @@ function pickDay(v){const st=$('#f-start'),en=$('#f-end');if(!st.value||(st.valu
 function saveTrip(id){
   const name=$('#f-name').value.trim(),dest=$('#f-dest').value.trim(),start=$('#f-start').value,end=$('#f-end').value,planning=$('#f-plan').checked,members=+$('#f-mem').value||1;
   if(!name){toast(t('need_name'));return}
-  if(!planning&&(!start||!end||end<start)){toast(t('need_date'));return}
+  if(!planning&&(!start||!end)){toast(t('need_date'));return}
+  if(start&&end&&end<start){toast(t('need_date'));return}
   let tr=id?trip(id):null;
   if(!tr){tr={id:uid(),name:'',dest:'',start:'',end:'',members:1,planning:false,cover:'',days:[],checklist:[],stays:[],legs:[]};S.trips.push(tr)}
-  Object.assign(tr,{name,dest,start,end,planning,members,cover:pendingCover||'',mode:$('#f-mainmode .on')?.dataset.k||'fly'});
+  Object.assign(tr,{name,dest,start,end,planning,members,cover:pendingCover||'',mode:$('#f-mainmode .on')?.dataset.k||'fly',spendPP:+$('#f-spend').value||0,cur:$('#f-cur').value,rate:+$('#f-rate').value||0});
   if(start&&end){const want=[];for(let d=new Date(start+'T00:00:00');;d.setDate(d.getDate()+1)){const iso=d.toISOString().slice(0,10);want.push(iso);if(iso>=end)break;if(want.length>60)break}
     const old=Object.fromEntries(tr.days.map(x=>[x.date,x]));tr.days=want.map(iso=>old[iso]||{date:iso,title:'',area:'',stay:'',recap:'',items:[],notes:[],checks:[]});}
   save();closeSheet();toast(t('saved'));render();
@@ -770,7 +796,8 @@ function saveTrip(id){
 function stopForm(tr,di,it){
   const isNew=!it;it=it||{t:'',title:'',d:'',k:'see',map:'',cost:'',cash:false,ref:''};
   openSheet(`<h2>${isNew?t('add_stop'):t('edit_stop')} · ${t('day')} ${di+1}</h2>
-    <div class="grid2"><div><label class="f">${t('time')}</label><input id="f-t" value="${esc(it.t)}" placeholder="09:30"></div><div><label class="f">${t('cost')}</label><input id="f-cost" value="${esc(it.cost||'')}" placeholder="¥1,000"></div></div>
+    <div class="grid2"><div><label class="f">${t('time')}</label><input id="f-t" value="${esc(it.t)}" placeholder="09:30"></div><div><label class="f">${t('cost_est')} (${sym(tr)})</label><input id="f-cost" type="number" inputmode="decimal" min="0" value="${num(it.cost)||''}" placeholder="1000"></div></div>
+    <label class="f">${t('cost_act')} (${sym(tr)})</label><input id="f-actual" type="number" inputmode="decimal" min="0" value="${it.actual||''}" placeholder=""><div class="hint" style="margin-top:4px">${t('cost_act_h')}</div>
     <label class="f">${t('title')}</label><input id="f-title" value="${esc(it.title)}">
     <label class="f">${t('detail')}</label><textarea id="f-d">${esc(it.d||'')}</textarea>
     <label class="f">${t('kind')}</label><div class="chips" id="f-k">${Object.keys(ICO).map(k=>`<button class="${it.k===k?'on':''}" data-k="${k}">${svg(ICO[k],'')}${t('kinds')[k]}</button>`).join('')}</div>
@@ -781,7 +808,7 @@ function stopForm(tr,di,it){
 function saveStop(tr,di,id){
   const title=$('#f-title').value.trim();if(!title){toast(t('need_name'));return}
   const k=$('#f-k .on')?.dataset.k||'see';
-  const v={t:$('#f-t').value.trim(),title,d:$('#f-d').value.trim(),k,map:$('#f-map').value.trim(),cost:$('#f-cost').value.trim(),cash:$('#f-cash').checked,ref:$('#f-ref').value.trim()};
+  const v={t:$('#f-t').value.trim(),title,d:$('#f-d').value.trim(),k,map:$('#f-map').value.trim(),cost:$('#f-cost').value?+$('#f-cost').value:'',actual:$('#f-actual').value?+$('#f-actual').value:'',cash:$('#f-cash').checked,ref:$('#f-ref').value.trim()};
   const day=tr.days[di];
   if(id){Object.assign(day.items.find(x=>x.id===id),v)}else{day.items.push(Object.assign({id:uid(),done:false},v))}
   day.items.sort((a,b)=>(tmin(a.t)??1e9)-(tmin(b.t)??1e9));
@@ -794,9 +821,10 @@ function legForm(tr,leg){
   const isNew=!leg;leg=leg||{mode:tr.mode||'fly',code:'',from:'',to:'',dep:'',arr:'',dur:''};
   openSheet(`<h2>${isNew?t('add_leg'):t('edit_leg')}</h2>
     <label class="f">${t('mode')}</label>${modeChips(leg.mode,'f-mode')}
-    <div class="grid2"><div><label class="f">${t('from')}</label><input id="f-from" value="${esc(leg.from)}" placeholder="BKK"></div><div><label class="f">${t('to')}</label><input id="f-to" value="${esc(leg.to)}" placeholder="NRT"></div></div>
+    <div class="grid2"><div><label class="f">${t('from')}</label><input id="f-from" class="up" value="${esc(leg.from)}" placeholder="BKK"></div><div><label class="f">${t('to')}</label><input id="f-to" class="up" value="${esc(leg.to)}" placeholder="NRT"></div></div>
     <div class="grid2"><div><label class="f">${t('dep')}</label><input id="f-dep" value="${esc(leg.dep||'')}" placeholder="16 ต.ค. 23:10"></div><div><label class="f">${t('arr')}</label><input id="f-arr" value="${esc(leg.arr||'')}" placeholder="17 ต.ค. 07:30"></div></div>
-    <div class="grid2"><div><label class="f">${t('code')}</label><input id="f-code" value="${esc(leg.code||'')}" placeholder="ZIPAIR ZG052"></div><div><label class="f">${S.lang==='th'?'ระยะเวลา':'Duration'}</label><input id="f-dur" value="${esc(leg.dur||'')}" placeholder="6 ชม. 20 นาที"></div></div>
+    <div class="grid2"><div><label class="f">${t('code')}</label><input id="f-code" class="up" value="${esc(leg.code||'')}" placeholder="ZIPAIR ZG052"></div><div><label class="f">${S.lang==='th'?'ระยะเวลา':'Duration'}</label><input id="f-dur" value="${esc(leg.dur||'')}" placeholder="6 ชม. 20 นาที"></div></div>
+    <label class="chk"><input id="f-booked" type="checkbox" ${leg.booked?'checked':''}>${t('booked')}</label><div class="hint" style="padding:2px 0 0 26px">${t('booked_h')}</div>
     <div class="btns">${!isNew?`<button class="btn del" data-del-leg="${leg.id}">${t('delete')}</button>`:''}<button class="btn" data-close>${t('cancel')}</button><button class="btn pri" data-save-leg="${leg.id||''}">${t('save')}</button></div>`);
 }
 function checkForm(scope){
@@ -807,13 +835,13 @@ function checkForm(scope){
 }
 function shrink(file,cb){
   if(!file)return;const img=new Image();const url=URL.createObjectURL(file);
-  img.onload=()=>{const max=1200;let w=img.width,h=img.height;const r=Math.min(1,max/Math.max(w,h));w=Math.round(w*r);h=Math.round(h*r);
+  img.onload=()=>{const max=maxPx||1200;let w=img.width,h=img.height;const r=Math.min(1,max/Math.max(w,h));w=Math.round(w*r);h=Math.round(h*r);
     const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
     let q=0.82,data=c.toDataURL('image/jpeg',q);while(data.length>420000&&q>0.4){q-=0.1;data=c.toDataURL('image/jpeg',q)}
     URL.revokeObjectURL(url);if(data.length>420000){toast(t('photo_big'));return}cb(data)};
   img.src=url;
 }
-function pickPhoto(file,cb){shrink(file,data=>{pendingCover=data;$('#f-pv').innerHTML=`<img src="${data}" alt="">`})}
+function pickPhoto(file,cb,maxPx){shrink(file,data=>{pendingCover=data;$('#f-pv').innerHTML=`<img src="${data}" alt="">`})}
 
 // ---------- nav & events ----------
 function go(v){S.view=v;save();document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==='s-'+v));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===v));render();window.scrollTo(0,0)}
@@ -842,6 +870,7 @@ document.addEventListener('click',e=>{
   if(d.editTrip){tripForm(trip(d.editTrip));return}
   if(d.saveTrip!=null){saveTrip(d.saveTrip);return}
   if(d.delTrip){if(!confirm(t('confirm_del')))return;S.trips=S.trips.filter(x=>x.id!==d.delTrip);S.tripId=null;save();closeSheet();toast(t('deleted'));render();return}
+  if(b.hasAttribute('data-rm-avatar')){S.avatar='';save();renderSet();return}
   if(b.hasAttribute('data-rm-photo')){pendingCover='';$('#f-pv').innerHTML='';b.remove();return}
   if(d.addStop!=null){stopForm(tr,+d.addStop,null);return}
   if(d.editStop){const [di,id]=d.editStop.split(':');stopForm(tr,+di,tr.days[+di].items.find(x=>x.id===id));return}
@@ -850,7 +879,7 @@ document.addEventListener('click',e=>{
   if(d.k&&b.closest('.chips')){b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');return}
   if(b.hasAttribute('data-add-leg')){legForm(tr,null);return}
   if(d.editLeg){legForm(tr,tr.legs.find(x=>x.id===d.editLeg));return}
-  if(d.saveLeg!=null){const v={mode:$('#f-mode .on')?.dataset.k||'fly',from:$('#f-from').value.trim(),to:$('#f-to').value.trim(),dep:$('#f-dep').value.trim(),arr:$('#f-arr').value.trim(),code:$('#f-code').value.trim(),dur:$('#f-dur').value.trim()};if(!v.from||!v.to){toast(t('need_name'));return}if(d.saveLeg){Object.assign(tr.legs.find(x=>x.id===d.saveLeg),v)}else{tr.legs.push(Object.assign({id:uid()},v))}save();closeSheet();toast(t('saved'));render();return}
+  if(d.saveLeg!=null){const v={mode:$('#f-mode .on')?.dataset.k||'fly',from:$('#f-from').value.trim().toUpperCase(),to:$('#f-to').value.trim().toUpperCase(),dep:$('#f-dep').value.trim(),arr:$('#f-arr').value.trim(),code:$('#f-code').value.trim().toUpperCase(),dur:$('#f-dur').value.trim(),booked:$('#f-booked').checked};if(!v.from||!v.to){toast(t('need_name'));return}if(d.saveLeg){Object.assign(tr.legs.find(x=>x.id===d.saveLeg),v)}else{tr.legs.push(Object.assign({id:uid()},v))}save();closeSheet();toast(t('saved'));render();return}
   if(d.delLeg){tr.legs=tr.legs.filter(x=>x.id!==d.delLeg);save();closeSheet();render();return}
   if(d.check){const ct=trip(S.checkTrip);const [sc,id]=d.check.split(':');const arr=sc==='pre'?ct.checklist:ct.days[+sc].checks;const c=arr.find(x=>x.id===id);c.done=!c.done;save();renderCheck();return}
   if(d.delCheck){const ct=trip(S.checkTrip);const [sc,id]=d.delCheck.split(':');if(sc==='pre')ct.checklist=ct.checklist.filter(x=>x.id!==id);else ct.days[+sc].checks=ct.days[+sc].checks.filter(x=>x.id!==id);save();renderCheck();return}
@@ -861,13 +890,15 @@ document.addEventListener('click',e=>{
   if(d.t){S.theme=d.t;save();applyTheme();renderSet();return}
   if(d.clear){if(!confirm(t('sure')))return;if(d.clear==='done'){S.trips.forEach(tr=>{tr.days.forEach(dd=>{dd.items.forEach(i=>i.done=false);(dd.checks||[]).forEach(c=>c.done=false)});tr.checklist.forEach(c=>{if(!c.ref)c.done=false})})}else{localStorage.removeItem(KEY);S=load()}save();applyTheme();render();toast(t('deleted'));return}
 });
-document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;save();const pos=e.target.selectionStart;renderHome();const el=$('#q');el.focus();el.setSelectionRange(pos,pos)}
+document.addEventListener('input',e=>{if(e.target.classList.contains('up')){const p=e.target.selectionStart;e.target.value=e.target.value.toUpperCase();try{e.target.setSelectionRange(p,p)}catch(_){}}
+  if(e.target.id==='q'){S.q=e.target.value;save();const pos=e.target.selectionStart;renderHome();const el=$('#q');el.focus();el.setSelectionRange(pos,pos)}
   if(e.target.id==='tq'){S.tq=e.target.value;save();const pos=e.target.selectionStart;renderTrips();const el=$('#tq');el.focus();el.setSelectionRange(pos,pos)}});
 document.addEventListener('change',e=>{
   if(e.target.id==='simDate'){S.simDate=e.target.value;S.dayView=null;save();render()}
   if(e.target.id==='profName'){S.name=e.target.value.trim();save();renderSet()}
   if(e.target.id==='checkTrip'){S.checkTrip=e.target.value;save();renderCheck()}
   if(e.target.id==='f-photo'){pickPhoto(e.target.files[0])}
+  if(e.target.id==='avatarFile'){pickPhoto(e.target.files[0],data=>{S.avatar=data;save();renderSet();toast(t('saved'))},400)}
   if(e.target.dataset.camFor){const id=e.target.dataset.camFor;pickPhoto(e.target.files[0],data=>{trip(id).cover=data;save();render();toast(t('saved'))})}
   if(e.target.dataset.coverFor){const id=e.target.dataset.coverFor;shrink(e.target.files[0],data=>{trip(id).cover=data;save();render();toast(t('saved'))})}
 });
