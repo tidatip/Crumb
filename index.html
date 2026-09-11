@@ -110,7 +110,7 @@ input.thin::placeholder{font-weight:300;font-size:13px}
 .cover{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:12px;background:var(--cover-fallback);color:#fff;width:100%;text-align:left;display:block}
 .cover{min-height:220px;display:flex;flex-direction:column;justify-content:flex-end}
 .cover.pic{min-height:230px}
-.cover .cam{cursor:pointer;position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.7);color:#2A2622;display:grid;place-items:center;z-index:2}
+.cover .cam{cursor:pointer;position:absolute;z-index:3;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.7);color:#2A2622;display:grid;place-items:center;z-index:2}
 .cover .cam svg{width:16px;height:16px}
 .cover.pic .cam{background:rgba(42,38,34,.45);color:#fff}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
@@ -769,11 +769,12 @@ const svg=(p,cls='ico')=>`<svg class="${cls}" viewBox="0 0 24 24" fill="none" st
 
 // ---------- shared pieces ----------
 function coverCard(tr,{small=false,btn=true,cam:camOn=false}={}){
-  const cam=(btn||camOn)?`<label class="cam" data-cam aria-label="photo" for="cam-${tr.id}${small?'-s':''}">${svg(P.photo,'')}<input class="fh" type="file" accept="image/*" data-cam-for="${tr.id}" id="cam-${tr.id}${small?'-s':''}"></label>`:'';
+  const camId=`cam-${tr.id}-${(coverCard._n=(coverCard._n||0)+1)}`;
+  const cam=(btn||camOn)?`<button type="button" class="cam" data-cam data-cam-open="${camId}" aria-label="photo">${svg(P.photo,'')}</button><input class="fh" type="file" accept="image/*" data-cam-for="${tr.id}" id="${camId}">`:'';
   const st=status(tr);let money_='';
   if(tr.spendPP)money_=`${st==='past'?t('spent'):t('budget')} ${nf(tr.spendPP)} THB`;
   else{const e=estimate(tr);if(e){const foreign=(tr.cur||'THB')!=='THB';const thb=foreign&&tr.rate?`${nf(e.thb)} THB`:(foreign?'':`${nf(e.sum)} THB`);money_=`${st==='past'?t('spent'):t('estimate')} ${thb||fmt(tr,e.sum)}${foreign&&thb&&!btn?` · ${fmt(tr,e.sum)}`:''}`}}
-  return `<div class="cover ${small?'sm':''} ${tr.cover?'pic':''} ${btn?'':'full'}" ${btn?`data-open="${tr.id}" role="button" tabindex="0"`:''}>${tr.cover?`<img src="${tr.cover}" alt="">`:''}<div class="grad"></div>${cam}
+  return `<div class="cover ${small?'sm':''} ${tr.cover?'pic':''} ${btn?'':'full'}" ${btn?`data-open="${tr.id}"`:''}>${tr.cover?`<img src="${tr.cover}" alt="">`:''}<div class="grad"></div>${cam}
     <div class="txt"><h2>${esc(tr.name)}</h2><div class="dt">${esc(frange(tr.start,tr.end))}${tr.dest?' · '+esc(tr.dest):''}</div>
     <div class="meta"><span>${svg(P.pin,'')}${t('cities',{n:cities(tr)})}</span><span>${svg(P.cal,'')}${t('days',{n:tr.days.length})}</span><span>${svg(P.ppl,'')}${t('people',{n:tr.members||1})}</span></div>
     <div class="bot"><span class="spend">${money_}</span><span class="pill">${esc(pill(tr))}</span></div></div></div>`;
@@ -1000,7 +1001,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v2.5</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v2.6</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB']];
@@ -1144,6 +1145,8 @@ function render(){document.querySelectorAll('[data-i]').forEach(e=>e.textContent
 function applyTheme(){const r=document.documentElement;r.dataset.theme=S.theme==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':''):S.theme;r.dataset.palette=S.palette||'cream';r.dataset.lang=S.lang;r.lang=S.lang}
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change',applyTheme);
 document.addEventListener('click',e=>{
+  if(e.target.matches&&e.target.matches('input[type=file]')){e.stopPropagation();return}
+  const camBtn=e.target.closest('[data-cam-open]');if(camBtn){e.stopPropagation();e.preventDefault();const inp=document.getElementById(camBtn.dataset.camOpen);if(inp)inp.click();return}
   if(e.target.closest('label[for],.cam,[data-cam]')){e.stopPropagation();return}
   if(e.target.closest('[data-cam]'))return;
   const b=e.target.closest('button,a,[data-close],[data-open],[data-edit-day],[data-edit-check]');if(!b){if(e.target.id==='sheetBg')closeSheet();return}
