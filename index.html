@@ -110,7 +110,7 @@ input.thin::placeholder{font-weight:300;font-size:13px}
 .cover{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:12px;background:var(--cover-fallback);color:#fff;width:100%;text-align:left;display:block}
 .cover{min-height:220px;display:flex;flex-direction:column;justify-content:flex-end}
 .cover.pic{min-height:230px}
-.cover .cam{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.7);color:#2A2622;display:grid;place-items:center;z-index:2}
+.cover .cam{cursor:pointer;position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.7);color:#2A2622;display:grid;place-items:center;z-index:2}
 .cover .cam svg{width:16px;height:16px}
 .cover.pic .cam{background:rgba(42,38,34,.45);color:#fff}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
@@ -337,7 +337,8 @@ input.thin::placeholder{font-weight:300;font-size:13px}
 .photo .pv{width:88px;height:64px;border-radius:10px;background:var(--cover-fallback);overflow:hidden;flex:0 0 auto}
 .photo .pv img{width:100%;height:100%;object-fit:cover;display:block}
 .photo label.up{display:inline-block;background:var(--surface-2);padding:9px 12px;border-radius:10px;font-size:14px;color:var(--accent);font-weight:500;cursor:pointer}
-.photo input{display:none}
+.photo input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+input.fh{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{padding:6px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;display:inline-flex;gap:5px;align-items:center;color:var(--ink-2)}
 .chips button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -768,7 +769,7 @@ const svg=(p,cls='ico')=>`<svg class="${cls}" viewBox="0 0 24 24" fill="none" st
 
 // ---------- shared pieces ----------
 function coverCard(tr,{small=false,btn=true,cam:camOn=false}={}){
-  const cam=(btn||camOn)?`<label class="cam" data-cam aria-label="photo">${svg(P.photo,'')}<input type="file" accept="image/*" data-cam-for="${tr.id}" hidden></label>`:'';
+  const cam=(btn||camOn)?`<label class="cam" data-cam aria-label="photo" for="cam-${tr.id}${small?'-s':''}">${svg(P.photo,'')}<input class="fh" type="file" accept="image/*" data-cam-for="${tr.id}" id="cam-${tr.id}${small?'-s':''}"></label>`:'';
   const st=status(tr);let money_='';
   if(tr.spendPP)money_=`${st==='past'?t('spent'):t('budget')} ${nf(tr.spendPP)} THB`;
   else{const e=estimate(tr);if(e){const foreign=(tr.cur||'THB')!=='THB';const thb=foreign&&tr.rate?`${nf(e.thb)} THB`:(foreign?'':`${nf(e.sum)} THB`);money_=`${st==='past'?t('spent'):t('estimate')} ${thb||fmt(tr,e.sum)}${foreign&&thb&&!btn?` · ${fmt(tr,e.sum)}`:''}`}}
@@ -871,7 +872,7 @@ function renderTrips(){
   const hit=tr=>!q||[tr.name,tr.dest,...tr.days.flatMap(d=>[d.title,d.area,d.stay,...d.items.map(i=>i.title+' '+(i.d||''))])].join(' ').toLowerCase().includes(q);
   const tab=S.tripTab||'all';
   const shown=list.filter(tr=>hit(tr)&&(tab==='all'||status(tr)===tab));
-  el.innerHTML=`<div class="head"><div><h1>${t('trips')}</h1><div class="sub">${S.trips.length} ${S.lang==='th'?'ทริป':'trips'}</div></div><div style="display:flex;gap:8px"><label class="ibtn ghost" aria-label="import" title="${t('import_trip')}">${svg('M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M8 11l4 4 4-4M12 15V2','')}<input type="file" accept=".crumb,application/json" id="importFile" hidden></label><button class="ibtn" data-new-trip aria-label="new">${svg(P.plus,'')}</button></div></div>
+  el.innerHTML=`<div class="head"><div><h1>${t('trips')}</h1><div class="sub">${S.trips.length} ${S.lang==='th'?'ทริป':'trips'}</div></div><div style="display:flex;gap:8px"><label class="ibtn ghost" aria-label="import" title="${t('import_trip')}" for="importFile">${svg('M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M8 11l4 4 4-4M12 15V2','')}<input class="fh" type="file" accept=".crumb,application/json" id="importFile"></label><button class="ibtn" data-new-trip aria-label="new">${svg(P.plus,'')}</button></div></div>
   <div class="search"><span>${svg('M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4','')}</span><input id="tq" type="search" value="${esc(S.tq||'')}" placeholder="${t('search_ph')}"></div>
   <div class="seg wide four">${['all','upcoming','past','planning'].map(x=>`<button class="${tab===x?'on':''}" data-ttab="${x}">${x==='all'?(S.lang==='th'?'ทั้งหมด':'All'):x==='planning'?(S.lang==='th'?'วางแผน':'Planning'):t(x)}</button>`).join('')}</div>
   ${shown.map(tripCard).join('')||`<div class="empty"><b>${t('no_match')}</b></div>`}`;
@@ -989,7 +990,7 @@ function renderSet(){
   const st=stats();
   const PALS=[['cream','pal_cream','#FBF3E6','#E3BD87','#CF9A5E'],['lavender','pal_lav','#F0E9FD','#C5A9EE','#8C72C4'],['teal','pal_teal','#E8F4F0','#A6D8CE','#4A9E93'],['pastel','pal_pastel','#FCF3E8','#FFE8DE','#7FCDB8']];
   $('#s-set').innerHTML=`<div class="head"><div><h1>${t('nav_set')}</h1></div></div>
-  <div class="prof"><label class="avatar" data-cam aria-label="avatar"><img src="${S.avatar||LOGO}" alt=""><span class="ed">${svg(P.photo,'')}</span><input type="file" accept="image/*" id="avatarFile" hidden></label><div style="flex:1"><label class="f" style="margin-top:0">${t('your_name')}</label><input id="profName" value="${esc(S.name)}" placeholder="Tidatip"><div class="hint" style="margin-top:4px;padding:0">${t('name_h')}${S.avatar?` · <button class="danger" data-rm-avatar style="font-size:13px">${t('remove')}</button>`:''}</div></div></div>
+  <div class="prof"><label class="avatar" data-cam aria-label="avatar" for="avatarFile"><img src="${S.avatar||LOGO}" alt=""><span class="ed">${svg(P.photo,'')}</span><input class="fh" type="file" accept="image/*" id="avatarFile"></label><div style="flex:1"><label class="f" style="margin-top:0">${t('your_name')}</label><input id="profName" value="${esc(S.name)}" placeholder="Tidatip"><div class="hint" style="margin-top:4px;padding:0">${t('name_h')}${S.avatar?` · <button class="danger" data-rm-avatar style="font-size:13px">${t('remove')}</button>`:''}</div></div></div>
   <div class="tiles" style="margin:0 0 12px"><div class="tile t1"><b>${st.trips}</b><span>${t('st_trips')}</span></div><div class="tile t2"><b>${st.cities}</b><span>${t('st_cities')}</span></div><div class="tile t3"><b>${st.stops}</b><span>${t('st_stops')}</span></div></div>
   <div class="set">
     <div class="row"><div class="l">${t('lang')}</div><div class="seg">${['th','en'].map(l=>`<button class="${S.lang===l?'on':''}" data-lang="${l}">${l==='th'?'ไทย':'English'}</button>`).join('')}</div></div>
@@ -999,7 +1000,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v2.4</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v2.5</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB']];
@@ -1029,7 +1030,7 @@ function tripForm(tr){
     <label class="f">${t('main_mode')}</label>${modeChips(tr.mode||'fly','f-mainmode')}
     <div class="grid2"><div><label class="f">${t('cur')}</label><select id="f-cur">${Object.keys(CUR).map(c=>`<option value="${c}" ${(tr.cur||'THB')===c?'selected':''}>${c}</option>`).join('')}</select></div><div><label class="f">${t('rate')}</label><input id="f-rate" type="number" inputmode="decimal" step="0.0001" min="0" value="${tr.rate||''}" placeholder="0.23"></div></div>
     <label class="f">${t('spend')}</label><input id="f-spend" class="amt" type="text" inputmode="decimal" value="${tr.spendPP?nf(tr.spendPP):''}" placeholder="38,000.00"><div class="hint" style="margin-top:4px">${t('spend_h')}</div>
-    <label class="f">${t('cover')}</label><div class="photo"><div class="pv" id="f-pv">${pendingCover?`<img src="${pendingCover}" alt="">`:''}</div><div><label class="up">${t('pick_photo')}<input id="f-photo" type="file" accept="image/*"></label> ${pendingCover?`<button class="danger" data-rm-photo style="margin-left:8px;font-size:14px">${t('remove')}</button>`:''}</div></div>
+    <label class="f">${t('cover')}</label><div class="photo"><div class="pv" id="f-pv">${pendingCover?`<img src="${pendingCover}" alt="">`:''}</div><div><label class="up" for="f-photo">${t('pick_photo')}<input id="f-photo" type="file" accept="image/*"></label> ${pendingCover?`<button class="danger" data-rm-photo style="margin-left:8px;font-size:14px">${t('remove')}</button>`:''}</div></div>
     ${tr.closed?`<button class="btn" style="margin-top:14px" data-reopen-trip="${tr.id}">${t('reopen_trip')}</button>`:''}
     <div class="btns">${!isNew&&!tr.seed?`<button class="btn del" data-del-trip="${tr.id}">${t('delete')}</button>`:''}<button class="btn" data-close>${t('cancel')}</button><button class="btn pri" data-save-trip="${tr.id||''}">${t('save')}</button></div>`);
 }
@@ -1103,7 +1104,7 @@ function kindChips(sel,all){const vis=all?KIND_ORDER:KIND_ORDER.slice(0,7);const
 function journalForm(tr,di,it){jctx={di,id:it.id};
   const shots=(it.photos||[]).map(pid=>`<div class="jshot"><img data-photo="${pid}" alt=""><button class="jx" data-jdel="${pid}" aria-label="delete">${svg(P.x,'')}</button></div>`).join('');
   openSheet(`<h2>${t('journal')} · ${esc(it.title)}</h2>
-    <label class="f">${t('photos')}</label><div class="jshots" id="jshots">${shots}</div><label class="jadd">${svg(P.plus,'')}<span>${t('add_photo')}</span><input type="file" accept="image/*" multiple id="j-photo" hidden></label>
+    <label class="f">${t('photos')}</label><div class="jshots" id="jshots">${shots}</div><label class="jadd" for="j-photo">${svg(P.plus,'')}<span>${t('add_photo')}</span><input class="fh" type="file" accept="image/*" multiple id="j-photo"></label>
     <label class="f">${t('journal')}</label><textarea id="f-note" placeholder="${t('journal_h')}">${esc(it.note||'')}</textarea>
     <div class="btns"><button class="btn" data-close>${t('cancel')}</button><button class="btn pri" data-save-note="${di}:${it.id}">${t('save')}</button></div>`);
   loadThumbs();
@@ -1127,7 +1128,7 @@ function checkForm(scope){
     ${scope==='pre'?`<label class="f">${t('due')}</label><input id="f-due" type="date">`:''}
     <div class="btns"><button class="btn" data-close>${t('cancel')}</button><button class="btn pri" data-save-check="${scope}">${t('save')}</button></div>`);
 }
-function shrink(file,cb){
+function shrink(file,cb,maxPx){
   if(!file)return;const img=new Image();const url=URL.createObjectURL(file);
   img.onload=()=>{const max=maxPx||1200;let w=img.width,h=img.height;const r=Math.min(1,max/Math.max(w,h));w=Math.round(w*r);h=Math.round(h*r);
     const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
@@ -1135,7 +1136,7 @@ function shrink(file,cb){
     URL.revokeObjectURL(url);if(data.length>420000){toast(t('photo_big'));return}cb(data)};
   img.src=url;
 }
-function pickPhoto(file,cb,maxPx){shrink(file,data=>{pendingCover=data;$('#f-pv').innerHTML=`<img src="${data}" alt="">`})}
+function pickPhoto(file,cb,maxPx){if(!file)return;shrink(file,data=>{if(cb){cb(data);return}pendingCover=data;const pv=$('#f-pv');if(pv)pv.innerHTML=`<img src="${data}" alt="">`},maxPx)}
 
 // ---------- nav & events ----------
 function go(v){S.view=v;save();document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==='s-'+v));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===v));render();window.scrollTo(0,0)}
@@ -1143,7 +1144,7 @@ function render(){document.querySelectorAll('[data-i]').forEach(e=>e.textContent
 function applyTheme(){const r=document.documentElement;r.dataset.theme=S.theme==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':''):S.theme;r.dataset.palette=S.palette||'cream';r.dataset.lang=S.lang;r.lang=S.lang}
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change',applyTheme);
 document.addEventListener('click',e=>{
-  if(e.target.closest('.cam'))return;
+  if(e.target.closest('label[for],.cam,[data-cam]')){e.stopPropagation();return}
   if(e.target.closest('[data-cam]'))return;
   const b=e.target.closest('button,a,[data-close],[data-open],[data-edit-day],[data-edit-check]');if(!b){if(e.target.id==='sheetBg')closeSheet();return}
   const d=b.dataset,tr=S.tripId?trip(S.tripId):null;
