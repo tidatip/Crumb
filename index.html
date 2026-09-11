@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>Crumb</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chonburi&family=Hind+Siliguri:wght@400;500;600;700&family=Prompt:wght@400;500;600&family=Yeseva+One&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Yeseva+One&display=swap">
 <style>
 :root{
   --bg:#FBF3E6;--surface:#FFFCF6;--surface-2:#F1DFC7;--line:#E6D6BE;
@@ -22,9 +22,9 @@
   --focus:#D6A76F;--shadow:0 8px 24px rgba(89,69,56,.10);
   --hero-grad:linear-gradient(180deg,rgba(43,33,26,0) 30%,rgba(43,33,26,.75) 100%);
   --cover-fallback:#E3BD87;--cover-sm:#F5E9D6;--cover-ink:#2B211A;
-  --fh:'Chonburi',serif;--fb:'Prompt',sans-serif;
+  --fh:'Yeseva One','Prompt',sans-serif;--fb:'Prompt',sans-serif;--fhw:500;--fhls:0;
 }
-:root[data-lang=en]{--fh:'Yeseva One',serif;--fb:'Hind Siliguri',sans-serif}
+:root[data-lang=en]{--fh:'Yeseva One','Prompt',sans-serif;--fb:'Prompt',sans-serif;--fhw:500;--fhls:0}
 :root[data-palette=lavender]{
   --bg:#F0E9FD;--surface:#FDFBFF;--surface-2:#E6DAF9;--line:#D9CBF3;
   --ink:#2E2740;--ink-2:#5B4C78;--muted:#9A8CA2;
@@ -68,7 +68,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 a{color:var(--accent)}
 h1,h2,h3{margin:0;font-weight:500;line-height:1.25}
-h1,.hero h2,.cover h2,.tcard h3{font-family:var(--fh);font-weight:400}
+h1,.hero h2,.cover h2,.tcard h3{font-family:var(--fh);font-weight:var(--fhw,400);letter-spacing:var(--fhls,0)}
 input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%;min-width:0;-webkit-appearance:none;appearance:none}
 input.up{text-transform:uppercase}
 input[type=date]{display:block;-webkit-appearance:none}
@@ -902,7 +902,7 @@ function renderCheck(){
 }
 async function exportPNG(tr){
   const W=1080,pad=64;const C={bg:cssv('--bg'),surface:cssv('--surface'),ink:cssv('--ink'),ink2:cssv('--ink-2'),muted:cssv('--muted'),accent:cssv('--accent'),line:cssv('--line'),cover:cssv('--cover-fallback'),coverInk:cssv('--cover-ink')};
-  const fh=S.lang==='en'?"'Yeseva One',serif":"'Chonburi',serif";const fb=S.lang==='en'?"'Hind Siliguri',sans-serif":"'Prompt',sans-serif";
+  const fh="'Yeseva One','Prompt',sans-serif";const fb="'Prompt',sans-serif";
   const c=document.createElement('canvas');const g=c.getContext('2d');
   const lines=[];const push=(txt,size,font,color,gap,indent)=>lines.push({txt,size,font,color,gap:gap||0,indent:indent||0});
   push(tr.name,58,fh,C.ink,0);
@@ -933,10 +933,10 @@ function shareSheet(tr){openSheet(`<h2>${t('share')} · ${esc(tr.name)}</h2>
   <div class="btns"><button class="btn" data-close>${t('cancel')}</button></div>`)}
 function viewOnlyHTML(tr){const C={bg:'#FBF3E6',card:'#FFFCF6',ink:'#2B211A',ink2:'#594538',muted:'#9A8770',acc:'#CF9A5E',line:'#E6D6BE'};
   const day=(d,i)=>`<section><h2>${t('day')} ${i+1} · ${esc(fdate(d.date,true))}${d.title?' · '+esc(d.title):''}</h2>${d.stay?`<p class="m">${t('stay')} ${esc(d.stay)}</p>`:''}${d.recap?`<p class="m">${esc(d.recap)}</p>`:''}<ol>${d.items.filter(x=>!x.skipped).map(it=>`<li><span class="t">${esc(it.t)}</span><div><b>${esc(it.title)}</b>${it.d?`<div class="m">${esc(it.d)}</div>`:''}${it.cost?`<span class="tag">~${fmt(tr,num(it.cost))}</span>`:''}${it.ref?`<span class="tag g">${esc(it.ref)}</span>`:''}${it.map?` <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(it.map)}">${t('map_btn')}</a>`:''}</div></li>`).join('')}</ol></section>`;
-  return `<!doctype html><html lang="${S.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(tr.name)} · Crumb</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chonburi&family=Prompt:wght@400;500&family=Yeseva+One&family=Hind+Siliguri:wght@400;500&display=swap"><style>body{margin:0;background:${C.bg};color:${C.ink};font-family:${S.lang==='en'?"'Hind Siliguri'":"'Prompt'"},sans-serif;padding:20px 16px 40px;max-width:640px;margin:auto}h1{font-family:${S.lang==='en'?"'Yeseva One'":"'Chonburi'"},serif;font-weight:400;font-size:30px;margin:0 0 4px}h2{font-family:${S.lang==='en'?"'Yeseva One'":"'Chonburi'"},serif;font-weight:400;font-size:20px;color:${C.acc};margin:26px 0 6px}.m{color:${C.muted};font-size:14px;margin:2px 0}ol{list-style:none;padding:0;margin:8px 0}li{display:grid;grid-template-columns:52px 1fr;gap:10px;background:${C.card};border:1px solid ${C.line};border-radius:14px;padding:12px;margin-bottom:8px}li .t{color:${C.muted};font-size:13px;padding-top:2px}li b{font-weight:500}.tag{display:inline-block;font-size:12px;background:${C.bg};border:1px solid ${C.line};border-radius:999px;padding:1px 8px;margin:6px 6px 0 0}.tag.g{background:#D9E4D1}a{color:${C.acc};font-size:13px}.hd{background:#E3BD87;border-radius:20px;padding:18px 20px;margin-bottom:6px}.legs{margin:12px 0}.leg{display:flex;justify-content:space-between;background:${C.card};border:1px solid ${C.line};border-radius:12px;padding:10px 14px;margin-bottom:6px;font-size:14px}.foot{color:${C.muted};font-size:12px;text-align:center;margin-top:30px}</style></head><body><div class="hd"><h1>${esc(tr.name)}</h1><div>${esc(frange(tr.start,tr.end))}${tr.dest?' · '+esc(tr.dest):''}</div><div class="m" style="color:${C.ink2}">${t('cities',{n:cities(tr)})} · ${t('days',{n:tr.days.length})} · ${t('people',{n:tr.members||1})}</div></div>${(tr.legs||[]).length?`<div class="legs">${tr.legs.map(l=>`<div class="leg"><b>${esc(l.from)} → ${esc(l.to)}</b><span>${esc(l.code||'')} ${esc(l.dep||'')}</span></div>`).join('')}</div>`:''}${tr.days.map(day).join('')}<p class="foot">Crumb · ${t('share_view')}</p></body></html>`}
+  return `<!doctype html><html lang="${S.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(tr.name)} · Crumb</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&family=Yeseva+One&display=swap"><style>body{margin:0;background:${C.bg};color:${C.ink};font-family:${S.lang==='en'?"'Prompt'":"'Prompt'"},sans-serif;padding:20px 16px 40px;max-width:640px;margin:auto}h1{font-family:'Yeseva One','Prompt',sans-serif;font-weight:500;font-size:30px;margin:0 0 4px}h2{font-family:'Yeseva One','Prompt',sans-serif;font-weight:500;font-size:20px;color:${C.acc};margin:26px 0 6px}.m{color:${C.muted};font-size:14px;margin:2px 0}ol{list-style:none;padding:0;margin:8px 0}li{display:grid;grid-template-columns:52px 1fr;gap:10px;background:${C.card};border:1px solid ${C.line};border-radius:14px;padding:12px;margin-bottom:8px}li .t{color:${C.muted};font-size:13px;padding-top:2px}li b{font-weight:500}.tag{display:inline-block;font-size:12px;background:${C.bg};border:1px solid ${C.line};border-radius:999px;padding:1px 8px;margin:6px 6px 0 0}.tag.g{background:#D9E4D1}a{color:${C.acc};font-size:13px}.hd{background:#E3BD87;border-radius:20px;padding:18px 20px;margin-bottom:6px}.legs{margin:12px 0}.leg{display:flex;justify-content:space-between;background:${C.card};border:1px solid ${C.line};border-radius:12px;padding:10px 14px;margin-bottom:6px;font-size:14px}.foot{color:${C.muted};font-size:12px;text-align:center;margin-top:30px}</style></head><body><div class="hd"><h1>${esc(tr.name)}</h1><div>${esc(frange(tr.start,tr.end))}${tr.dest?' · '+esc(tr.dest):''}</div><div class="m" style="color:${C.ink2}">${t('cities',{n:cities(tr)})} · ${t('days',{n:tr.days.length})} · ${t('people',{n:tr.members||1})}</div></div>${(tr.legs||[]).length?`<div class="legs">${tr.legs.map(l=>`<div class="leg"><b>${esc(l.from)} → ${esc(l.to)}</b><span>${esc(l.code||'')} ${esc(l.dep||'')}</span></div>`).join('')}</div>`:''}${tr.days.map(day).join('')}<p class="foot">Crumb · ${t('share_view')}</p></body></html>`}
 function wrapText(g,text,max){const out=[];for(const para of String(text).split('\n')){let line='';for(const ch of para){const test=line+ch;if(g.measureText(test).width>max&&line){out.push(line);line=ch}else line=test}out.push(line)}return out}
 async function dayJPG(tr,di,share){
-  const d=tr.days[di];const W=1080,L=170,CX=250,CW=W-CX-40,pad=24;const isEn=S.lang==='en';const fh=isEn?"'Yeseva One',serif":"'Chonburi',serif";const fb=isEn?"'Hind Siliguri',sans-serif":"'Prompt',sans-serif";
+  const d=tr.days[di];const W=1080,L=170,CX=250,CW=W-CX-40,pad=24;const isEn=S.lang==='en';const fh="'Yeseva One','Prompt',sans-serif";const fb="'Prompt',sans-serif";
   const C={bg:cssv('--bg'),card:cssv('--surface'),ink:cssv('--ink'),ink2:cssv('--ink-2'),muted:cssv('--muted'),acc:cssv('--accent'),line:cssv('--line'),soft:cssv('--surface-2'),pine:cssv('--pine'),pineS:cssv('--pine-soft'),gold:cssv('--gold'),goldS:cssv('--gold-soft')};
   const c=document.createElement('canvas');const g=c.getContext('2d');g.font=`26px ${fb}`;
   // measure
@@ -947,7 +947,7 @@ async function dayJPG(tr,di,share){
   // header
   g.fillStyle=C.card;rr(g,40,30,W-80,150,26);g.fill();
   g.fillStyle=C.ink2;g.font=`24px ${fb}`;g.fillText(`${t('day_of',{a:di+1,b:tr.days.length})} · ${fdate(d.date,true)}`,70,74);
-  g.fillStyle=C.ink;g.font=`44px ${fh}`;let tt=d.title||tr.name;while(g.measureText(tt).width>W-140&&tt.length>3)tt=tt.slice(0,-2)+'…';g.fillText(tt,70,128);
+  g.fillStyle=C.ink;g.font=`500 44px ${fh}`;let tt=d.title||tr.name;while(g.measureText(tt).width>W-140&&tt.length>3)tt=tt.slice(0,-2)+'…';g.fillText(tt,70,128);
   g.fillStyle=C.muted;g.font=`24px ${fb}`;g.fillText([d.area,d.stay?`${t('stay')} ${d.stay}`:''].filter(Boolean).join(' · '),70,164);
   // rail
   let y=headH;g.strokeStyle=C.line;g.lineWidth=3;g.beginPath();g.moveTo(L,y+20);g.lineTo(L,H-70);g.stroke();
@@ -999,7 +999,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v2.3</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v2.4</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB']];
