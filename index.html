@@ -581,24 +581,28 @@ const TRIP = {
       ]
     },
     {
-      n: 7, date: '2026-10-23', dow: 'ศุกร์', title: 'เซนโซจิ → KITTE → โตเกียวทาวเวอร์ → Azabudai', area: 'Tokyo', stay: 'HOTEL AMANEK Asakusa',
-      recap: 'ริมแม่น้ำสุมิดะ → เซนโซจิ ไหว้พระ เซียมซี → ซูชิ Nemuro Hanamaru ที่ KITTE (กดบัตรคิวก่อนร้านเปิด 11:00) → วัดโซโจจิ → Shiba Park โตเกียวทาวเวอร์ → เย็น Azabudai Hills',
+      n: 7, date: '2026-10-23', dow: 'ศุกร์', title: 'เซนโซจิ → ลูกปัดอาซากุสะบาชิ → ชิบะพาร์ค → ซูชิ KITTE ค่ำ', area: 'Tokyo', stay: 'HOTEL AMANEK Asakusa',
+      recap: 'เซนโซจิเช้า ไหว้พระ เซียมซี → Miyuki Factory + ย่านค้าส่งอาซากุสะบาชิ → ลิ้นวัว Gyutan Biyori → วัดโซโจจิ + Shiba Park โตเกียวทาวเวอร์ → KITTE ค่ำ: ดาดฟ้าชั้น 6 + ซูชิ Nemuro Hanamaru (ไฟตึกสถานีดับ 21:00)',
       items: [
         { t: '06:45', title: 'ออกจากโรงแรม → Kaminarimon', d: 'เดิน ~5 นาที · ไปเช้าคนน้อย', k: 'walk', map: 'Kaminarimon Gate' },
         { t: '07:00', title: 'วัดเซนโซจิ + ถนน Nakamise', d: 'Kaminarimon → Nakamise (ชัตเตอร์เพนต์) → Hozomon → วิหารใหญ่ 06:30 เซียมซี ¥100 → เจดีย์ 5 ชั้น มุม Skytree · ~08:30 ร้านทยอยเปิด เมล่อนปัง Kagetsudo', cost: '¥100', k: 'see', map: 'Sensoji Temple' },
-        { t: '09:50', title: 'Ginza Line: Asakusa → Tokyo', d: '~25 นาที · ออก Marunouchi South Exit', k: 'train' },
-        { t: '10:30', title: 'KITTE Marunouchi — กดบัตรคิวชั้น 5', d: 'กดจากตู้หน้าร้านก่อนเปิด · ระหว่างรอขึ้น KITTE Garden ชั้น 6 (ฟรี) ถ่ายตึกแดงสถานีโตเกียว', k: 'see', map: 'KITTE Marunouchi' },
-        { t: '11:00', title: 'มื้อเที่ยง — Nemuro Hanamaru', d: 'ไคเต็นซูชิฮอกไกโด ชั้น 5 KITTE · 11:00–22:00 · จานละ ¥140–500', k: 'food', map: 'Nemuro Hanamaru KITTE Marunouchi' },
-        { t: '13:15', title: 'JR Yamanote: Tokyo → Hamamatsucho', d: '~7 นาที + เดิน ~10 นาที · ไม่รวมในพาส ~¥170', cost: '¥170', k: 'train' },
-        { t: '13:30', title: 'วัดโซโจจิ (Zojoji)', d: '06:00–17:30 · ประตูซันเงะดัตสึมง (1622) · จิโซหมวกแดง · มุมหลังคาวัดตัดโตเกียวทาวเวอร์', k: 'see', map: 'Zojoji Temple' },
-        { t: '14:15', title: 'Shiba Park — ใบไม้เปลี่ยนสี + ทาวเวอร์', d: 'Area 4 อุโมงค์ต้นไม้ → เนินโมมิจิดานิ → บันไดลานจอดใต้ดินฝั่งใต้', k: 'see', map: 'Shiba Park Tokyo' },
-        { t: '16:20', title: 'Golden hour + ไฟทาวเวอร์ติด', d: 'พระอาทิตย์ตก ~16:55 · 17:00 มุมกลางคืน Akabanebashi / ทางม้าลาย Sakurada-dori', k: 'photo', map: 'Akabanebashi Tokyo Tower view' },
-        { t: '17:30', title: 'เดินต่อ Azabudai Hills', d: '~10–12 นาที · Central Green ฟรี · Sky Lobby ชั้น 33 ต้องใช้ Sky Room Café ~¥1,100', k: 'walk', map: 'Azabudai Hills' },
-        { t: '18:30', title: 'มื้อเย็น — Pizza 4P\'s (Garden Plaza D 1F)', d: 'ชีสโฮมเมด L.O. 21:00 · สำรอง: The Yellow Company ซุปแกงกะหรี่ B1, Sobamae Yamato, RACINES', k: 'food', map: 'Pizza 4Ps Azabudai Hills' },
-        { t: '19:45', title: 'กลับโรงแรม ~20:30', d: 'Hibiya Line Kamiyacho → Ginza เปลี่ยน Ginza Line → Asakusa ~35 นาที', k: 'train' }
+        { t: '09:45', title: 'Asakusa Line: Asakusa → Asakusabashi', d: '2 สถานี ~4 นาที · รวมในพาส', k: 'train' },
+        { t: '10:00', title: 'Miyuki Factory — ลูกปัดมิยูกิ 3 ชั้น', d: 'จ.–ศ. 10:00–17:00 ปิดเสาร์-อาทิตย์ (ไปได้แค่วันนี้วันเดียวของทริป) · จ่ายเงินแยกทีละชั้น · 1F ลูกปัดสี+คิต · 2F เม็ดใหญ่/ชาร์ม · 3F อุปกรณ์คราฟต์', k: 'shop', map: 'Miyuki Factory Asakusabashi' },
+        { t: '11:35', title: 'West Five + Shimojima', d: 'West Five หน้าทางออกฝั่งตะวันตก — ลูกปัด Miyuki/Toho ถูกกว่า มีถุงตักใส่ ¥300 · Shimojima ร้านหลัก กระดาษห่อ/ถุง/โอริกามิ duty free · ออปชัน Yoshitoku / Kyugetsu ตุ๊กตาญี่ปุ่น', k: 'shop', map: 'Shimojima Asakusabashi' },
+        { t: '12:30', title: 'มื้อเที่ยง — Gyutan Biyori', d: 'ลิ้นวัวย่างถ่าน 4.9★ · ศุกร์ 11:00–15:00 · ร้านเต็มตลอด ต้องจอง +81 3-5839-2729 · สำรอง: Yosakura (อุนางิ+วากิว ปิดรอบเที่ยง 14:30), Kaikobishoku (กวางตุ้ง)', k: 'food', map: 'Gyutan Biyori Asakusabashi' },
+        { t: '14:00', title: 'Asakusa Line: Asakusabashi → Daimon', d: 'ตรง ไม่ต้องเปลี่ยนสาย ~15 นาที · รวมในพาส', k: 'train' },
+        { t: '14:25', title: 'วัดโซโจจิ (Zojoji)', d: '06:00–17:30 · ประตูซันเงะดัตสึมง (1622) · จิโซหมวกแดง · มุมหลังคาวัดตัดโตเกียวทาวเวอร์', k: 'see', map: 'Zojoji Temple' },
+        { t: '15:10', title: 'Shiba Park — ใบไม้เปลี่ยนสี + ทาวเวอร์', d: 'Area 4 อุโมงค์ต้นไม้ → เนินโมมิจิดานิ → บันไดลานจอดใต้ดินฝั่งใต้ · ถ้าเวลาเหลือ: Tokyo Tower Main Deck ¥1,500 หรือศาลเจ้าอาตาโกะ', k: 'see', map: 'Shiba Park Tokyo' },
+        { t: '16:20', title: 'Golden hour + ไฟทาวเวอร์ติด', d: 'ตะวันตก ~16:55 · ไฟติด ~17:10 · มุมกลางคืน Akabanebashi / ทางม้าลาย Sakurada-dori', k: 'photo', map: 'Akabanebashi Tokyo Tower view' },
+        { t: '17:25', title: 'Mita Line: Onarimon → Otemachi', d: 'ตรง ~9 นาที + เดินทางเชื่อมใต้ดิน ~5 นาที · รวมในพาส', k: 'train' },
+        { t: '17:50', title: 'KITTE Marunouchi — กดบัตรคิวชั้น 5 ทันที', d: 'กดบัตรก่อนแล้วค่อยเดินเล่น (คิวเย็นศุกร์ยาว) · ระหว่างรอ: ดาดฟ้า KITTE Garden ชั้น 6 ฟรี · Intermediatheque ชั้น 2–3 ฟรี ศุกร์เปิดถึง 20:00 · ร้านช้อปปิด ~20:00', k: 'see', map: 'KITTE Marunouchi' },
+        { t: '19:00', title: 'มื้อเย็น — Nemuro Hanamaru', d: 'ไคเต็นซูชิฮอกไกโด ชั้น 5 KITTE · จานละ ¥140–500', k: 'food', map: 'Nemuro Hanamaru KITTE Marunouchi' },
+        { t: '20:30', title: 'ดาดฟ้าชั้น 6 — ภาพกลางคืน', d: 'ตึกอิฐแดงสถานีโตเกียว + ชินคันเซ็นเข้าออกชานชาลา · ไฟตึกสถานีดับ 21:00 ต้องขึ้นก่อน (ดาดฟ้าเปิดถึง 23:00)', k: 'photo', map: 'KITTE Garden Tokyo' },
+        { t: '20:45', title: 'กลับโรงแรม ~21:15', d: 'Marunouchi Line Tokyo → Ginza เปลี่ยน Ginza Line → Asakusa ~25 นาที', k: 'train' }
       ],
       notes: [
-        { title: 'Subway pass วันนี้', text: 'เริ่มใช้ Tokyo Subway Ticket 3-day pass — Ginza / Hibiya / Asakusa Line ครอบคลุมหมด · ช่วง JR Yamanote จ่ายแยก' }
+        { title: 'Subway pass วันนี้คุ้มมาก', text: 'Asakusa Line, Mita Line, Marunouchi Line, Ginza Line ครอบคลุมทุกขาของวันนี้ — ไม่ต้องจ่าย JR แยกเลย' },
+        { title: 'ต้องทำล่วงหน้า', list: ['จอง Gyutan Biyori 12:30 / 4 คน — โทร +81 3-5839-2729 หรือให้โรงแรมโทรให้ตอนเช็คอิน', 'เช็คอีกครั้งว่า Miyuki Factory ไม่หยุดพิเศษ (miyukifactory.com) ~1 สัปดาห์ก่อนไป', 'ขึ้นดาดฟ้า KITTE ก่อน 21:00 — ไฟตึกสถานีดับตรงเวลา'] }
       ]
     },
     {
@@ -682,7 +686,7 @@ function seedLive(s){if(s.trips.some(x=>x.id==='live-sample'))return;
       day(1,'Cicada · ชิลล์ทั้งวัน','Hua Hin','Putahracsa Hua Hin',[d('09:00','ว่ายน้ำ · สระโรงแรม','','see',''),d('12:00','กาแฟ Air Space','คาเฟ่วิวทุ่ง','cafe',180),d('16:00','ตลาด Cicada','ของแฮนด์เมด ดนตรีสด','shop',300),d('19:00','มื้อเย็นที่ Cicada','','food',300)]),
       day(2,'เช็คเอาท์ · กลับกรุงเทพฯ','Hua Hin → Bangkok','',[d('10:00','เช็คเอาท์','','stay',''),d('11:00','ซื้อของฝากตลาดฉัตรไชย','','shop',200),d('15:00','ออกเดินทางกลับ','','car','')])]};
   s.trips.push(tr)}
-let S=load();S.simDate='';if(!S.finalv1){S.trips=S.trips.filter(x=>!x.sample);S.finalv1=true}if(!S.seedv5){S.trips.forEach(x=>{if(x.sample&&(x.id==='cnx2026'||x.id==='kyoto2025'))x.closed=true});S.seedv5=true}save();
+let S=load();S.simDate='';if(!S.finalv1){S.trips=S.trips.filter(x=>!x.sample);S.finalv1=true}if(!S.seedv5){S.trips.forEach(x=>{if(x.sample&&(x.id==='cnx2026'||x.id==='kyoto2025'))x.closed=true});S.seedv5=true}if(!S.day7v29){const _t=S.trips.find(x=>x.id==='perfectcrown');if(_t){const _f=seed().days.find(d=>d.date==='2026-10-23');const _d=(_t.days||[]).find(d=>d.date==='2026-10-23');if(_f&&_d){_d.title=_f.title;_d.recap=_f.recap;_d.notes=_f.notes;_d.items=_f.items.map(i=>Object.assign({},i,{id:uid(),done:false,doneAt:'',note:'',photos:[],hist:[],skipped:false}))}}S.day7v29=true}save();
 
 const t=(k,v={})=>{let s=I[S.lang][k]??I.th[k]??k;if(typeof s!=='string')return s;return s.replace(/\{(\w+)\}/g,(_,x)=>v[x])};
 
@@ -1002,7 +1006,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v2.8</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v2.9</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB']];
