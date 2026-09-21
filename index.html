@@ -565,6 +565,14 @@ textarea{min-height:76px}
 }
 :root[data-palette=sunny] :is(.ibtn,.daypick button.on,.dl.on .rbox,.cal .g button.s,.cal .g button.e,.gobtn.on,.btn.pri,.chips button.on,.avatar .ed,.wzdots i.on,.iplace){background:#FBE449;color:#3A2E12}
 :root[data-theme=dark][data-palette=sunny]{--bg:#1E1A10;--surface:#2A2416;--surface-2:#362E1C;--line:#463C26;--ink:#FFF6D6;--ink-2:#E0D2A6;--muted:#A8976A;--accent:#FBE449;--accent-2:#FFD54F;--accent-soft:#3D3416;--accent-ink:#1E1A10;--cover-fallback:#5A4A1A;--cover-sm:#2A2416;--cover-ink:#FFF6D6;--pine:#FFD54F;--pine-soft:#3D3416;--gold:#1E1A10;--gold-soft:#FFE785;--leaf:#FFB54F;--leaf-soft:#4A3515;--focus:#FFD54F}
+
+/* v3.5 step drag */
+#f-steps:not(.one) .stn{touch-action:none;cursor:grab;position:relative;user-select:none;-webkit-user-select:none}
+#f-steps:not(.one) .stn::after{content:'';position:absolute;left:50%;top:calc(100% + 4px);width:10px;height:2px;border-radius:2px;background:var(--line);transform:translateX(-50%);box-shadow:0 3px 0 var(--line)}
+#f-steps.dragging .stn{cursor:grabbing}
+#f-steps.dragging{user-select:none;-webkit-user-select:none}
+.strow.drag{position:relative;z-index:5;background:var(--bg);border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.14)}
+.strow.drag .stn{background:var(--accent);color:var(--accent-ink)}
 </style>
 </head>
 <body>
@@ -1165,7 +1173,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.4</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.5</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
@@ -1248,6 +1256,25 @@ let sdctx=null,lastSwipe=0;
 function stRow(v,i){return `<div class="strow"><span class="stn"></span><textarea class="stin" rows="1" placeholder="${t('steps_ph')}">${esc(v||'')}</textarea><button type="button" class="stx" data-st-del aria-label="delete">${svg(P.x,'')}</button></div>`}
 function stFix(){const rows=[...document.querySelectorAll('#f-steps .strow')];rows.forEach((r,i)=>{r.querySelector('.stn').textContent=rows.length>1?i+1:'•';const ta=r.querySelector('.stin');ta.style.height='auto';ta.style.height=ta.scrollHeight+'px'});const box=document.querySelector('#f-steps');if(box)box.classList.toggle('one',rows.length<2)}
 function stAdd(after,val){const box=$('#f-steps');const w=document.createElement('div');w.innerHTML=stRow(val||'');const r=w.firstElementChild;if(after)after.after(r);else box.appendChild(r);stFix();r.querySelector('.stin').focus();return r}
+// v3.5 drag to reorder detail steps (handle = number badge)
+(()=>{let dg=null;const GAP=6;
+  const end=()=>{if(!dg)return;const {row,box}=dg;row.classList.remove('drag');row.style.transform='';box.classList.remove('dragging');dg=null;stFix()};
+  document.addEventListener('pointerdown',e=>{const h=e.target.closest&&e.target.closest('#f-steps:not(.one) .stn');if(!h||dg)return;e.preventDefault();
+    const row=h.closest('.strow'),box=row.parentElement;if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+    dg={row,box,y0:e.clientY,id:e.pointerId};row.classList.add('drag');box.classList.add('dragging');try{h.setPointerCapture(e.pointerId)}catch(_){}});
+  document.addEventListener('pointermove',e=>{if(!dg||e.pointerId!==dg.id)return;e.preventDefault();const {row,box}=dg;
+    const sh=$('#sheet');if(sh){const r=sh.getBoundingClientRect();let d=0;if(e.clientY<r.top+56)d=-10;else if(e.clientY>r.bottom-56)d=10;if(d){const b=sh.scrollTop;sh.scrollTop+=d;dg.y0-=sh.scrollTop-b}}
+    const clamp=dy=>{const cur=parseFloat((row.style.transform.match(/-?[\d.]+/)||[0])[0])||0;const r0=row.getBoundingClientRect(),bx=box.getBoundingClientRect();const top=r0.top-cur,bot=r0.bottom-cur;return Math.max(bx.top-top-8,Math.min(bx.bottom-bot+8,dy))};
+    row.style.transform=`translateY(${clamp(e.clientY-dg.y0)}px)`;
+    const tf=parseFloat((row.style.transform.match(/-?[\d.]+/)||[0])[0])||0;const vt=row.offsetTop+tf,vb=vt+row.offsetHeight,rh=row.offsetHeight;
+    const prev=row.previousElementSibling,next=row.nextElementSibling;
+    const flip=(el,dy)=>{el.style.transition='none';el.style.transform=`translateY(${dy}px)`;requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.transition='transform .15s ease';el.style.transform=''}))};
+    if(tf>0&&next&&next.classList.contains('strow')&&vb>next.offsetTop+next.offsetHeight/2){const nh=next.offsetHeight+GAP;next.after(row);dg.y0+=nh;row.style.transform=`translateY(${tf-nh}px)`;flip(next,rh+GAP);stFix();return}
+    if(tf<0&&prev&&prev.classList.contains('strow')&&vt<prev.offsetTop+prev.offsetHeight/2){const ph=prev.offsetHeight+GAP;prev.before(row);dg.y0-=ph;row.style.transform=`translateY(${tf+ph}px)`;flip(prev,-(rh+GAP));stFix()}
+  },{passive:false});
+  document.addEventListener('pointerup',e=>{if(dg&&e.pointerId===dg.id)end()});
+  document.addEventListener('pointercancel',e=>{if(dg&&e.pointerId===dg.id)end()});
+})();
 document.addEventListener('input',e=>{if(e.target.classList&&e.target.classList.contains('stin')){e.target.style.height='auto';e.target.style.height=e.target.scrollHeight+'px'}});
 document.addEventListener('keydown',e=>{if(e.key!=='Enter'||e.isComposing||!e.target.classList||!e.target.classList.contains('stin'))return;e.preventDefault();const ta=e.target;const pos=ta.selectionStart;const rest=ta.value.slice(pos);ta.value=ta.value.slice(0,pos).trimEnd();const r=stAdd(ta.closest('.strow'),rest.trimStart());const n=r.querySelector('.stin');n.setSelectionRange(0,0)});
 function dLine(d){return (d||'').replace(/\s*\n+\s*/g,' · ')}
