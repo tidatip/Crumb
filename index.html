@@ -538,6 +538,33 @@ textarea{min-height:76px}
 #w-cur{margin:0;padding:0 0 2px}
 #w-cur::-webkit-scrollbar,.wzleg .chips::-webkit-scrollbar,.istrip::-webkit-scrollbar{display:none}
 .wzleg .chips button{flex:0 0 auto}
+
+.ilinkrow{display:flex;justify-content:flex-end;margin:-4px 0 6px}
+
+/* v3.4 palette: bright */
+:root[data-palette=bright]{
+  --bg:#FFF1D6;--surface:#FFFBF1;--surface-2:#FFE7BE;--line:#F2DDB5;
+  --ink:#1F2547;--ink-2:#4B5078;--muted:#9095B0;
+  --accent:#58A6FF;--accent-2:#F8769C;--accent-soft:#DEEDFF;--accent-ink:#10254A;
+  --leaf:#EE6158;--leaf-soft:#FFE0DC;--gold:#6B5800;--gold-soft:#FBE449;--pine:#8E93CB;--pine-soft:#E4E5F5;
+  --focus:#8FC3FF;--shadow:0 8px 24px rgba(31,37,71,.08);
+  --hero-grad:linear-gradient(180deg,rgba(31,37,71,0) 30%,rgba(31,37,71,.72) 100%);
+  --cover-fallback:#58A6FF;--cover-sm:#FFE7BE;--cover-ink:#1F2547;
+}
+:root[data-theme=dark][data-palette=bright]{--bg:#141A2E;--surface:#1C2340;--surface-2:#262E50;--line:#333C62;--ink:#F2F4FB;--ink-2:#C3C8E2;--muted:#8288AC;--accent:#7DB9FF;--accent-2:#FF8FB0;--accent-soft:#1E3560;--accent-ink:#0E1726;--cover-fallback:#1E3560;--cover-sm:#1C2340;--cover-ink:#F2F4FB;--pine:#A9ADE0;--pine-soft:#2E3160;--gold:#141A2E;--gold-soft:#E8D23F;--leaf:#FF7D74;--leaf-soft:#4A2530;--focus:#7DB9FF}
+
+/* v3.4 palette: sunny */
+:root[data-palette=sunny]{
+  --bg:#FFF6C7;--surface:#FFFDF2;--surface-2:#F5EBC4;--line:#E8D9A7;
+  --ink:#3A2E12;--ink-2:#6B5A2E;--muted:#A3916A;
+  --accent:#D4A017;--accent-2:#FFD54F;--accent-soft:#FFEFA6;--accent-ink:#3A2E12;
+  --leaf:#B06A00;--leaf-soft:#FFE0A8;--gold:#6B5200;--gold-soft:#FFE785;--pine:#8C6A0A;--pine-soft:#F3E8BE;
+  --focus:#FFD54F;--shadow:0 8px 24px rgba(58,46,18,.08);
+  --hero-grad:linear-gradient(180deg,rgba(58,46,18,0) 30%,rgba(58,46,18,.7) 100%);
+  --cover-fallback:#FFD54F;--cover-sm:#E8D9A7;--cover-ink:#3A2E12;
+}
+:root[data-palette=sunny] :is(.ibtn,.daypick button.on,.dl.on .rbox,.cal .g button.s,.cal .g button.e,.gobtn.on,.btn.pri,.chips button.on,.avatar .ed,.wzdots i.on,.iplace){background:#FBE449;color:#3A2E12}
+:root[data-theme=dark][data-palette=sunny]{--bg:#1E1A10;--surface:#2A2416;--surface-2:#362E1C;--line:#463C26;--ink:#FFF6D6;--ink-2:#E0D2A6;--muted:#A8976A;--accent:#FBE449;--accent-2:#FFD54F;--accent-soft:#3D3416;--accent-ink:#1E1A10;--cover-fallback:#5A4A1A;--cover-sm:#2A2416;--cover-ink:#FFF6D6;--pine:#FFD54F;--pine-soft:#3D3416;--gold:#1E1A10;--gold-soft:#FFE785;--leaf:#FFB54F;--leaf-soft:#4A3515;--focus:#FFD54F}
 </style>
 </head>
 <body>
@@ -810,7 +837,7 @@ function seedJournal(s){if(s.journalSeeded)return;const tr=s.trips.find(x=>x.id=
   tr.closed=true;const ky=s.trips.find(x=>x.id==='kyoto2025');if(ky&&ky.sample)ky.closed=true;
   s.journalSeeded=true}
 function seedLive(s){if(s.trips.some(x=>x.id==='live-sample'))return;
-  const today=new Date();const iso=o=>{const d=new Date(today);d.setDate(d.getDate()+o);return d.toISOString().slice(0,10)};const N=now();
+  const today=new Date();const iso=o=>{const d=new Date(today);d.setDate(d.getDate()+o);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};const N=now();
   const day=(o,title,area,stay,items)=>({date:iso(o),title,area,stay,recap:'',notes:[],checks:[],items:items.map(i=>Object.assign({id:uid(),k:'see'},i))});
   const d=(t,title,dd,k,cost,extra)=>Object.assign({t,title,d:dd,k,cost:cost||'',done:false},extra||{});
   const done=(t)=>({done:true,doneAt:t});
@@ -887,6 +914,7 @@ function dUntil(iso,tz){const a=new Date(iso+'T00:00:00'),b=new Date(now(tz).dat
 function fdate(iso,withDow){if(!iso)return '';const [y,m,d]=iso.split('-');const dt=new Date(iso+'T00:00:00');const yy=S.lang==='th'?+y+543:+y;return `${withDow?t('dow')[dt.getDay()]+' ':''}${+d} ${t('mon')[+m-1]} ${yy}`}
 function frange(a,b){if(!a)return t('planning');const [y1,m1,d1]=a.split('-'),[y2,m2,d2]=b.split('-');const yy=S.lang==='th'?+y2+543:+y2;return m1===m2?`${+d1} – ${+d2} ${t('mon')[+m2-1]} ${yy}`:`${+d1} ${t('mon')[+m1-1]} – ${+d2} ${t('mon')[+m2-1]} ${yy}`}
 function booked(tr){return (tr.legs||[]).some(l=>l.booked)}
+function fixRange(){if(S.dt34)return;(S.trips||[]).forEach(tr=>{if(tr.days&&tr.days.length&&tr.start){const a=tr.days.map(d=>d.date).sort();tr.days.sort((x,y)=>x.date<y.date?-1:1);tr.start=a[0];tr.end=a[a.length-1]}});S.dt34=true;save()}
 function status(tr){if(!tr.start)return 'planning';const N=now(tr.tz);if(N.date>tr.end)return 'past';if(tr.planning)return 'planning';return booked(tr)?'upcoming':'planning'}
 function dayIdx(tr){if(!tr.start)return -1;const N=now(tr.tz);const i=tr.days.findIndex(d=>d.date===N.date);if(i>=0)return i;return N.date<tr.start?-1:tr.days.length}
 function pill(tr){const s=status(tr);if(s==='planning')return tr.start?t('not_booked'):t('planning');if(s==='past')return t('ended');const i=dayIdx(tr);return i<0?t('in_days',{n:dUntil(tr.start,tr.tz)}):`${t('ongoing')} · ${i+1}/${tr.days.length}`}
@@ -999,7 +1027,7 @@ function renderTrips(){
     const stays=(tr.stays||[]).map(s=>`<div class="note"><h4>${esc(s.name)}</h4><p>${esc(s.dates)} · ${s.nights} ${S.lang==='th'?'คืน':'nights'} · ${esc(s.note)}</p></div>`).join('');
     const canClose=tr.start&&!tr.closed&&dayIdx(tr)>=tr.days.length-1;
     el.innerHTML=`<div class="head"><button class="back" style="margin:0" data-tripback>${svg(P.back,'')}${t('trips')}</button><div style="display:flex;gap:8px">${canClose?`<button class="btn pri" style="flex:0 0 auto;padding:9px 14px;border-radius:999px;font-size:14px" data-close-trip="${tr.id}">${t('close_trip')}</button>`:''}<button class="ibtn ghost" data-share-trip="${tr.id}" aria-label="share">${svg('M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13','')}</button><button class="ibtn ghost" data-edit-trip="${tr.id}" aria-label="edit">${svg(P.edit,'')}</button></div></div>
-      ${coverCard(tr,{btn:false,cam:true})}${tr.closed?`<div class="count" style="margin-top:-4px">${t('closed_h')}</div>`:''}${f}${tr.closed&&!(tr.ideas||[]).length?'':`<div class="sec"><h3><span>${t('ideas')}</span>${tr.closed?'':`<button class="back" style="margin:0" data-idea-add>${svg(P.plus,'')}${t('add_idea')}</button>`}</h3>${ideaSummary(tr)}</div>`}<div class="sec"><h3>${t('daily')}</h3>${days||`<div class="empty">${t('no_check')}</div>`}</div>${stays?`<div class="sec"><h3>${t('stays')}</h3>${stays}</div>`:''}`;
+      ${coverCard(tr,{btn:false,cam:true})}${tr.closed?`<div class="count" style="margin-top:-4px">${t('closed_h')}</div>`:''}${f}${ideaSection(tr)}<div class="sec"><h3>${t('daily')}</h3>${days||`<div class="empty">${t('no_check')}</div>`}</div>${stays?`<div class="sec"><h3>${t('stays')}</h3>${stays}</div>`:''}`;
     return;
   }
   const order={upcoming:0,planning:1,past:2};
@@ -1125,7 +1153,7 @@ function stats(){
 }
 function renderSet(){
   const st=stats();
-  const PALS=[['cream','pal_cream','#FBF3E6','#E3BD87','#CF9A5E'],['lavender','pal_lav','#F0E9FD','#C5A9EE','#8C72C4'],['teal','pal_teal','#E8F4F0','#A6D8CE','#4A9E93'],['pastel','pal_pastel','#FCF3E8','#FFE8DE','#7FCDB8']];
+  const PALS=[['cream','pal_cream','#FBF3E6','#E3BD87','#CF9A5E'],['lavender','pal_lav','#F0E9FD','#C5A9EE','#8C72C4'],['teal','pal_teal','#E8F4F0','#A6D8CE','#4A9E93'],['pastel','pal_pastel','#FCF3E8','#FFE8DE','#7FCDB8'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
   $('#s-set').innerHTML=`<div class="head"><div><h1>${t('nav_set')}</h1></div></div>
   <div class="prof"><label class="avatar" data-cam aria-label="avatar" for="avatarFile"><img src="${S.avatar||LOGO}" alt=""><span class="ed">${svg(P.photo,'')}</span><input class="fh" type="file" accept="image/*" id="avatarFile"></label><div style="flex:1"><label class="f" style="margin-top:0">${t('your_name')}</label><input id="profName" value="${esc(S.name)}" placeholder="Tidatip"><div class="hint" style="margin-top:4px;padding:0">${t('name_h')}${S.avatar?` · <button class="danger" data-rm-avatar style="font-size:13px">${t('remove')}</button>`:''}</div></div></div>
   <div class="tiles" style="margin:0 0 12px"><div class="tile t1"><b>${st.trips}</b><span>${t('st_trips')}</span></div><div class="tile t2"><b>${st.cities}</b><span>${t('st_cities')}</span></div><div class="tile t3"><b>${st.stops}</b><span>${t('st_stops')}</span></div></div>
@@ -1137,10 +1165,10 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.3</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.4</p>`;
 }
 function appearanceSheet(){
-  const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB']];
+  const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
   openSheet(`<h2>${t('make_yours')}</h2>
     <label class="f">${t('palette')}</label><div class="pals">${PALS.map(([k,lb,c1,c2,c3])=>`<button class="pal ${(S.palette||'cream')===k?'on':''}" data-pal="${k}"><span class="sw3"><i style="background:${c1}"></i><i style="background:${c2}"></i><i style="background:${c3}"></i></span>${t(lb)}</button>`).join('')}</div>
     <label class="f">${t('theme')}</label><div class="seg" style="display:flex">${['auto','light','dark'].map(x=>`<button class="${S.theme===x?'on':''}" data-t="${x}" style="flex:1">${t(x)}</button>`).join('')}</div>
@@ -1195,7 +1223,8 @@ function saveTrip(id){
   let tr=id?trip(id):null;
   if(!tr){tr={id:uid(),name:'',dest:'',start:'',end:'',members:1,planning:false,cover:'',days:[],checklist:[],stays:[],legs:[]};S.trips.push(tr)}
   Object.assign(tr,{name,dest,start,end,planning,members,cover:pendingCover||'',mode:$('#f-mainmode .on')?.dataset.k||'fly',spendPP:num($('#f-spend').value)||0,cur:$('#f-cur').value,rate:+$('#f-rate').value||0});
-  if(start&&end){const want=[];for(let d=new Date(start+'T00:00:00');;d.setDate(d.getDate()+1)){const iso=d.toISOString().slice(0,10);want.push(iso);if(iso>=end)break;if(want.length>60)break}
+  if(start&&end){const want=[];for(let d=new Date(start+'T00:00:00');;d.setDate(d.getDate()+1)){const iso=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;want.push(iso);if(iso>=end)break;if(want.length>60)break}
+    const drop=tr.days.filter(x=>!want.includes(x.date)&&((x.items||[]).length||x.title||x.recap||(x.notes||[]).length));if(drop.length&&!confirm(t('drop_days_q',{n:drop.length}))){return}
     const old=Object.fromEntries(tr.days.map(x=>[x.date,x]));tr.days=want.map(iso=>old[iso]||{date:iso,title:'',area:'',stay:'',recap:'',items:[],notes:[],checks:[]});}
   save();closeSheet();toast(t('saved'));render();
 }
@@ -1320,6 +1349,7 @@ function render(){document.querySelectorAll('[data-i]').forEach(e=>e.textContent
 function applyTheme(){const r=document.documentElement;r.dataset.theme=S.theme==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':''):S.theme;r.dataset.palette=S.palette||'cream';r.dataset.lang=S.lang;r.lang=S.lang}
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change',applyTheme);
 // ---------- v3.3 planner: trip wizard + idea bag ----------
+Object.assign(I.th,{pal_bright:'สดใส',pal_sunny:'แดดอุ่น',drop_days_q:'มี {n} วันที่อยู่นอกช่วงวันใหม่และมีข้อมูลอยู่ จะลบวันเหล่านั้นไหม'});Object.assign(I.en,{pal_bright:'Brighter Days',pal_sunny:'Sunny Glow',drop_days_q:'{n} day(s) with plans fall outside the new dates. Remove them?'});
 Object.assign(I.th,{wz_t:'แพลนใหม่',wz_q1:'ไปไหน เมื่อไหร่',wz_s1:'ใส่คร่าว ๆ ก่อนก็ได้ แก้ทีหลังได้ทุกอย่าง',wz_q2:'พักที่ไหนบ้าง',wz_s2:'เรียงตามลำดับ ให้ครบ {n} คืน · ชื่อที่พักใส่ทีหลังได้',wz_q3:'เงินและการเดินทาง',wz_s3:'ยังไม่มีตั๋วก็ข้ามได้ ค่อยเพิ่มในหน้าแพลน',wz_q4:'ตรวจโครงแพลน',wz_s4:'{d} วัน · {n} คืน · เหลือแค่เติมจุดแวะ',wz_manual:'กรอกเองทั้งหมด',wz_reset:'เริ่มใหม่',wz_next:'ถัดไป',wz_prev:'ย้อนกลับ',wz_make:'สร้างแพลน',wz_area_ph:'เมือง / พื้นที่ เช่น Osaka',wz_stay_ph:'ที่พัก (ใส่ทีหลังได้)',wz_add_stay:'เพิ่มเมือง / ที่พัก',nights_u:'คืน',wz_ok:'ครบ {n} คืนแล้ว',wz_left:'ยังเหลืออีก {n} คืน',wz_over:'เกินมา {n} คืน',wz_fix:'ปรับให้ครบ',wz_out:'ขาไป',wz_back:'ขากลับ',wz_dep_t:'เวลาออก',wz_arr_t:'เวลาถึง',wz_stops:'ใส่จุดแวะตั้งต้นให้ด้วย',wz_stops_h:'ขาไป–กลับ เช็คอิน เช็คเอาท์ · ลบทีหลังได้',wz_arrive:'เดินทางถึง {a}',wz_move:'ย้ายไป {a}',wz_home:'เดินทางกลับ',wz_arr_stop:'ถึง {p}',wz_in:'เช็คอิน {s}',wz_outs:'เช็คเอาท์ {s}',wz_stay_x:'ที่พัก',wz_made:'สร้างแพลนแล้ว',wz_need_n:'จำนวนคืนยังไม่ครบ',wz_need_d:'เลือกวันไป–กลับก่อน (ยังไม่รู้วัน ใช้ "กรอกเองทั้งหมด" ได้)',wz_rate_h:'บาทต่อ 1 {c} · ใช้แปลงค่าใช้จ่ายเป็นบาท',wz_dayof:'วันที่ {n}',
 ideas:'กระเป๋าไอเดีย',add_idea:'เพิ่มไอเดีย',edit_idea:'แก้ไขไอเดีย',ideas_n:'{n} ที่ ยังไม่ลงวัน',ideas_h:'เก็บที่อยากไปไว้ก่อน แล้วค่อยย้ายลงวันที่อยู่พื้นที่เดียวกัน',ideas_empty:'ยังไม่มีไอเดีย · เจอที่ไหนน่าสนใจ วางลิงก์ Google Maps เก็บไว้ได้เลย',idea_map:'สถานที่ หรือลิงก์ Google Maps',idea_map_h:'ถ้าเป็นลิงก์แบบเต็ม จะเติมชื่อให้เอง',area_none:'ยังไม่ระบุ',area_other_ph:'หรือพิมพ์พื้นที่อื่น',idea_note_ph:'เช่น เปิด 10:00–17:00 ปิดวันพุธ · ต้องจองก่อน',place:'ลงวัน',place_q:'ลงวันไหนดี',place_t:'เวลา (ใส่ทีหลังได้)',place_in:'วันที่อยู่ {a}',place_other:'วันอื่น',place_all:'ทุกวัน',n_stops:'{n} จุดแวะ',no_stops:'ยังว่าง',placed:'ย้ายลงวัน {n} แล้ว',ideas_near:'ไอเดียแถวนี้ · {a}',ideas_near_h:'แตะเพื่อเพิ่มลงวันนี้',see_all:'ดูทั้งหมด',all_x:'ทั้งหมด',in_plan:'อยู่ในแพลน: {d}'});
 Object.assign(I.en,{wz_t:'New plan',wz_q1:'Where & when',wz_s1:'Rough is fine — everything can change later',wz_q2:'Where are you staying?',wz_s2:'In order, {n} nights in total · hotel names can wait',wz_q3:'Money & getting there',wz_s3:'No tickets yet? Skip — add them on the plan page later',wz_q4:'Check the outline',wz_s4:'{d} days · {n} nights · just add your stops',wz_manual:'Fill in myself',wz_reset:'Start over',wz_next:'Next',wz_prev:'Back',wz_make:'Create plan',wz_area_ph:'City / area, e.g. Osaka',wz_stay_ph:'Hotel (optional)',wz_add_stay:'Add another stay',nights_u:'nights',wz_ok:'All {n} nights covered',wz_left:'{n} nights left to place',wz_over:'{n} nights too many',wz_fix:'Fix it',wz_out:'Getting there',wz_back:'Heading home',wz_dep_t:'Departs',wz_arr_t:'Arrives',wz_stops:'Add starter stops',wz_stops_h:'Travel, check-in and check-out · delete any later',wz_arrive:'Arrive in {a}',wz_move:'Move to {a}',wz_home:'Heading home',wz_arr_stop:'Arrive {p}',wz_in:'Check in · {s}',wz_outs:'Check out · {s}',wz_stay_x:'hotel',wz_made:'Plan created',wz_need_n:"Nights don't add up yet",wz_need_d:'Pick start and end dates first (no dates yet? use "Fill in myself")',wz_rate_h:'THB per 1 {c} · used to show costs in baht',wz_dayof:'Day {n}',
@@ -1390,6 +1420,7 @@ function tripAreas(tr){const m=new Map();const add=x=>{const k=x.toLowerCase();i
 function sameArea(a,b){return !!a&&!!b&&a.toLowerCase()===b.toLowerCase()}
 function areaDays(tr,a){const out=[];tr.days.forEach((d,i)=>{if(areaToks(d.area).some(x=>sameArea(x,a)))out.push(i)});return out}
 function dayNums(list){if(!list.length)return '';const r=[];let s=list[0],p=list[0];for(const x of list.slice(1).concat([null])){if(x===p+1){p=x;continue}r.push(s===p?`${s+1}`:`${s+1}–${p+1}`);s=p=x}return `${t('day')} ${r.join(', ')}`}
+function ideaSection(tr){const n=(tr.ideas||[]).length;if(!n&&tr.closed)return '';if(!n&&status(tr)!=='planning')return `<div class="ilinkrow"><button class="back" style="margin:0" data-idea-add>${svg(P.plus,'')}${t('add_idea')}</button></div>`;return `<div class="sec"><h3><span>${t('ideas')}</span>${tr.closed?'':`<button class="back" style="margin:0" data-idea-add>${svg(P.plus,'')}${t('add_idea')}</button>`}</h3>${ideaSummary(tr)}</div>`}
 function ideaSummary(tr){const ideas=tr.ideas||[];if(!ideas.length)return `<button class="ibag emp" data-idea-add><span class="ibico">${svg(P.plus,'')}</span><span>${t('ideas_empty')}</span></button>`;
   const areas=tripAreas(tr).map(a=>[a,ideas.filter(i=>sameArea(i.area,a)).length]).filter(x=>x[1]);const none=ideas.filter(i=>!i.area).length;
   return `<button class="ibag" data-ideas><div class="ibtop"><b>${ideas.length}</b><span>${t('ideas_n',{n:''}).trim()}</span>${svg(P.chev,'')}</div>
@@ -1590,6 +1621,7 @@ document.addEventListener('touchmove',e=>{if(!card)return;const x=e.touches[0].c
 document.addEventListener('touchend',()=>{if(!card)return;if(active)lastSwipe=Date.now();card.classList.remove('dragging');card.style.transform='';if(active&&dx<-90&&!trip(S.tripId).closed){const li=card.closest('.stop');const id=li.querySelector('[data-done]').dataset.done;const [di,iid]=id.split(':');const tr=trip(S.tripId);const it=tr.days[+di].items.find(x=>x.id===iid);it.skipped=!it.skipped;if(it.skipped){it.done=false;it.doneAt=''}save();renderTrips();loadThumbs();toast(it.skipped?t('skipped'):t('unskip'))}card=null;active=false});})();
 setInterval(()=>{if(S.view==='home'||(S.view==='trips'&&S.dayView!=null))render()},30000);
 if(S._bkSync){const _t=trip(S._bkSync);if(_t)syncBk(_t);delete S._bkSync;save()}
+fixRange();
 applyTheme();
 document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));
 $('#s-start').classList.add('on');document.body.classList.add('starting');
