@@ -618,6 +618,15 @@ textarea{min-height:76px}
 .cswitch{margin-bottom:10px}
 .cover .bot .spend.tap{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;flex:0 0 auto}
 .bot .spend.tap{font-size:13.5px}
+
+.crate{display:flex;width:100%;gap:10px;align-items:center;justify-content:space-between;background:var(--surface);border-radius:12px;padding:9px 12px;margin:0 0 12px;font-size:12.5px;color:var(--muted);text-align:left}
+.crate span{flex:0 0 auto;color:var(--accent);font-weight:500}
+
+/* v3.7 sheet height + drag handle */
+.sheet{max-height:82vh}
+@supports (max-height:82dvh){.sheet{max-height:82dvh}}
+.sheet .bar{position:relative;touch-action:none;cursor:grab;width:48px;height:5px}
+.sheet .bar::after{content:'';position:absolute;left:-60px;right:-60px;top:-14px;bottom:-14px}
 </style>
 </head>
 <body>
@@ -1218,7 +1227,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.6</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.8</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
@@ -1234,6 +1243,17 @@ function simSheet(){const days=S.trips.flatMap(tr=>tr.days.map((d,i)=>({v:d.date
 
 // ---------- sheets (forms) ----------
 function openSheet(html){$('#sheet').innerHTML=`<div class="bar"></div>${html}`;$('#sheetBg').classList.add('on');requestAnimationFrame(()=>$('#sheet').classList.add('on'))}
+// v3.7 sheet: drag the grab bar down to close
+(()=>{let dg=null;const el=()=>document.getElementById('sheet');
+  const end=(close)=>{if(!dg)return;const s=dg.el;s.style.transition='';s.style.transform='';dg=null;if(close)closeSheet()};
+  document.addEventListener('pointerdown',e=>{const bar=e.target.closest&&e.target.closest('#sheet .bar');if(!bar||dg)return;
+    const s=el();if(!s||!s.classList.contains('on'))return;e.preventDefault();
+    dg={y0:e.clientY,t0:Date.now(),dy:0,el:s,id:e.pointerId};s.style.transition='none';try{bar.setPointerCapture(e.pointerId)}catch(_){}},true);
+  document.addEventListener('pointermove',e=>{if(!dg||e.pointerId!==dg.id)return;e.preventDefault();dg.dy=Math.max(0,e.clientY-dg.y0);dg.el.style.transform=`translateY(${dg.dy}px)`},{passive:false,capture:true});
+  document.addEventListener('pointerup',e=>{if(!dg||e.pointerId!==dg.id)return;const fast=dg.dy>24&&Date.now()-dg.t0<300;end(dg.dy>90||fast)},true);
+  document.addEventListener('pointercancel',e=>{if(dg&&e.pointerId===dg.id)end(false)},true);
+})();
+
 function closeSheet(){$('#sheet').classList.remove('on');$('#sheetBg').classList.remove('on')}
 let pendingCover=null;
 function tripForm(tr){
@@ -1577,8 +1597,8 @@ document.addEventListener('change',e=>{if(e.target.id==='w-stops'&&S.wiz){S.wiz.
 document.addEventListener('input',e=>{if(e.target.id==='i-map'){const n=ideaTitleFromURL(e.target.value);const ti=$('#i-title');if(n&&ti&&(!ti.value.trim()||ti.value===ti.dataset.auto)){ti.value=n;ti.dataset.auto=n}}});
 
 // ---------- v3.6 costs: legs / stays / stops / extras ----------
-Object.assign(I.th,{costs:'ค่าใช้จ่าย',c_travel:'การเดินทาง',c_stay:'ที่พัก',c_stops:'ระหว่างทริป',c_extra:'อื่น ๆ',per_p:'ต่อคน',per_g:'ทั้งกลุ่ม',c_est:'ประมาณการ',c_paid:'จ่ายแล้ว',c_pp:'ต่อคน {v}',c_none:'ยังไม่มีค่าใช้จ่าย · ใส่ค่าตั๋วกับค่าที่พักก่อนก็ได้',add_extra:'เพิ่มค่าใช้จ่ายอื่น',edit_extra:'แก้ไขค่าใช้จ่าย',extra_ph:'เช่น ประกันเดินทาง · eSIM · วีซ่า',c_of:'จ่ายแล้ว {a} จาก {b}',add_stay:'เพิ่มที่พัก',edit_stay:'แก้ไขที่พัก',stay_name:'ชื่อที่พัก',stay_dates:'ช่วงวันที่',nights_n:'จำนวนคืน',c_none_g:'ยังไม่ใส่',c_all:'ดูทั้งหมด',c_tot:'ทั้งกลุ่ม',c_total_line:'ทั้งกลุ่ม {v} THB',c_day:'วัน {n}',c_spend_h:'คำนวณจากค่าใช้จ่ายทั้งหมด ใส่เองในแก้ไขทริปเพื่อทับค่านี้',c_ov:'ใส่เอง',c_pie:'ที่นี่เก็บเฉพาะเงินก้อนที่จ่ายก่อนไป เช่น ตั๋ว ที่พัก ประกัน · ค่าใช้จ่ายระหว่างทริปและกองกลาง ใช้ PiePot'});
-Object.assign(I.en,{costs:'Costs',c_travel:'Getting there',c_stay:'Stays',c_stops:'On the trip',c_extra:'Other',per_p:'Per person',per_g:'Whole group',c_est:'Estimate',c_paid:'Paid',c_pp:'{v} per person',c_none:'No costs yet — start with tickets and hotels',add_extra:'Add other cost',edit_extra:'Edit cost',extra_ph:'e.g. travel insurance · eSIM · visa',c_of:'Paid {a} of {b}',add_stay:'Add a stay',edit_stay:'Edit stay',stay_name:'Hotel / place',stay_dates:'Dates',nights_n:'Nights',c_none_g:'Not set',c_all:'See all',c_tot:'Whole group',c_total_line:'{v} THB for the group',c_day:'Day {n}',c_spend_h:'Worked out from every cost — fill it in Edit trip to override',c_ov:'Manual',c_pie:'This page is for money paid before the trip — tickets, stays, insurance · day-to-day and shared spending lives in PiePot'});
+Object.assign(I.th,{costs:'ค่าใช้จ่าย',c_travel:'การเดินทาง',c_stay:'ที่พัก',c_stops:'ระหว่างทริป',c_extra:'อื่น ๆ',per_p:'ต่อคน',per_g:'ทั้งกลุ่ม',c_est:'ประมาณการ',c_paid:'จ่ายแล้ว',c_pp:'ต่อคน {v}',c_none:'ยังไม่มีค่าใช้จ่าย · ใส่ค่าตั๋วกับค่าที่พักก่อนก็ได้',add_extra:'เพิ่มค่าใช้จ่ายอื่น',edit_extra:'แก้ไขค่าใช้จ่าย',extra_ph:'เช่น ประกันเดินทาง · eSIM · วีซ่า',c_of:'จ่ายแล้ว {a} จาก {b}',add_stay:'เพิ่มที่พัก',edit_stay:'แก้ไขที่พัก',stay_name:'ชื่อที่พัก',stay_dates:'ช่วงวันที่',nights_n:'จำนวนคืน',c_none_g:'ยังไม่ใส่',c_all:'ดูทั้งหมด',c_rate:'อัตราแลกเปลี่ยน {c} 1 = {v} บาท (ตามที่ตั้งไว้ในทริป)',c_tot:'ทั้งกลุ่ม',c_total_line:'ทั้งกลุ่ม {v} THB',c_day:'วัน {n}',c_spend_h:'คำนวณจากค่าใช้จ่ายทั้งหมด ใส่เองในแก้ไขทริปเพื่อทับค่านี้',c_ov:'ใส่เอง',c_pie:'ที่นี่เก็บเฉพาะเงินก้อนที่จ่ายก่อนไป เช่น ตั๋ว ที่พัก ประกัน · ค่าใช้จ่ายระหว่างทริปและกองกลาง ใช้ PiePot'});
+Object.assign(I.en,{costs:'Costs',c_travel:'Getting there',c_stay:'Stays',c_stops:'On the trip',c_extra:'Other',per_p:'Per person',per_g:'Whole group',c_est:'Estimate',c_paid:'Paid',c_pp:'{v} per person',c_none:'No costs yet — start with tickets and hotels',add_extra:'Add other cost',edit_extra:'Edit cost',extra_ph:'e.g. travel insurance · eSIM · visa',c_of:'Paid {a} of {b}',add_stay:'Add a stay',edit_stay:'Edit stay',stay_name:'Hotel / place',stay_dates:'Dates',nights_n:'Nights',c_none_g:'Not set',c_all:'See all',c_rate:'Exchange rate {c} 1 = {v} THB (from the trip settings)',c_tot:'Whole group',c_total_line:'{v} THB for the group',c_day:'Day {n}',c_spend_h:'Worked out from every cost — fill it in Edit trip to override',c_ov:'Manual',c_pie:'This page is for money paid before the trip — tickets, stays, insurance · day-to-day and shared spending lives in PiePot'});
 
 function eCur(tr,e){return e&&e.cur==='THB'?'THB':(tr.cur||'THB')}
 function eTHB(tr,e,v){return eCur(tr,e)==='THB'?v:toTHB(tr,v)}
@@ -1608,6 +1628,7 @@ function renderCosts(tr){const T=cTotal(tr);const el=$('#s-trips');const pp=S.co
   el.innerHTML=`<div class="head"><button class="back" style="margin:0" data-cost-back>${svg(P.back,'')}${esc(tr.name)}</button>${tr.closed?'':`<button class="ibtn" data-cost-add aria-label="add">${svg(P.plus,'')}</button>`}</div>
    <div class="chead"><h1 class="ih1">${t('costs')}</h1><div class="ctot"><b>${nf(cVal(tr,T.use))}</b><span>THB · ${pp?t('per_p'):t('c_tot')}${status(tr)==='planning'?` · ${t('c_est')}`:''}</span></div></div>
    ${T.paid?`<div class="cpd">${t('c_paid')} ${nf(cVal(tr,T.paid))}</div>`:''}
+   ${(tr.cur||'THB')!=='THB'?`<button class="crate" data-edit-trip="${tr.id}">${t('c_rate',{c:tr.cur,v:tr.rate||0})}<span>${t('edit')}</span></button>`:''}
    <div class="chips sm cswitch"><button class="${pp?'on':''}" data-cost-pp="1">${t('per_p')}</button><button class="${pp?'':'on'}" data-cost-pp="0">${t('c_tot')}</button></div>
    ${tr.closed?'':`<button class="stadd" style="margin:2px 0 10px" data-cost-add>${svg(P.plus,'')}<span>${t('add_extra')}</span></button>`}
    ${T.groups.map(g=>`<div class="igrp"><div class="igh"><b>${t(g.k)}</b><span>${g.use?`${nf(cVal(tr,g.use))} THB`:t('c_none_g')}</span></div>
