@@ -622,6 +622,23 @@ textarea{min-height:76px}
 .crate{display:flex;width:100%;gap:10px;align-items:center;justify-content:space-between;background:var(--surface);border-radius:12px;padding:9px 12px;margin:0 0 12px;font-size:12.5px;color:var(--muted);text-align:left}
 .crate span{flex:0 0 auto;color:var(--accent);font-weight:500}
 
+.ecard.un .ev b{color:var(--muted);font-weight:500}
+.ecard.un .ttl{color:var(--ink-2)}
+.ecard.pd .ev b{display:inline-flex;align-items:center;gap:4px;justify-content:flex-end}
+.ecard.pd .ev b svg{width:14px;height:14px;color:var(--pine)}
+.cfil{margin-top:-4px}
+.cpd{display:block}
+
+.cseg{display:flex;width:100%;border-radius:12px;margin-bottom:8px}
+.cseg button{flex:1 1 0;min-width:0;border-radius:10px;padding:8px 6px;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cseg+.cseg{margin-top:-2px}
+
+.csegbox{background:var(--surface-2);border-radius:11px;padding:2px;margin:0 0 10px}
+.csegbox .row{display:flex;gap:2px}
+.csegbox .row+.row{margin-top:2px;padding-top:2px;border-top:1px solid var(--line)}
+.csegbox button{flex:1 1 0;min-width:0;padding:5px 4px;border-radius:9px;font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csegbox button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
 /* v3.7 sheet height + drag handle */
 .sheet{max-height:82vh}
 @supports (max-height:82dvh){.sheet{max-height:82dvh}}
@@ -1227,7 +1244,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.8</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.9</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
@@ -1597,8 +1614,8 @@ document.addEventListener('change',e=>{if(e.target.id==='w-stops'&&S.wiz){S.wiz.
 document.addEventListener('input',e=>{if(e.target.id==='i-map'){const n=ideaTitleFromURL(e.target.value);const ti=$('#i-title');if(n&&ti&&(!ti.value.trim()||ti.value===ti.dataset.auto)){ti.value=n;ti.dataset.auto=n}}});
 
 // ---------- v3.6 costs: legs / stays / stops / extras ----------
-Object.assign(I.th,{costs:'ค่าใช้จ่าย',c_travel:'การเดินทาง',c_stay:'ที่พัก',c_stops:'ระหว่างทริป',c_extra:'อื่น ๆ',per_p:'ต่อคน',per_g:'ทั้งกลุ่ม',c_est:'ประมาณการ',c_paid:'จ่ายแล้ว',c_pp:'ต่อคน {v}',c_none:'ยังไม่มีค่าใช้จ่าย · ใส่ค่าตั๋วกับค่าที่พักก่อนก็ได้',add_extra:'เพิ่มค่าใช้จ่ายอื่น',edit_extra:'แก้ไขค่าใช้จ่าย',extra_ph:'เช่น ประกันเดินทาง · eSIM · วีซ่า',c_of:'จ่ายแล้ว {a} จาก {b}',add_stay:'เพิ่มที่พัก',edit_stay:'แก้ไขที่พัก',stay_name:'ชื่อที่พัก',stay_dates:'ช่วงวันที่',nights_n:'จำนวนคืน',c_none_g:'ยังไม่ใส่',c_all:'ดูทั้งหมด',c_rate:'อัตราแลกเปลี่ยน {c} 1 = {v} บาท (ตามที่ตั้งไว้ในทริป)',c_tot:'ทั้งกลุ่ม',c_total_line:'ทั้งกลุ่ม {v} THB',c_day:'วัน {n}',c_spend_h:'คำนวณจากค่าใช้จ่ายทั้งหมด ใส่เองในแก้ไขทริปเพื่อทับค่านี้',c_ov:'ใส่เอง',c_pie:'ที่นี่เก็บเฉพาะเงินก้อนที่จ่ายก่อนไป เช่น ตั๋ว ที่พัก ประกัน · ค่าใช้จ่ายระหว่างทริปและกองกลาง ใช้ PiePot'});
-Object.assign(I.en,{costs:'Costs',c_travel:'Getting there',c_stay:'Stays',c_stops:'On the trip',c_extra:'Other',per_p:'Per person',per_g:'Whole group',c_est:'Estimate',c_paid:'Paid',c_pp:'{v} per person',c_none:'No costs yet — start with tickets and hotels',add_extra:'Add other cost',edit_extra:'Edit cost',extra_ph:'e.g. travel insurance · eSIM · visa',c_of:'Paid {a} of {b}',add_stay:'Add a stay',edit_stay:'Edit stay',stay_name:'Hotel / place',stay_dates:'Dates',nights_n:'Nights',c_none_g:'Not set',c_all:'See all',c_rate:'Exchange rate {c} 1 = {v} THB (from the trip settings)',c_tot:'Whole group',c_total_line:'{v} THB for the group',c_day:'Day {n}',c_spend_h:'Worked out from every cost — fill it in Edit trip to override',c_ov:'Manual',c_pie:'This page is for money paid before the trip — tickets, stays, insurance · day-to-day and shared spending lives in PiePot'});
+Object.assign(I.th,{costs:'ค่าใช้จ่าย',c_travel:'การเดินทาง',c_stay:'ที่พัก',c_stops:'ระหว่างทริป',c_extra:'อื่น ๆ',per_p:'ต่อคน',per_g:'ทั้งกลุ่ม',c_est:'ประมาณการ',c_paid:'จ่ายแล้ว',c_pp:'ต่อคน {v}',c_none:'ยังไม่มีค่าใช้จ่าย · ใส่ค่าตั๋วกับค่าที่พักก่อนก็ได้',add_extra:'เพิ่มค่าใช้จ่ายอื่น',edit_extra:'แก้ไขค่าใช้จ่าย',extra_ph:'เช่น ประกันเดินทาง · eSIM · วีซ่า',c_of:'จ่ายแล้ว {a} จาก {b}',add_stay:'เพิ่มที่พัก',edit_stay:'แก้ไขที่พัก',stay_name:'ชื่อที่พัก',stay_dates:'ช่วงวันที่',nights_n:'จำนวนคืน',c_none_g:'ยังไม่ใส่',c_all:'ดูทั้งหมด',c_unpaid:'ยังไม่จ่าย',c_pu:'จ่ายแล้ว {a} · ยังไม่จ่าย {b}',f_paid:'จ่ายแล้ว',f_unpaid:'ยังไม่จ่าย',c_rate:'อัตราแลกเปลี่ยน {c} 1 = {v} บาท (ตามที่ตั้งไว้ในทริป)',c_tot:'ทั้งกลุ่ม',c_total_line:'ทั้งกลุ่ม {v} THB',c_day:'วัน {n}',c_spend_h:'คำนวณจากค่าใช้จ่ายทั้งหมด ใส่เองในแก้ไขทริปเพื่อทับค่านี้',c_ov:'ใส่เอง',c_pie:'ที่นี่เก็บเฉพาะเงินก้อนที่จ่ายก่อนไป เช่น ตั๋ว ที่พัก ประกัน · ค่าใช้จ่ายระหว่างทริปและกองกลาง ใช้ PiePot'});
+Object.assign(I.en,{costs:'Costs',c_travel:'Getting there',c_stay:'Stays',c_stops:'On the trip',c_extra:'Other',per_p:'Per person',per_g:'Whole group',c_est:'Estimate',c_paid:'Paid',c_pp:'{v} per person',c_none:'No costs yet — start with tickets and hotels',add_extra:'Add other cost',edit_extra:'Edit cost',extra_ph:'e.g. travel insurance · eSIM · visa',c_of:'Paid {a} of {b}',add_stay:'Add a stay',edit_stay:'Edit stay',stay_name:'Hotel / place',stay_dates:'Dates',nights_n:'Nights',c_none_g:'Not set',c_all:'See all',c_unpaid:'Unpaid',c_pu:'Paid {a} · unpaid {b}',f_paid:'Paid',f_unpaid:'Unpaid',c_rate:'Exchange rate {c} 1 = {v} THB (from the trip settings)',c_tot:'Whole group',c_total_line:'{v} THB for the group',c_day:'Day {n}',c_spend_h:'Worked out from every cost — fill it in Edit trip to override',c_ov:'Manual',c_pie:'This page is for money paid before the trip — tickets, stays, insurance · day-to-day and shared spending lives in PiePot'});
 
 function eCur(tr,e){return e&&e.cur==='THB'?'THB':(tr.cur||'THB')}
 function eTHB(tr,e,v){return eCur(tr,e)==='THB'?v:toTHB(tr,v)}
@@ -1624,15 +1641,20 @@ function costSection(tr){const T=cTotal(tr);const any=T.use>0;
     ${T.paid?`<div class="cpaid"><div class="cpbar"><i style="width:${Math.min(100,T.paid/T.use*100)}%"></i></div><span>${t('c_of',{a:nf(T.paid),b:nf(T.use)})}</span></div>`:''}
   </button></div>`}
 function cVal(tr,v){return S.costPP===false?v:v/(tr.members||1)}
-function renderCosts(tr){const T=cTotal(tr);const el=$('#s-trips');const pp=S.costPP!==false;
+function cPaid(x){return !!num(x.e.actual)}
+function renderCosts(tr){const T=cTotal(tr);const el=$('#s-trips');const pp=S.costPP!==false;const f=S.costF||'all';
+  const keep=x=>f==='all'||(f==='paid'?cPaid(x):!cPaid(x));
+  const gs=T.groups.map(g=>{const items=g.items.filter(keep);return {k:g.k,items,use:items.reduce((a,x)=>a+x.p.use,0)}});
+  const shown=gs.reduce((a,g)=>a+g.use,0),unpaid=T.use-T.paid;
   el.innerHTML=`<div class="head"><button class="back" style="margin:0" data-cost-back>${svg(P.back,'')}${esc(tr.name)}</button>${tr.closed?'':`<button class="ibtn" data-cost-add aria-label="add">${svg(P.plus,'')}</button>`}</div>
-   <div class="chead"><h1 class="ih1">${t('costs')}</h1><div class="ctot"><b>${nf(cVal(tr,T.use))}</b><span>THB · ${pp?t('per_p'):t('c_tot')}${status(tr)==='planning'?` · ${t('c_est')}`:''}</span></div></div>
-   ${T.paid?`<div class="cpd">${t('c_paid')} ${nf(cVal(tr,T.paid))}</div>`:''}
+   <div class="chead"><h1 class="ih1">${t('costs')}</h1><div class="ctot"><b>${nf(cVal(tr,f==='all'?T.use:shown))}</b><span>THB · ${pp?t('per_p'):t('c_tot')}${status(tr)==='planning'&&f!=='paid'?` · ${t('c_est')}`:''}</span></div></div>
+   ${T.paid?`<div class="cpd">${t('c_pu',{a:nf(cVal(tr,T.paid)),b:nf(cVal(tr,unpaid))})}</div>`:''}
    ${(tr.cur||'THB')!=='THB'?`<button class="crate" data-edit-trip="${tr.id}">${t('c_rate',{c:tr.cur,v:tr.rate||0})}<span>${t('edit')}</span></button>`:''}
-   <div class="chips sm cswitch"><button class="${pp?'on':''}" data-cost-pp="1">${t('per_p')}</button><button class="${pp?'':'on'}" data-cost-pp="0">${t('c_tot')}</button></div>
+   <div class="csegbox"><div class="row"><button class="${pp?'on':''}" data-cost-pp="1">${t('per_p')}</button><button class="${pp?'':'on'}" data-cost-pp="0">${t('c_tot')}</button></div>
+   <div class="row"><button class="${f==='all'?'on':''}" data-cost-f="all">${t('all_x')}</button><button class="${f==='paid'?'on':''}" data-cost-f="paid">${t('f_paid')}</button><button class="${f==='unpaid'?'on':''}" data-cost-f="unpaid">${t('f_unpaid')}</button></div></div>
    ${tr.closed?'':`<button class="stadd" style="margin:2px 0 10px" data-cost-add>${svg(P.plus,'')}<span>${t('add_extra')}</span></button>`}
-   ${T.groups.map(g=>`<div class="igrp"><div class="igh"><b>${t(g.k)}</b><span>${g.use?`${nf(cVal(tr,g.use))} THB`:t('c_none_g')}</span></div>
-     ${!g.items.length?'':g.items.map(x=>`<button class="ecard" data-cost-go="${x.go}"><div class="eb"><div class="ttl">${esc(x.label||'—')}</div>${x.sub?`<div class="d">${esc(x.sub)}</div>`:''}</div><div class="ev"><b>${nf(cVal(tr,x.p.use))}</b><span>${(()=>{const c=eCur(tr,x.e),v=num(x.e.actual)||num(x.e.cost)||0,parts=[];if(c!=='THB')parts.push(`${c} ${nf(v)}`);if(x.e.each)parts.push(S.lang==='th'?'ต่อคน':'per person');if(x.p.paid)parts.push(t('c_paid'));return parts.join(' · ')})()}</span></div></button>`).join('')}
+   ${gs.map(g=>`<div class="igrp"><div class="igh"><b>${t(g.k)}</b><span>${g.use?`${nf(cVal(tr,g.use))} THB`:t('c_none_g')}</span></div>
+     ${!g.items.length?'':g.items.map(x=>{const pd=cPaid(x);return `<button class="ecard ${pd?'pd':'un'}" data-cost-go="${x.go}"><div class="eb"><div class="ttl">${esc(x.label||'—')}</div>${x.sub?`<div class="d">${esc(x.sub)}</div>`:''}</div><div class="ev"><b>${pd?svg(P.check,''):''}${nf(cVal(tr,x.p.use))}</b><span>${(()=>{const c=eCur(tr,x.e),v=num(x.e.actual)||num(x.e.cost)||0,parts=[];if(c!=='THB')parts.push(`${c} ${nf(v)}`);if(x.e.each)parts.push(S.lang==='th'?'ต่อคน':'per person');parts.push(pd?t('c_paid'):t('c_est'));return parts.join(' · ')})()}</span></div></button>`}).join('')}
    </div>`).join('')}<div class="hint ppnote">${t('c_pie')}</div>`}
 function mBox(tr,e,p){const cc=eCur(tr,e),alt=(tr.cur||'THB')!=='THB';
   return `<div class="grid2"><div><label class="f">${t('cost_est')}</label><div class="money"><input id="f-${p}cost" class="amt" type="text" inputmode="decimal" value="${e.cost?nf(num(e.cost)):''}" placeholder="1,000.00"><span class="cur" data-curlbl="${p}">${cc}</span></div></div>
@@ -1662,6 +1684,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b
   if(b.hasAttribute('data-costs')){stop();S.costView=true;save();renderTrips();window.scrollTo(0,0);return}
   if(b.hasAttribute('data-cost-back')){stop();S.costView=false;save();renderTrips();return}
   if(d.open||d.day!=null||d.go||b.hasAttribute('data-tripback'))S.costView=false;
+  if(d.costF){stop();S.costF=d.costF;save();renderTrips();return}
   if(d.costPp!=null){stop();S.costPP=d.costPp==='1';save();renderTrips();return}
   if(b.hasAttribute('data-cost-add')){stop();extraForm(tr,null);return}
   if(d.saveExtra!=null){stop();const v=Object.assign({title:$('#f-xtitle').value.trim(),note:$('#f-xnote').value.trim()},mRead(tr,'x'));if(!v.title){toast(t('need_name'));return}
