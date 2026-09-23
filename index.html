@@ -666,6 +666,34 @@ textarea{min-height:76px}
 .sheet{max-height:90vh}
 @supports (max-height:90dvh){.sheet{max-height:90dvh}}
 .sheet .btns{position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom));margin:16px -16px calc(-20px - env(safe-area-inset-bottom));padding:12px 16px calc(14px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--line);z-index:3}
+
+/* v3.13 pinned day bar */
+.daypick{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;background:var(--bg);margin:0 -16px 4px;padding:2px 18px 10px;transition:box-shadow .15s}
+.daypick.stuck{box-shadow:0 1px 0 var(--line),0 8px 14px -10px rgba(0,0,0,.3)}
+.sbcover{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:8;pointer-events:none}
+/* v3.13 insert between stops */
+.trail .ins{display:grid;grid-template-columns:52px 22px 1fr;gap:0 8px;height:14px;position:relative}
+.trail .ins .rail{position:relative;display:flex;justify-content:center}
+.trail .ins .rail:before{content:"";position:absolute;top:0;bottom:0;width:2px;background:var(--line)}
+.trail .ins button{position:absolute;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;padding:0;border:0;background:none;display:grid;place-items:center;z-index:2;color:var(--ink-2)}
+.trail .ins button::before{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:var(--surface);border:1.5px solid var(--pine);box-sizing:border-box}
+.trail .ins button svg{position:relative;width:12px;height:12px}
+.trail .ins button:active::before{background:var(--accent);border-color:var(--accent)}
+.trail .ins button:active{color:var(--accent-ink)}
+.toast{max-width:calc(100vw - 32px);width:max-content;white-space:normal;text-align:center}
+.sheet .insh{font-size:13px;color:var(--ink-2);background:var(--accent-soft);border-radius:10px;padding:8px 10px;margin:-2px 0 4px}
+/* v3.13 drag to reorder stops (handle = time + dot) */
+.stop .t,.stop .rail{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.stop[data-mv] .t,.stop[data-mv] .rail{cursor:grab}
+.stop .dot{transition:transform .2s}
+.stop.pressing .dot{transform:scale(1.5)}
+.trail.dragging .ins{display:none}
+.trail.dragging{touch-action:none}
+.stop.lifted{z-index:6}
+.stop.lifted .card{box-shadow:0 16px 32px rgba(0,0,0,.2);outline:2px solid var(--accent);transform:scale(1.02)}
+.stop.lifted .rail:before{opacity:0}
+.stop.lifted .dot{border-color:var(--accent);transform:scale(1.3)}
+.stop.lifted .t{color:var(--accent);font-weight:600}
 </style>
 </head>
 <body>
@@ -1061,7 +1089,8 @@ function timeline(tr,di){
     const cls=['stop',i===0?'first':'',i===day.items.length-1?'last':'',it.done?'done':'',it.skipped?'skip':'',(i===nowIdx&&!it.done&&!it.skipped)?'now':''].join(' ');
     const tags=stopTags(tr,it);
     const map=it.map?`<a href="${mapURL(it.map)}" target="_blank" rel="noopener">${svg(P.pin,'')} ${t('map_btn')}</a>`:'';
-    h+=`<li class="${cls}"><div class="t">${esc(it.t)}</div><div class="rail"><div class="dot"></div></div>
+    if(i>0&&!tr.closed)h+=`<li class="ins"><div></div><div class="rail"><button type="button" data-ins-stop="${di}:${i-1}" aria-label="${t('add_stop')}">${svg(P.plus,'')}</button></div><div></div></li>`;
+    h+=`<li class="${cls}" data-id="${it.id}"${!tr.closed&&!it.done&&!it.skipped?' data-mv':''}><div class="t">${esc(it.t)}</div><div class="rail"><div class="dot"></div></div>
       <div class="card" data-sd="${di}:${it.id}"><div><div class="ttl">${svg(ICO[it.k]||ICO.see)}<span>${esc(it.title)}</span></div>
       ${it.d?`<div class="d ${dLine(it.d).length>90?'cl':''}">${esc(dLine(it.d))}</div>`:''}${tags.length?`<div class="tags">${tags.join('')}</div>`:''}
       ${it.doneAt?`<div class="hist">${arrLine(it)}</div>`:''}
@@ -1071,7 +1100,7 @@ function timeline(tr,di){
       <button class="circ ${it.done?'on':''}" data-done="${di}:${it.id}" aria-label="done">${svg(P.check,'')}</button></div></li>`;
   });
   h+='</ol>';
-  if(!tr.closed)h+=`<div class="addrow"><button data-add-stop="${di}">${svg(P.plus,'')}${t('add_stop')}</button></div><div class="hint" style="margin:-2px 0 6px">${t('swipe_h')}</div>`;
+  if(!tr.closed)h+=`<div class="addrow"><button data-add-stop="${di}">${svg(P.plus,'')}${t('add_stop')}</button></div><div class="hint" style="margin:-2px 0 6px">${t('swipe_h')}${day.items.length>1?` · ${t('drag_h')}`:''}</div>`;
   h+=ideasNear(tr,di);
   if(day.notes&&day.notes.length){
     h+=`<div class="sec"><h3>${t('notes')}</h3>`;
@@ -1119,9 +1148,9 @@ function renderTrips(){
     if(S.ideaView&&S.dayView==null)return renderIdeas(tr);
     if(S.costView&&S.dayView==null)return renderCosts(tr);
     if(S.dayView!=null){const di=S.dayView;const ns=nextStop(tr,tr.days[di]);
-      el.innerHTML=`<div class="head"><button class="back" style="margin:0" data-dayback>${svg(P.back,'')}${esc(tr.name)}</button><div class="clock"><b id="clock">${now(tr.tz).hh}:${now(tr.tz).mm}</b><span>${t('jst')}</span></div></div>
+      el.innerHTML=`<div class="sbcover"></div><div class="head"><button class="back" style="margin:0" data-dayback>${svg(P.back,'')}${esc(tr.name)}</button><div class="clock"><b id="clock">${now(tr.tz).hh}:${now(tr.tz).mm}</b><span>${t('jst')}</span></div></div>
         ${daypick(tr,di)}${dayHead(tr,di,!tr.closed).replace('__NEXT__',ns?`<div class="next"><div><div class="lbl">${t('next_stop')} ${esc(ns.it.t)}</div><div class="val">${esc(ns.it.title)}</div></div><div class="in">${ns.txt}</div></div>`:'')}${timeline(tr,di)}`;
-      return;}
+      dayBar();return;}
     const N=now(tr.tz);
     const f=`<div class="sec" style="margin-top:4px"><h3>${t('transport')}${tr.closed?'':`<button class="back" style="margin:0" data-add-leg>${svg(P.plus,'')}${t('add_leg')}</button>`}</h3>${(tr.legs||[]).map(x=>`<button class="flight" data-edit-leg="${x.id}"><div><b>${esc(x.from)}</b><small>${esc(x.dep||'')}</small></div><div class="mid">${svg(ICO[x.mode]||ICO.fly,'')}<br>${esc(x.code||'')}${x.dur?'<br>'+esc(x.dur):''}</div><div class="r"><b>${esc(x.to)}</b><small>${esc(x.arr||'')}</small></div></button>`).join('')}</div>`;
     const days=tr.days.map((d,i)=>`<button class="dayrow ${d.date===N.date?'today':''}" data-day="${i}"><div class="n">${i+1}<small>${esc(fdate(d.date,true).replace(/ \d{4}$/,''))}</small></div><div><div class="ti">${esc(d.title||(S.lang==='th'?'ยังไม่ได้วางแผน':'Not planned yet'))}</div><div class="st">${esc(d.stay||'')}</div></div>${svg(P.chev,'')}</button>`).join('');
@@ -1266,7 +1295,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.12</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.13</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
@@ -1340,9 +1369,12 @@ function saveTrip(id){
     const old=Object.fromEntries(tr.days.map(x=>[x.date,x]));tr.days=want.map(iso=>old[iso]||{date:iso,title:'',area:'',stay:'',recap:'',items:[],notes:[],checks:[]});}
   save();closeSheet();toast(t('saved'));render();
 }
-function stopForm(tr,di,it){
+let insCtx=null;
+function stopForm(tr,di,it,opt){
   const isNew=!it;it=it||{t:'',title:'',d:'',k:'see',map:'',cost:'',cash:false,ref:''};
-  openSheet(`<h2>${isNew?t('add_stop'):t('edit_stop')} · ${t('day')} ${di+1}</h2>
+  insCtx=isNew&&opt&&opt.at!=null?{di,at:opt.at}:null;if(isNew&&opt&&opt.t)it=Object.assign({},it,{t:opt.t});
+  const lab=x=>x?x.title+(x.t?` (${x.t})`:''):'';
+  openSheet(`<h2>${isNew?t('add_stop'):t('edit_stop')} · ${t('day')} ${di+1}</h2>${insCtx&&opt.a&&opt.b?`<div class="insh">${esc(t('ins_between',{a:lab(opt.a),b:lab(opt.b)}))}</div>`:''}
     <label class="f">${t('title')}</label><input id="f-title" value="${esc(it.title)}">
     <div class="grid2"><div><label class="f">${t('time')}</label><input id="f-t" class="tm" inputmode="numeric" value="${esc(it.t)}" placeholder="09:30" maxlength="5"></div><div><label class="f">${t('cost_est')}</label><div class="money"><input id="f-cost" class="amt" type="text" inputmode="decimal" value="${it.cost?nf(num(it.cost)):''}" placeholder="1,000.00"><span class="cur" data-curlbl="i">${it.cur==='THB'?'THB':sym(tr)}</span></div></div></div>
     <label class="f">${t('cost_act')}</label><div class="money"><input id="f-actual" class="amt thin" type="text" inputmode="decimal" value="${it.actual!==''&&it.actual!=null?nf(num(it.actual)):''}" placeholder="${t('cost_act_h')}"><span class="cur" data-curlbl="i">${it.cur==='THB'?'THB':sym(tr)}</span></div><div class="csegbox mbox one"><div class="row" id="f-iwho"><button class="${it.each?'on':''}" data-k="each">${t('per_p')}</button><button class="${it.each?'':'on'}" data-k="all">${t('per_g')}</button></div>${(tr.cur||'THB')!=='THB'?`<div class="row" id="f-icur"><button class="${it.cur==='THB'?'on':''}" data-k="THB">THB</button><button class="${it.cur==='THB'?'':'on'}" data-k="trip">${tr.cur}</button></div>`:''}</div>
@@ -1411,9 +1443,10 @@ function saveStop(tr,di,id){
   const title=$('#f-title').value.trim();const it_cash=id?(tr.days[di].items.find(x=>x.id===id)||{}).cash:false;if(!title){toast(t('need_name'));return}
   const k=$('#f-k .on')?.dataset.k||'see';
   const v={t:$('#f-t').value.trim(),title,d:[...document.querySelectorAll('#f-steps .stin')].map(x=>x.value.replace(/\s*\n+\s*/g,' ').trim()).filter(Boolean).join('\n'),k,map:$('#f-map').value.trim(),cost:$('#f-cost').value?num($('#f-cost').value):'',actual:$('#f-actual').value?num($('#f-actual').value):'',each:$('#f-iwho .on')?.dataset.k==='each',cur:$('#f-icur .on')?.dataset.k==='THB'?'THB':'trip',cash:!!it_cash,ref:$('#f-ref').value.trim(),res:$('#f-res').value.trim()};
-  const day=tr.days[di];
-  if(id){const old=day.items.find(x=>x.id===id);old.hist=old.hist||[];if(old.t!==v.t&&old.t)old.hist.push({at:new Date().toISOString(),field:'t',from:old.t,to:v.t});if(old.title!==v.title)old.hist.push({at:new Date().toISOString(),field:'title',from:old.title,to:v.title});old.hist=old.hist.slice(-10);Object.assign(old,v)}else{day.items.push(Object.assign({id:uid(),done:false},v))}
-  const cur=id?day.items.find(x=>x.id===id):day.items[day.items.length-1];
+  const day=tr.days[di];let nw=null;
+  if(id){const old=day.items.find(x=>x.id===id);old.hist=old.hist||[];if(old.t!==v.t&&old.t)old.hist.push({at:new Date().toISOString(),field:'t',from:old.t,to:v.t});if(old.title!==v.title)old.hist.push({at:new Date().toISOString(),field:'title',from:old.title,to:v.title});old.hist=old.hist.slice(-10);Object.assign(old,v)}else{nw=Object.assign({id:uid(),done:false},v);if(insCtx&&insCtx.di===di)day.items.splice(Math.min(insCtx.at,day.items.length),0,nw);else day.items.push(nw)}
+  insCtx=null;
+  const cur=id?day.items.find(x=>x.id===id):nw;
   if(!(cur.bk&&tr.checklist.some(c=>c.id===cur.bk))&&(v.ref||v.res)){const c={id:uid(),title:v.title,note:v.res,done:false};tr.checklist.push(c);cur.bk=c.id}
   day.items.sort((a,b)=>(tmin(a.t)??1e9)-(tmin(b.t)??1e9));
   if(pendingIdea&&!id){tr.ideas=(tr.ideas||[]).filter(x=>x.id!==pendingIdea)}pendingIdea=null;
@@ -1641,6 +1674,8 @@ document.addEventListener('change',e=>{if(e.target.id==='w-stops'&&S.wiz){S.wiz.
 document.addEventListener('input',e=>{if(e.target.id==='i-map'){const n=ideaTitleFromURL(e.target.value);const ti=$('#i-title');if(n&&ti&&(!ti.value.trim()||ti.value===ti.dataset.auto)){ti.value=n;ti.dataset.auto=n}}});
 
 // ---------- v3.6 costs: legs / stays / stops / extras ----------
+Object.assign(I.th,{ins_between:'แทรกระหว่าง {a} และ {b}',mv:'ย้าย {x} แล้ว',mv_t:'ย้าย {x} แล้ว · เวลาเป็น {t}',undo_mv:'เลิกทำ',drag_h:'กดค้างที่เวลาแล้วลาก เพื่อสลับลำดับ'});
+Object.assign(I.en,{ins_between:'Between {a} and {b}',mv:'Moved {x}',mv_t:'Moved {x} · now {t}',undo_mv:'Undo',drag_h:'Press and hold a time, then drag to reorder'});
 Object.assign(I.th,{costs:'ค่าใช้จ่าย',c_travel:'การเดินทาง',c_stay:'ที่พัก',c_stops:'ระหว่างทริป',c_extra:'อื่น ๆ',per_p:'ต่อคน',per_g:'ทั้งกลุ่ม',c_est:'ประมาณการ',c_paid:'จ่ายแล้ว',c_pp:'ต่อคน {v}',c_none:'ยังไม่มีค่าใช้จ่าย · ใส่ค่าตั๋วกับค่าที่พักก่อนก็ได้',add_extra:'เพิ่มค่าใช้จ่ายอื่น',edit_extra:'แก้ไขค่าใช้จ่าย',extra_ph:'เช่น ประกันเดินทาง · eSIM · วีซ่า',c_of:'จ่ายแล้ว {a} จาก {b}',add_stay:'เพิ่มที่พัก',edit_stay:'แก้ไขที่พัก',stay_name:'ชื่อที่พัก',stay_dates:'ช่วงวันที่',nights_n:'จำนวนคืน',c_none_g:'ยังไม่ใส่',c_all:'ดูทั้งหมด',cur_main:'สกุลหลัก',cur_trip:'สกุลทริป',c_unpaid:'ยังไม่จ่าย',c_pu:'จ่ายแล้ว {a} · ยังไม่จ่าย {b}',f_paid:'จ่ายแล้ว',f_unpaid:'ยังไม่จ่าย',c_rate:'อัตราแลกเปลี่ยน {c} 1 = {v} บาท (ตามที่ตั้งไว้ในทริป)',c_tot:'ทั้งกลุ่ม',c_total_line:'ทั้งกลุ่ม {v} THB',c_day:'วัน {n}',c_spend_h:'คำนวณจากค่าใช้จ่ายทั้งหมด ใส่เองในแก้ไขทริปเพื่อทับค่านี้',c_ov:'ใส่เอง',c_pie:'ที่นี่เก็บเฉพาะเงินก้อนที่จ่ายก่อนไป เช่น ตั๋ว ที่พัก ประกัน · ค่าใช้จ่ายระหว่างทริปและกองกลาง ใช้ PiePot'});
 Object.assign(I.en,{costs:'Costs',c_travel:'Getting there',c_stay:'Stays',c_stops:'On the trip',c_extra:'Other',per_p:'Per person',per_g:'Whole group',c_est:'Estimate',c_paid:'Paid',c_pp:'{v} per person',c_none:'No costs yet — start with tickets and hotels',add_extra:'Add other cost',edit_extra:'Edit cost',extra_ph:'e.g. travel insurance · eSIM · visa',c_of:'Paid {a} of {b}',add_stay:'Add a stay',edit_stay:'Edit stay',stay_name:'Hotel / place',stay_dates:'Dates',nights_n:'Nights',c_none_g:'Not set',c_all:'See all',cur_main:'Home',cur_trip:'Trip',c_unpaid:'Unpaid',c_pu:'Paid {a} · unpaid {b}',f_paid:'Paid',f_unpaid:'Unpaid',c_rate:'Exchange rate {c} 1 = {v} THB (from the trip settings)',c_tot:'Whole group',c_total_line:'{v} THB for the group',c_day:'Day {n}',c_spend_h:'Worked out from every cost — fill it in Edit trip to override',c_ov:'Manual',c_pie:'This page is for money paid before the trip — tickets, stays, insurance · day-to-day and shared spending lives in PiePot'});
 
@@ -1751,7 +1786,7 @@ document.addEventListener('click',e=>{
   if(b.hasAttribute('data-tripback')){S.tripId=null;S.dayView=null;save();renderTrips();return}
   if(b.hasAttribute('data-dayback')){S.dayView=null;save();renderTrips();window.scrollTo(0,0);return}
   if(d.gotoStop!=null){S.tripId=S.checkTrip;S.dayView=+d.gotoStop;save();go('trips');return}
-  if(d.day!=null){S.dayView=+d.day;save();renderTrips();loadThumbs();return}
+  if(d.day!=null){const was=!!document.querySelector('#s-trips .daypick.stuck');S.dayView=+d.day;save();renderTrips();loadThumbs();if(was){const bar=$('#s-trips .daypick'),hero=$('#s-trips .hero');if(bar&&hero)window.scrollTo(0,Math.max(0,window.scrollY+hero.getBoundingClientRect().top-bar.getBoundingClientRect().bottom-8))}return}
   if(d.done){const [di,id]=d.done.split(':');const it=tr.days[+di].items.find(x=>x.id===id);it.done=!it.done;if(it.done){const N=now(tr.tz);it.doneAt=`${N.hh}:${N.mm}`;it.skipped=false}else it.doneAt='';save();renderTrips();toast(it.done?t('checked'):t('unchecked'));return}
   if(b.hasAttribute('data-range-toggle')){const c=$('#cal');c.hidden=!c.hidden;if(!c.hidden){calYM=null;renderCal()}return}
   if(d.cal){calYM[1]+=+d.cal;if(calYM[1]<0){calYM[1]=11;calYM[0]--}if(calYM[1]>11){calYM[1]=0;calYM[0]++}renderCal();return}
@@ -1775,6 +1810,7 @@ document.addEventListener('click',e=>{
   if(b.hasAttribute('data-back-sd')){const it=sdItem();if(it)stopDetail(tr,sdctx.di,it);return}
   if(d.viewPhoto){const [di,id,pid]=d.viewPhoto.split(':');DB.get(pid).then(v=>{if(!v)return;openSheet(`<div class="viewer"><img src="${v.full}" alt=""></div><div class="btns"><button class="btn del" data-del-photo="${di}:${id}:${pid}">${t('del_photo')}</button><button class="btn" data-close>${t('cancel')}</button></div>`)});return}
   if(d.delPhoto){const [di,id,pid]=d.delPhoto.split(':');const it=tr.days[+di].items.find(x=>x.id===id);it.photos=(it.photos||[]).filter(x=>x!==pid);DB.del(pid);save();closeSheet();render();return}
+  if(d.insStop){const [di,i]=d.insStop.split(':').map(Number);const its=tr.days[di].items;const a=its[i],b=its[i+1];const ta=tmin(a&&a.t),tb=tmin(b&&b.t);let m=null;if(ta!=null&&tb!=null)m=tb>=ta?Math.max(ta,Math.min(tb,Math.round((ta+tb)/10)*5)):ta;else if(ta!=null)m=ta;const tm=m==null?'':`${String(Math.floor(m/60)%24).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;pendingIdea=null;stopForm(tr,di,null,{t:tm,a,b,at:i+1});return}
   if(d.addStop!=null){stopForm(tr,+d.addStop,null);return}
   if(d.editStop){const [di,id]=d.editStop.split(':');stopForm(tr,+di,tr.days[+di].items.find(x=>x.id===id));return}
   if(d.saveNote){const [di,id]=d.saveNote.split(':');tr.days[+di].items.find(x=>x.id===id).note=$('#f-note').value.trim();save();closeSheet();render();toast(t('saved'));return}
@@ -1796,6 +1832,7 @@ document.addEventListener('click',e=>{
   if(d.delLeg){tr.legs=tr.legs.filter(x=>x.id!==d.delLeg);save();closeSheet();render();return}
   if(d.check){const ct=trip(S.checkTrip);const [sc,id]=d.check.split(':');const arr=sc==='pre'?ct.checklist:ct.days[+sc].checks;const c=arr.find(x=>x.id===id);c.done=!c.done;save();renderCheck();return}
   if(d.delCheck){const ct=trip(S.checkTrip);const [sc,id]=d.delCheck.split(':');if(sc==='pre')ct.checklist=ct.checklist.filter(x=>x.id!==id);else ct.days[+sc].checks=ct.days[+sc].checks.filter(x=>x.id!==id);save();closeSheet();renderCheck();toast(t('deleted'));return}
+  if(b.hasAttribute('data-undo-move')){if(undoMove){const x=trip(undoMove.tid);if(x&&x.days[undoMove.di]){x.days[undoMove.di].items=JSON.parse(undoMove.snap);save();renderTrips();loadThumbs()}undoMove=null}const tt=$('#toast');tt.classList.remove('show');tt.style.pointerEvents='none';return}
   if(b.hasAttribute('data-undo')){if(undoBuf){const ct=trip(S.checkTrip);checkItems(ct,undoBuf.sc).splice(undoBuf.i,0,undoBuf.item);undoBuf=null;save();renderCheck()}const tt=$('#toast');tt.classList.remove('show');tt.style.pointerEvents='none';return}
   if(b.hasAttribute('data-pick-trip')){openSheet(`<h2>${t('choose_trip')}</h2>${S.trips.map(x=>`<button class="dayrow" data-check-trip="${x.id}"><div class="n" style="font-size:16px">${svg(P.pin,'')}</div><div><div class="ti">${esc(x.name)}</div><div class="st">${esc(frange(x.start,x.end))}${x.dest?' · '+esc(x.dest):''}</div></div>${svg(P.chev,'')}</button>`).join('')}<div class="btns"><button class="btn" data-close>${t('cancel')}</button></div>`);return}
   if(d.checkTrip){S.checkTrip=d.checkTrip;save();closeSheet();renderCheck();return}
@@ -1851,7 +1888,53 @@ document.addEventListener('touchend',()=>{if(!row)return;const r=row;r.classList
 document.addEventListener('touchstart',e=>{card=e.target.closest('.stop .card');if(!card||e.target.closest('button,a,label,input'))return;sx=e.touches[0].clientX;sy=e.touches[0].clientY;dx=0;active=false},{passive:true});
 document.addEventListener('touchmove',e=>{if(!card)return;const x=e.touches[0].clientX-sx,y=e.touches[0].clientY-sy;if(!active){if(Math.abs(x)>12&&Math.abs(x)>Math.abs(y)*1.5)active=true;else if(Math.abs(y)>10){card=null;return}else return}dx=Math.min(0,x);card.classList.add('dragging');card.style.transform=`translateX(${dx}px)`},{passive:true});
 document.addEventListener('touchend',()=>{if(!card)return;if(active)lastSwipe=Date.now();card.classList.remove('dragging');card.style.transform='';if(active&&dx<-90&&!trip(S.tripId).closed){const li=card.closest('.stop');const id=li.querySelector('[data-done]').dataset.done;const [di,iid]=id.split(':');const tr=trip(S.tripId);const it=tr.days[+di].items.find(x=>x.id===iid);it.skipped=!it.skipped;if(it.skipped){it.done=false;it.doneAt=''}save();renderTrips();loadThumbs();toast(it.skipped?t('skipped'):t('unskip'))}card=null;active=false});})();
-setInterval(()=>{if(S.view==='home'||(S.view==='trips'&&S.dayView!=null))render()},30000);
+// v3.13 pinned day bar helpers
+function stuckBar(){const bar=document.querySelector('#s-trips.on .daypick');if(!bar)return;const top=parseFloat(getComputedStyle(bar).top)||0;bar.classList.toggle('stuck',window.scrollY>0&&bar.getBoundingClientRect().top<=top+.5)}
+function dayBar(){const bar=document.querySelector('#s-trips .daypick');if(!bar)return;const on=bar.querySelector('.on');if(on)bar.scrollLeft=Math.max(0,on.offsetLeft-(bar.clientWidth-on.offsetWidth)/2);stuckBar()}
+window.addEventListener('scroll',stuckBar,{passive:true});
+// v3.13 drag stops to reorder — handle is the time + dot column (long-press on touch); times stay with their slot
+let mvDrag=null,undoMove=null;
+(()=>{const LP=280;let pend=null,dg=null,raf=0;
+  const lis=tl=>[...tl.children].filter(x=>x.classList.contains('stop'));
+  const H='.trail > li.stop[data-mv] > .t, .trail > li.stop[data-mv] > .rail';
+  function begin(li,y){const trail=li.parentElement;const tr=trip(S.tripId);if(!tr||tr.closed||S.dayView==null)return;const di=S.dayView,day=tr.days[di];
+    const b0=li.getBoundingClientRect().top;trail.classList.add('dragging');const b1=li.getBoundingClientRect().top;if(b0!==b1)window.scrollBy(0,b1-b0);
+    const mv=lis(trail).filter(x=>x.hasAttribute('data-mv'));const byId=new Map(day.items.map(x=>[x.id,x]));
+    dg={li,trail,di,y0:y,s0:window.scrollY,y,orig:mv.map(x=>x.dataset.id),slots:mv.map(x=>(byId.get(x.dataset.id)||{}).t||''),snap:JSON.stringify(day.items)};mvDrag=dg;
+    if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+    li.classList.add('lifted');raf=requestAnimationFrame(tick)}
+  function relabel(){const all=lis(dg.trail);all.forEach((x,i)=>{x.classList.toggle('first',i===0);x.classList.toggle('last',i===all.length-1)});all.filter(x=>x.hasAttribute('data-mv')).forEach((x,k)=>{x.querySelector('.t').textContent=dg.slots[k]})}
+  function swap(a,b){const {li,trail}=dg;const all=lis(trail);const pos=new Map(all.map(x=>[x,x.offsetTop]));
+    const mk=document.createComment('');a.replaceWith(mk);b.after(a);mk.replaceWith(b);
+    dg.y0+=li.offsetTop-pos.get(li);
+    all.forEach(x=>{if(x===li)return;const dd=pos.get(x)-x.offsetTop;if(!dd)return;x.style.transition='none';x.style.transform=`translateY(${dd}px)`;requestAnimationFrame(()=>requestAnimationFrame(()=>{x.style.transition='transform .15s ease';x.style.transform=''}))});
+    relabel();place()}
+  function place(){const {li,trail}=dg;const dy=(dg.y+window.scrollY)-(dg.y0+dg.s0);li.style.transform=`translateY(${dy}px)`;
+    const top=li.offsetTop+dy,bot=top+li.offsetHeight;const mv=lis(trail).filter(x=>x.hasAttribute('data-mv'));const k=mv.indexOf(li);const nx=mv[k+1],pv=mv[k-1];
+    if(dy>0&&nx&&bot>nx.offsetTop+nx.offsetHeight/2)swap(li,nx);else if(dy<0&&pv&&top<pv.offsetTop+pv.offsetHeight/2)swap(pv,li)}
+  function tick(){if(!dg)return;const bar=$('#s-trips .daypick');const te=(bar?bar.getBoundingClientRect().bottom:0)+50;const nav=$('.nav');const be=window.innerHeight-(nav?nav.offsetHeight:0)-50;
+    let v=0;if(dg.y<te)v=-Math.min(14,(te-dg.y)/3+2);else if(dg.y>be)v=Math.min(14,(dg.y-be)/3+2);
+    if(v){const s0=window.scrollY;window.scrollBy(0,v);if(window.scrollY!==s0)place()}raf=requestAnimationFrame(tick)}
+  function end(){if(!dg)return;cancelAnimationFrame(raf);const g=dg;dg=null;mvDrag=null;const tr=trip(S.tripId);
+    if(!tr||!tr.days[g.di]){renderTrips();return}const day=tr.days[g.di];
+    const order=lis(g.trail).map(x=>x.dataset.id);const moved=order.filter(id=>g.orig.includes(id));
+    if(moved.join()===g.orig.join()){renderTrips();loadThumbs();return}
+    const byId=new Map(day.items.map(x=>[x.id,x]));const items=order.map(id=>byId.get(id)).filter(Boolean);day.items.forEach(x=>{if(!items.includes(x))items.push(x)});
+    const at=new Date().toISOString();moved.forEach((id,k)=>{const it=byId.get(id);const nt=g.slots[k];if(it&&it.t!==nt){it.hist=it.hist||[];if(it.t)it.hist.push({at,field:'t',from:it.t,to:nt});it.hist=it.hist.slice(-10);it.t=nt}});
+    day.items=items;save();renderTrips();loadThumbs();
+    const it=byId.get(g.li.dataset.id);const nm=it?(it.title.length>22?it.title.slice(0,21)+'…':it.title):'';undoMove={tid:tr.id,di:g.di,snap:g.snap};
+    const tt=$('#toast');tt.innerHTML=`${esc(it&&it.t?t('mv_t',{x:nm,t:it.t}):t('mv',{x:nm}))} · <button data-undo-move style="text-decoration:underline">${t('undo_mv')}</button>`;tt.classList.add('show');tt.style.pointerEvents='auto';clearTimeout(toast._);toast._=setTimeout(()=>{tt.classList.remove('show');tt.style.pointerEvents='none';undoMove=null},4500)}
+  const drop=()=>{if(pend){clearTimeout(pend.tm);pend.li.classList.remove('pressing');pend=null}};
+  document.addEventListener('touchstart',e=>{if(dg||e.touches.length>1)return;const h=e.target.closest&&e.target.closest(H);if(!h)return;const li=h.parentElement;const p=e.touches[0];
+    li.classList.add('pressing');pend={li,x:p.clientX,y:p.clientY,tm:setTimeout(()=>{if(!pend)return;const q=pend;pend=null;q.li.classList.remove('pressing');begin(q.li,q.y)},LP)}},{passive:true});
+  document.addEventListener('touchmove',e=>{const p=e.touches[0];if(pend){if(Math.abs(p.clientY-pend.y)>8||Math.abs(p.clientX-pend.x)>8)drop();return}if(!dg)return;e.preventDefault();dg.y=p.clientY;place()},{passive:false});
+  document.addEventListener('touchend',()=>{drop();if(dg)end()});
+  document.addEventListener('touchcancel',()=>{drop();if(dg)end()});
+  document.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||dg)return;const h=e.target.closest&&e.target.closest(H);if(!h)return;e.preventDefault();begin(h.parentElement,e.clientY)});
+  document.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse'||!dg)return;dg.y=e.clientY;place()});
+  document.addEventListener('pointerup',e=>{if(e.pointerType==='mouse'&&dg)end()});
+})();
+setInterval(()=>{if(mvDrag)return;if(S.view==='home'||(S.view==='trips'&&S.dayView!=null))render()},30000);
 if(S._bkSync){const _t=trip(S._bkSync);if(_t)syncBk(_t);delete S._bkSync;save()}
 fixRange();
 applyTheme();
