@@ -654,6 +654,18 @@ textarea{min-height:76px}
 @supports (max-height:82dvh){.sheet{max-height:82dvh}}
 .sheet .bar{position:relative;touch-action:none;cursor:grab;width:48px;height:5px}
 .sheet .bar::after{content:'';position:absolute;left:-60px;right:-60px;top:-14px;bottom:-14px}
+
+/* v3.11 smaller tick + sticky sheet footer */
+.stop .card{position:relative;grid-template-columns:1fr;gap:0}
+.stop .card>div:first-child{padding-right:26px}
+.stop .circ{position:absolute;top:6px;right:6px;width:36px;height:36px;border:0;background:none;padding:0;margin:0;display:grid;place-items:center}
+.stop .circ::before{content:'';width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);box-sizing:border-box}
+.stop .circ.on::before{background:var(--pine);border-color:var(--pine)}
+.stop .circ svg{position:absolute;width:12px;height:12px}
+.stop .circ.on{color:#fff}
+.sheet{max-height:90vh}
+@supports (max-height:90dvh){.sheet{max-height:90dvh}}
+.sheet .btns{position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom));margin:16px -16px calc(-20px - env(safe-area-inset-bottom));padding:12px 16px calc(14px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--line);z-index:3}
 </style>
 </head>
 <body>
@@ -1254,7 +1266,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.10</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.11</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
@@ -1269,7 +1281,7 @@ function simSheet(){const days=S.trips.flatMap(tr=>tr.days.map((d,i)=>({v:d.date
   openSheet(`<h2>${t('sim')}</h2><div class="hint" style="padding:0 0 8px">${t('sim_h')}</div><select id="simDate"><option value="">${t('real')}</option>${days.map(x=>`<option value="${x.v}" ${S.simDate===x.v?'selected':''}>${x.l}</option>`).join('')}</select><div class="btns"><button class="btn" data-clear="done" style="flex:0 0 auto">${t('reset_done')}</button><button class="btn pri" data-close>${t('done_sel')}</button></div>`)}
 
 // ---------- sheets (forms) ----------
-function openSheet(html){$('#sheet').innerHTML=`<div class="bar"></div>${html}`;$('#sheetBg').classList.add('on');requestAnimationFrame(()=>$('#sheet').classList.add('on'))}
+function openSheet(html){const s=$('#sheet');s.innerHTML=`<div class="bar"></div>${html}`;s.scrollTop=0;$('#sheetBg').classList.add('on');requestAnimationFrame(()=>{s.classList.add('on');s.scrollTop=0})}
 // v3.7 sheet: drag the grab bar down to close
 (()=>{let dg=null;const el=()=>document.getElementById('sheet');
   const end=(close)=>{if(!dg)return;const s=dg.el;s.style.transition='';s.style.transform='';dg=null;if(close)closeSheet()};
