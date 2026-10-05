@@ -716,220 +716,6 @@ textarea{min-height:76px}
 <div class="toast" id="toast"></div>
 
 <script>
-const TRIP = {
-  name: 'Perfect Crown',
-  sub: 'Japan Alps · 16–25 ต.ค. 2569',
-  tz: 'Asia/Tokyo',
-  start: '2026-10-17',
-  end: '2026-10-25',
-  members: 4,
-  flights: [
-    { dir: 'out', code: 'ZIPAIR ZG052', from: 'BKK', to: 'NRT', dep: '16 ต.ค. 23:10', arr: '17 ต.ค. 07:30', dur: '6 ชม. 20 นาที' },
-    { dir: 'back', code: 'ZIPAIR ZG051', from: 'NRT', to: 'BKK', dep: '25 ต.ค. 17:00', arr: '25 ต.ค. 22:15', dur: '7 ชม. 15 นาที' }
-  ],
-  stays: [
-    { name: 'Wakata Lodge Hakuba', dates: '17–19 ต.ค.', nights: 2, note: 'รวมมื้อเช้า · ภาษีที่พัก ¥400/คน จ่ายเงินสดตอนเช็คอิน', map: 'Wakata Lodge Hakuba' },
-    { name: 'Holiday Inn Resort Shinano-Omachi Kuroyon', dates: '19–20 ต.ค.', nights: 1, note: 'มีออนเซ็น · มื้อเช้าซื้อเพิ่ม ¥3,300 · ภาษี ¥350/คน', map: 'Holiday Inn Resort Shinano-Omachi Kuroyon' },
-    { name: 'Alpico Plaza Hotel, Matsumoto', dates: '20–22 ต.ค.', nights: 2, note: 'ติดสถานีขนส่ง · มื้อเช้าซื้อเพิ่ม ¥1,900 · ภาษี ¥400/คน', map: 'Alpico Plaza Hotel Matsumoto' },
-    { name: 'HOTEL AMANEK Asakusa Ekimae, Tokyo', dates: '22–25 ต.ค.', nights: 3, note: 'ย่านอาซากุสะ ใกล้สถานี Kuramae/Asakusa', map: 'HOTEL AMANEK Asakusa Ekimae' }
-  ],
-  bookings: [
-    { id: 'shink', title: 'ชินคันเซ็น Ueno → Nagano', due: '2026-09-17', dueLabel: '17 ก.ย. 2569', price: '¥8,240/คน', note: 'จองที่นั่ง A ฝั่งขวา — วิวภูเขาอาซามะ' },
-    { id: 'kami', title: 'บัส Kamikochi ไป–กลับ', due: '2026-09-21T22:00', dueLabel: '21 ก.ย. 2569 · 22:00 น.', price: '¥8,810/คน', note: 'ทุกเที่ยวต้องจองล่วงหน้า · japanbusonline.com' },
-    { id: 'azusa', title: 'รถด่วน Azusa Matsumoto → Shinjuku', due: '2026-09-22', dueLabel: '22 ก.ย. 2569', price: '¥6,730/คน', note: 'จองที่นั่งฝั่ง D ริมหน้าต่าง — เห็นฟูจิ' },
-    { id: 'alpine', title: 'Tateyama Kurobe Alpine Route', done: true, ref: 'L26599270', note: 'รอบ 07:30 · ¥11,300/คน จ่ายแล้ว · แลกตั๋วที่ตู้สถานี Ogizawa' },
-    { id: 'car', title: 'รถเช่า Toyota Rent a Car', done: true, note: 'รับ 17 ต.ค. 16:30 สาขา Nagano Station · คืน 20 ต.ค. ก่อน 18:00 มัตสึโมโตะ · ¥58,212 จ่ายแล้ว' },
-    { id: 'hiiragi', title: 'คากิโกริ HIIRAGI Ginza', done: true, ref: 'MLV49F', note: 'เสาร์ 24 ต.ค. 13:30 · 4 คน · จ่ายแล้ว ¥19,800 + ¥390/คน · ถึงร้านก่อน 13:20' },
-    { id: 'tokori', title: 'ยากินิกุ Tokori Shinjuku', done: true, ref: 'PWLEVT', note: 'พฤ 22 ต.ค. 19:00 · ตึก NOWA · 4 คน' }
-  ],
-  checklist: [
-    { id: 'vjw', title: 'กรอกฟอร์ม Visit Japan Web', note: 'ตม. + ศุลกากร · เซฟ QR + แคปหน้าจอกันเน็ตล่ม' },
-    { id: 'passport', title: 'พาสปอร์ตเหลือเกิน 6 เดือน', note: 'ต้องถึงหลัง เม.ย. 2570' },
-    { id: 'idp', title: 'ใบขับขี่สากล (IDP 1949) + ใบขับขี่ไทย', note: 'เฉพาะคนขับ · ขอที่ขนส่งฯ 1 วัน' },
-    { id: 'insure', title: 'ประกันการเดินทาง', note: 'ครอบคลุมเทรคกิ้ง' },
-    { id: 'warm', title: 'เสื้อกันหนาวจริงจัง หมวก ถุงมือ รองเท้าเดินเขา', note: 'Murodo 2,450 ม. อาจติดลบ/มีหิมะ' },
-    { id: 'esim', title: 'eSIM ญี่ปุ่น แพ็ก 10 วัน', note: 'ติดตั้งที่ไทยแล้วปิดไลน์รอ · เปิด Wi-Fi Calling เบอร์ไทยก่อนบิน' },
-    { id: 'plug', title: 'ปลั๊กแปลง Type A', note: 'ญี่ปุ่น 100V' },
-    { id: 'cash', title: 'เงินสดเยนสำหรับกองกลาง', note: '~¥17,630/คน · ภาษีที่พัก ลานจอด ลิฟท์ Grat Quad รับเงินสดเท่านั้น' }
-  ],
-  fund: [
-    ['Happo Alpen Line ไป–กลับ', 3500], ['Iwatake Gondola ไป–กลับ', 3100], ['Keisei Skyliner', 2580],
-    ['น้ำมันรถเช่า (ประมาณ)', 2500], ['ปราสาทมัตสึโมโตะ', 1300], ['ภาษีที่พัก 3 แห่ง', 1150],
-    ['ลานจอด Ogizawa', 1000], ['เดินทางอื่น ๆ', 2500]
-  ],
-  days: [
-    {
-      n: 1, date: '2026-10-17', dow: 'เสาร์', title: 'Narita → Nagano → Hakuba', area: 'Nagano', stay: 'Wakata Lodge Hakuba',
-      recap: 'ถึงนาริตะ ~07:30 ผ่าน ตม. + รับกระเป๋า (~1–1.5 ชม.) แล้วนั่ง Keisei Skyliner ต่อชินคันเซ็นที่อุเอโนะ ถึงนากาโนะ ~11:45 กินมื้อเที่ยง เที่ยววัดเซนโคจิ รับรถเช่า แล้วขับเข้าฮาคุบะ',
-      items: [
-        { t: '07:30', title: 'ถึงสนามบินนาริตะ T1', d: 'ZIPAIR ZG052 · Immigration ~50 นาที · รับกระเป๋า ~10 นาที', k: 'fly' },
-        { t: '09:19', title: 'Keisei Skyliner — Narita T1 → Keisei Ueno', d: 'ถึง 10:05 · ~50 นาที · e-ticket ออนไลน์ถูกกว่า', cost: '¥2,580', k: 'train' },
-        { t: '10:28', title: 'ชินคันเซ็น Hokuriku — Ueno → Nagano', d: 'Hakutaka 559 / Kagayaki 509 · ถึง 11:41 · ฝากกระเป๋าล็อคเกอร์ (~¥600) ทางออก Zenkoji · ที่นั่ง A ฝั่งขวา วิวภูเขาอาซามะ', cost: '¥8,240', res: 'จอง 17 ก.ย.', k: 'train' },
-        { t: '12:00', title: 'มื้อเที่ยงในนากาโนะ', d: 'Mendou Kirinji (Daimon) หรือ Ramen Misoya — ดูตัวเลือกด้านล่าง', k: 'food', map: 'Mendou Kirinji Daimon Nagano' },
-        { t: '13:30', title: 'รถบัส Nagano Station → Zenkoji-Nishi', d: 'ถึง 13:40', cost: '¥230', k: 'bus' },
-        { t: '13:45', title: 'วัดเซนโคจิ (Zenko-ji)', d: 'เปิดถึง 16:30 · เดินชมด้านนอกฟรี · วิหารใน + O-Kaidan + พิพิธภัณฑ์ ¥800 · ประตูซันมง ¥600', k: 'see', map: 'Zenkoji Temple Nagano' },
-        { t: '16:07', title: 'รถบัส Jyoyama Park → Sengokuiriguchi', d: 'ถึง 16:15 → Toyota Rent a Car สาขา Nagano Station', cost: '¥250', k: 'bus' },
-        { t: '16:30', title: 'รับรถเช่า Toyota Rent a Car', d: 'คืน 20 ต.ค. ก่อน 18:00 ที่มัตสึโมโตะ · ¥58,212 จ่ายแล้ว', ref: 'จองแล้ว', k: 'car', map: 'Toyota Rent a Car Nagano Station' },
-        { t: '17:00', title: 'ขับรถสู่ฮาคุบะ — 45 กม. ~1 ชม.', d: 'ทางหลวง 19 ต่อทางหลวงชนบท 31 · เติมน้ำมันในนากาโนะก่อน', k: 'car' },
-        { t: '18:30', title: 'เช็คอิน Wakata Lodge Hakuba', d: 'รวมมื้อเช้า · ภาษีที่พัก ¥400/คน จ่ายเงินสด', cost: '¥400', cash: true, k: 'stay', map: 'Wakata Lodge Hakuba' }
-      ],
-      notes: [
-        { title: 'ตัวเลือกมื้อเที่ยง — นากาโนะ', rows: [
-          ['Mendou Kirinji (Daimon)', '11:00–15:00 · ใกล้วัด เดิน ~10 นาทีจากสถานี Gondo · อาจต้องรอคิว'],
-          ['Ramen Misoya', '11:00–00:00 · มิโซะราเมง Tabelog 3.72 · ใกล้ทางออก Zenkoji']
-        ] },
-        { title: 'วัดเซนโคจิ — ก่อตั้ง ค.ศ. 642', text: 'วัดอิสระไม่สังกัดนิกาย ประดิษฐานพระพุทธรูปซังโงกุเด็นไรที่ถูกเก็บซ่อนตั้งแต่ ค.ศ. 654 ไม่มีผู้ใดได้เห็นองค์จริง เชื่อว่านำพาทุกคนสู่สุขาวดีโดยไม่แบ่งฐานะ' }
-      ]
-    },
-    {
-      n: 2, date: '2026-10-18', dow: 'อาทิตย์', title: 'Happo Pond บึงกระจกแห่งฮาคุบะ', area: 'Hakuba', stay: 'Wakata Lodge Hakuba',
-      recap: 'จุดหลักของวันคือ Happo Pond (นำอาหารขึ้นไปทานได้) ลงจากเขาแล้วไปชิลถ่ายรูปที่ Starbucks Snow Peak ถ้ามีเวลาค่อยขับเล่นในหมู่บ้านหรือไปเดิน Oide Park',
-      items: [
-        { t: '07:00', title: 'ออกจาก Wakata Lodge → Happo Gondola', d: '~4 กม. ขับ ~10 นาที · ถึง 07:15', k: 'car', map: 'Happo Gondola Adam Station Hakuba' },
-        { t: '07:30', title: 'ขึ้น Happo Alpen Line (ไป–กลับ)', d: 'Adam Gondola 07:30 (8 นาที) → Alpen Quad 07:45 → Grat Quad 08:00 · รวม ~25 นาที ถึง 1,830 ม. · Grat Quad รับเงินสดเท่านั้น', cost: '¥3,500', cash: true, k: 'lift' },
-        { t: '08:30', title: 'เทรคสู่ Happo Pond (2,060 ม.)', d: 'เริ่มจาก Happo Ike Sanso Lodge · ไป–กลับ ~3.3 กม. ไต่ ~230 ม. · ขึ้น 1.5–2 ชม. ลง ~1 ชม. · ห้องน้ำมี 2 จุด', k: 'hike', map: 'Happo Pond Hakuba' },
-        { t: 'บ่าย', title: 'Starbucks — Snow Peak Land Station Hakuba', d: 'กาแฟ นั่งชิล ถ่ายรูปวิวเทือกเขา', k: 'cafe', map: 'Starbucks Snow Peak Land Station Hakuba' },
-        { t: 'เย็น', title: 'Oide Park (ตามอัธยาศัย)', d: 'ห่าง ~2 กม. · สะพานแขวน ลำธารใส · จุดถ่ายพระอาทิตย์ตกของฮาคุบะ', k: 'see', map: 'Oide Park Hakuba' }
-      ],
-      notes: [
-        { title: 'ข้อควรรู้บนเขา', list: ['อุณหภูมิบนสูงอาจเหลือเลขหลักเดียว °C — เตรียมเสื้อกันหนาว', 'ลิฟท์ Grat Quad รับเฉพาะเงินสด · เปิด 08:00 ถ้าไปเช้ากว่านั้นเดินขึ้นจาก Kurobishi-daira ~30 นาที', 'ลิฟท์ขาขึ้นรอบสุดท้ายก่อน Grat Quad ปิด 30 นาที (16:30)'] },
-        { title: 'ทางเลือกสำรอง — Kurobishi Line', text: '¥2,300 · ลิฟท์เปิด 05:00 (Sunrise Trekking) · ขับถนนป่าคุโรบิชิ ~9 กม. ชัน โค้งหักศอก จอดหน้า Cafeteria Kurobishi · 18 ต.ค. เป็นวันสุดท้ายของ Early Bird' }
-      ]
-    },
-    {
-      n: 3, date: '2026-10-19', dow: 'จันทร์', title: 'Iwatake → ทะเลสาบ Omachi', area: 'Hakuba → Omachi', stay: 'Holiday Inn Kuroyon, Omachi',
-      recap: 'วันนี้จุดแวะเยอะ ทำเวลาแต่ไม่ต้องรีบ — ไม่ทันก็ตัดออก · Iwatake (ลิฟท์เปิด 08:30 ไปให้ทันรอบเปิด) → Oyami Marshland → ทะเลสาบอาโอกิ + คาเฟ่ → ทะเลสาบคิซากิ → เช็คอิน Holiday Inn',
-      items: [
-        { t: '07:30', title: 'เช็คเอาท์ → Iwatake Gondola NOAH', d: 'ถึง 07:45 · นำทางด้วย "Iwatake Gondola Noah"', k: 'car', map: 'Iwatake Gondola Noah' },
-        { t: '08:30', title: 'กอนโดล่าขึ้น Hakuba Iwatake (ไป–กลับ)', d: 'รอบแรก 08:30 · วางแผนลง 11:00–11:30 · เดิน ~3 นาทีถึง Mountain Harbor', cost: '¥3,100', k: 'lift' },
-        { t: '09:00', title: 'Hakuba Mountain Harbor + The City Bakery', d: 'ระเบียงชมวิวหัน Hakuba Sanzan · เบเกอรี่ 09:00–15:30 · ครัวซองต์ ช็อกโกแลตร้อน Hakuba Pork Croissant', k: 'cafe', map: 'Hakuba Mountain Harbor' },
-        { t: '12:00', title: 'ขับสู่ Oyami Marshland', d: '12 กม. ~20 นาที · ถึง 12:20', k: 'see', map: 'Oyami Marshland Hakuba' },
-        { t: '13:30', title: 'ทะเลสาบอาโอกิ — ao LAKESIDE CAFÉ', d: '5 กม. ~10 นาที · คาเฟ่ 08:00–18:00 (L.O. 17:30)', k: 'cafe', map: 'ao LAKESIDE CAFE Lake Aoki' },
-        { t: '15:00', title: 'ทะเลสาบคิซากิ (Lake Kisaki)', d: '5 กม. ~10 นาที · ถึง 15:15', k: 'see', map: 'Lake Kisaki Omachi' },
-        { t: '16:30', title: 'เช็คอิน Holiday Inn Resort Shinano-Omachi Kuroyon', d: '8 กม. ~12 นาที · ออนเซ็น ♨ · มื้อเช้าเพิ่ม ¥3,300/คน (06:30–10:30) · ภาษี ¥200 + น้ำพุร้อน ¥150', cost: '¥350', cash: true, k: 'stay', map: 'Holiday Inn Resort Shinano-Omachi Kuroyon' },
-        { t: 'เย็น', title: 'Omachi Energy Museum (ถ้ามีเวลา)', d: 'ห่าง ~3 กม. ขับ ~10 นาที', k: 'see', map: 'Omachi Energy Museum' }
-      ],
-      notes: [
-        { title: 'ไฮไลท์ — Sandan Koyo ภูเขา 3 สี', text: 'หิมะขาวบนยอด ใบไม้เหลืองแดงตรงกลาง ต้นไม้เขียวด้านล่างในเฟรมเดียว · Iwatake 1,100 ม. เห็นเทือกเขาฮิดะเต็มตา ทั้ง Green Park ฟีลแคมป์ปิ้ง และ Mountain Harbor' }
-      ]
-    },
-    {
-      n: 4, date: '2026-10-20', dow: 'อังคาร', title: 'Tateyama Kurobe Alpine Route', area: 'Ogizawa ⇄ Murodo', stay: 'Alpico Plaza, Matsumoto',
-      recap: 'เช็คเอาท์ → Alpine Route เส้นทาง Ogizawa ⇄ Murodo (~4–5 ชม.) → ขับสู่มัตสึโมโตะ คืนรถก่อน 18:00 → เช็คอิน Alpico Plaza',
-      items: [
-        { t: '06:30', title: 'ออกจากโรงแรม → สถานี Ogizawa', d: '10 กม. ~15 นาที · ถึง 07:00 · ลานจอด 12 ชม. ¥1,000 จ่ายที่ตู้ด้วยแบงค์ ¥1,000 (ลาน 4, 5 ฟรีแต่ไกล)', cost: '¥1,000', cash: true, k: 'car', map: 'Ogizawa Station' },
-        { t: '07:30', title: 'Kanden Tunnel Bus — Ogizawa → Kurobe Dam', d: '~16 นาที · แลกตั๋วที่เครื่องอัตโนมัติ (ออกได้ตั้งแต่เที่ยงวันก่อน) · ล็อคเวลาเฉพาะขานี้ ที่เหลือต่อแถว', cost: '¥11,300', ref: 'L26599270', k: 'bus' },
-        { t: '~08:00', title: 'เขื่อนคุโรเบะ — เดินสันเขื่อน + Rainbow Terrace', d: '~15–20 นาที · สูง 186 ม. เขื่อนสูงสุดในญี่ปุ่น', k: 'see', map: 'Kurobe Dam' },
-        { t: '~08:40', title: 'Kurobe Cable Car → Tateyama Ropeway', d: 'เคเบิลคาร์ในอุโมงค์ ~5 นาที · กระเช้าไร้เสากลาง 1.7 กม. ~7 นาที · แวะวิว Kurobedaira และ Daikanbo — จุดชม 三段紅葉', k: 'lift' },
-        { t: '09:55', title: 'ถึง Murodo (2,450 ม.) จุดสูงสุด', d: 'ชมเทือกเขาทาเทยามะ · เทรลหุบเขาจิโกกุดานิ · อยู่ถึง ~13:00 แล้วย้อนกลับ', k: 'hike', map: 'Murodo Tateyama' },
-        { t: '14:00', title: 'ออกจาก Ogizawa ขับสู่มัตสึโมโตะ', d: '50 กม. ~1 ชม. · คืนรถ Toyota ก่อน 18:00', k: 'car', map: 'Toyota Rent a Car Matsumoto Station' },
-        { t: 'เย็น', title: 'เช็คอิน Alpico Plaza Hotel', d: 'มื้อเช้าเพิ่ม ¥1,900/คน (06:30–09:30) · ภาษีที่พัก ¥400/คน (2 คืน)', cost: '¥400', cash: true, k: 'stay', map: 'Alpico Plaza Hotel Matsumoto' },
-        { t: 'ค่ำ', title: 'มื้อเย็น — Komugi Soba Ike', d: 'ห่างโรงแรม ~500 ม. · ชิโอะโซบะเส้นทำมือ ชูมาย ข้าวหน้าหมูย่าง · 18:00–20:30 · เงินสดเท่านั้น', cash: true, k: 'food', map: 'Komugi Soba Ike Matsumoto' }
-      ],
-      notes: [
-        { title: 'ลำดับยานพาหนะ (ขาไป)', text: 'Ogizawa › บัสไฟฟ้า Kanden 16 นาที › เขื่อนคุโรเบะ เดินข้าม › Kurobe Cable Car 5 นาที › Kurobedaira › Tateyama Ropeway 7 นาที › Daikanbo › บัสไฟฟ้า Tateyama 10 นาที › Murodo — แล้วย้อนกลับเส้นทางเดิม' },
-        { title: 'เตือน', list: ['ขากลับต่อแถวตามลำดับ Kurobeko cable car และ Ropeway คือคอขวดช่วงพีค อาจรอ 1–2 รอบ', 'ใบไม้: Murodo เลยพีค (ทุ่งทองอาจมีหิมะ) · เขื่อน/Ogizawa พีคพอดี'] }
-      ]
-    },
-    {
-      n: 5, date: '2026-10-21', dow: 'พุธ', title: 'Kamikochi เต็มวัน', area: 'Kamikochi', stay: 'Alpico Plaza, Matsumoto',
-      recap: 'ตื่นเช้า! บัสเที่ยวแรก 05:30 — ใช้ทั้งวันเดิน Taisho Pond → Tashiro Pond → Kappa Bridge → Myojin Pond กลับถึงมัตสึโมโตะ ~17:51',
-      items: [
-        { t: '05:25', title: 'บัส National Park Liner — Matsumoto → Kamikochi', d: 'ออก 05:30 ถึง 07:05 · บัสตรงมีรอบ 05:30 กับ 10:30 เท่านั้น', cost: '¥5,000', res: 'จอง 21 ก.ย. 22:00', k: 'bus', map: 'Matsumoto Bus Terminal' },
-        { t: '07:05', title: 'เริ่มเดิน Kamikochi Walking Course', d: 'Taisho Pond → Tashiro Pond → Kappa Bridge (~1 ชม./ช่วง) → Myojin Pond (¥300)', k: 'hike', map: 'Taisho Pond Kamikochi' },
-        { t: '~11:00', title: 'มื้อเที่ยง — Gosenjaku Kitchen (Kappa Bridge)', d: '11:00–15:00 · ราเมง คาราอาเกะ แกงกะหรี่ · คิวยาว ไปก่อนเปิด ~20 นาที · ดูร้านอื่นด้านล่าง', k: 'food', map: 'Gosenjaku Kitchen Kamikochi' },
-        { t: '~13:30', title: 'Myojin Pond + Kamonjigoya', d: 'เดินจาก Kappa Bridge ~1 ชม. · บึงศักดิ์สิทธิ์ศาลเจ้า Hotaka · ปลาอิวานะย่างเกลือร้าน 100 ปี', cost: '¥300', k: 'see', map: 'Myojin Pond Kamikochi' },
-        { t: '16:00', title: 'บัสกลับ — Kamikochi → Shinshimashima', d: 'ถึง 17:05 · บัสเที่ยวสุดท้าย 17:55', cost: '¥3,810', res: 'จอง 21 ก.ย.', k: 'bus', map: 'Kamikochi Bus Terminal' },
-        { t: '17:22', title: 'รถไฟ Kamikochi Line — Shinshimashima → Matsumoto', d: 'ถึง 17:51 · IC card ใช้ไม่ได้ช่วงนี้', k: 'train' }
-      ],
-      notes: [
-        { title: 'ร้านอาหารในคามิโคจิ', rows: [
-          ['Kamikochi Diner', 'Bus Terminal ชั้น 2 · 06:00–14:00 · เซ็ตเช้า + เบนโตะพกเดิน'],
-          ['Gosenjaku Kitchen ⭐', 'ติด Kappa Bridge · 11:00–15:00 · คิวยาวมาก'],
-          ['Trois Cinq', 'ติด Kappa Bridge · 08:00–17:00 · แอปเปิ้ลพายชินชู'],
-          ['Konashidaira', 'ใกล้ Bus Terminal · 07:30–17:00 · Sanzoku burger ¥600–900'],
-          ['Kamonjigoya ⭐', 'Myojin Pond · ปลาอิวานะย่างเกลือ ~¥1,000–1,500'],
-          ['River Terrace Cafune', 'Lemeiesta Hotel · 08:00–15:30 · เค้กเซ็ตวิวแม่น้ำ'],
-          ['Alpenrose (Imperial Hotel)', 'ฝั่ง Taisho Pond · 11:00–14:30 · แกงกะหรี่เนื้อ ¥1,700–3,500']
-        ] }
-      ]
-    },
-    {
-      n: 6, date: '2026-10-22', dow: 'พฤหัสบดี', title: 'ปราสาทมัตสึโมโตะ → Tokyo', area: 'Matsumoto → Shinjuku', stay: 'HOTEL AMANEK Asakusa',
-      recap: 'เช็คเอาท์ → ปราสาทมัตสึโมโตะ → Azusa เข้าชินจูกุ 17:26 → ฝากกระเป๋าล็อคเกอร์ เดินเล่น → 19:00 ยากินิกุ Tokori → Oedo Line ไป Kuramae → เช็คอิน AMANEK',
-      items: [
-        { t: '08:10', title: 'บัส Utsukushigahara Onsen Line → Matsumotojo', d: 'จาก Matsumoto Bus Terminal ถึง 08:16', cost: '¥220', k: 'bus' },
-        { t: '08:30', title: 'ปราสาทมัตสึโมโตะ', d: '08:30–17:00 (เข้าได้ถึง 16:30) · สมบัติชาติ สร้าง ค.ศ. 1594 · นอก 5 ชั้น ใน 6 ชั้น', cost: '¥1,300', k: 'see', map: 'Matsumoto Castle' },
-        { t: '~12:00', title: 'มื้อเที่ยงในมัตสึโมโตะ', d: 'ร้านตามแผนอาหาร (เช็ควันหยุดร้าน)', k: 'food' },
-        { t: '14:50', title: 'Azusa 38 — Matsumoto → Shinjuku', d: 'ถึง 17:26 (~2.5 ชม.) · ที่นั่งฝั่ง D ริมหน้าต่าง เห็นฟูจิ + แอลป์ ไฮไลต์ Katsunuma → Enzan · แดดบ่ายฝั่ง D', cost: '¥6,730', res: 'จอง 22 ก.ย.', k: 'train', map: 'Matsumoto Station' },
-        { t: '17:30', title: 'ฝากกระเป๋าล็อคเกอร์ · เดินเล่นชินจูกุ', d: 'ฝั่งตะวันออกสถานี หรือจุดชมวิวฟรีตึกรัฐบาลโตเกียว (ถึง 22:00)', k: 'see', map: 'Tokyo Metropolitan Government Building Observatory' },
-        { t: '19:00', title: 'มื้อเย็น — Wagyu Yakiniku Tokori (NOWA Bldg.)', d: 'ยากินิกุวากิว · จองในนามคณะ 4 คน', ref: 'PWLEVT', k: 'food', map: 'Wagyu Yakiniku Tokori Shinjuku NOWA' },
-        { t: '~20:45', title: 'Oedo Line — Shinjuku-nishiguchi → Kuramae', d: '~20 นาที · เริ่มใช้ Tokyo Subway 3-day pass (¥2,000)', k: 'train' },
-        { t: '~21:15', title: 'เช็คอิน HOTEL AMANEK Asakusa Ekimae', d: 'พัก 3 คืน (22–25 ต.ค.)', k: 'stay', map: 'HOTEL AMANEK Asakusa Ekimae' }
-      ],
-      notes: [
-        { title: 'ทริค', list: ['ซื้อ Tokyo Subway Ticket 3-day pass ¥2,000 ใช้ได้ถึงวันสุดท้าย', 'Kobayashi Soba และ Alps Coffee Lab ปิดวันพุธ — วันนี้พฤหัสฯ เปิดปกติ'] }
-      ]
-    },
-    {
-      n: 7, date: '2026-10-23', dow: 'ศุกร์', title: 'เซนโซจิ → ลูกปัดอาซากุสะบาชิ → ชิบะพาร์ค → ซูชิ KITTE ค่ำ', area: 'Tokyo', stay: 'HOTEL AMANEK Asakusa',
-      recap: 'เซนโซจิเช้า ไหว้พระ เซียมซี → Miyuki Factory + ย่านค้าส่งอาซากุสะบาชิ → ลิ้นวัว Gyutan Biyori → วัดโซโจจิ + Shiba Park โตเกียวทาวเวอร์ → KITTE ค่ำ: ดาดฟ้าชั้น 6 + ซูชิ Nemuro Hanamaru (ไฟตึกสถานีดับ 21:00)',
-      items: [
-        { t: '06:45', title: 'ออกจากโรงแรม → Kaminarimon', d: 'เดิน ~5 นาที · ไปเช้าคนน้อย', k: 'walk', map: 'Kaminarimon Gate' },
-        { t: '07:00', title: 'วัดเซนโซจิ + ถนน Nakamise', d: 'Kaminarimon → Nakamise (ชัตเตอร์เพนต์) → Hozomon → วิหารใหญ่ 06:30 เซียมซี ¥100 → เจดีย์ 5 ชั้น มุม Skytree · ~08:30 ร้านทยอยเปิด เมล่อนปัง Kagetsudo', cost: '¥100', k: 'see', map: 'Sensoji Temple' },
-        { t: '09:45', title: 'Asakusa Line: Asakusa → Asakusabashi', d: '2 สถานี ~4 นาที · รวมในพาส', k: 'train' },
-        { t: '10:00', title: 'Miyuki Factory — ลูกปัดมิยูกิ 3 ชั้น', d: 'จ.–ศ. 10:00–17:00 ปิดเสาร์-อาทิตย์ (ไปได้แค่วันนี้วันเดียวของทริป) · จ่ายเงินแยกทีละชั้น · 1F ลูกปัดสี+คิต · 2F เม็ดใหญ่/ชาร์ม · 3F อุปกรณ์คราฟต์', k: 'shop', map: 'Miyuki Factory Asakusabashi' },
-        { t: '11:35', title: 'West Five + Shimojima', d: 'West Five หน้าทางออกฝั่งตะวันตก — ลูกปัด Miyuki/Toho ถูกกว่า มีถุงตักใส่ ¥300 · Shimojima ร้านหลัก กระดาษห่อ/ถุง/โอริกามิ duty free · ออปชัน Yoshitoku / Kyugetsu ตุ๊กตาญี่ปุ่น', k: 'shop', map: 'Shimojima Asakusabashi' },
-        { t: '12:30', title: 'มื้อเที่ยง — Gyutan Biyori', d: 'ลิ้นวัวย่างถ่าน 4.9★ · ศุกร์ 11:00–15:00 · ร้านเต็มตลอด ต้องจอง +81 3-5839-2729 · สำรอง: Yosakura (อุนางิ+วากิว ปิดรอบเที่ยง 14:30), Kaikobishoku (กวางตุ้ง)', k: 'food', map: 'Gyutan Biyori Asakusabashi' },
-        { t: '14:00', title: 'Asakusa Line: Asakusabashi → Daimon', d: 'ตรง ไม่ต้องเปลี่ยนสาย ~15 นาที · รวมในพาส', k: 'train' },
-        { t: '14:25', title: 'วัดโซโจจิ (Zojoji)', d: '06:00–17:30 · ประตูซันเงะดัตสึมง (1622) · จิโซหมวกแดง · มุมหลังคาวัดตัดโตเกียวทาวเวอร์', k: 'see', map: 'Zojoji Temple' },
-        { t: '15:10', title: 'Shiba Park — ใบไม้เปลี่ยนสี + ทาวเวอร์', d: 'Area 4 อุโมงค์ต้นไม้ → เนินโมมิจิดานิ → บันไดลานจอดใต้ดินฝั่งใต้ · ถ้าเวลาเหลือ: Tokyo Tower Main Deck ¥1,500 หรือศาลเจ้าอาตาโกะ', k: 'see', map: 'Shiba Park Tokyo' },
-        { t: '16:20', title: 'Golden hour + ไฟทาวเวอร์ติด', d: 'ตะวันตก ~16:55 · ไฟติด ~17:10 · มุมกลางคืน Akabanebashi / ทางม้าลาย Sakurada-dori', k: 'photo', map: 'Akabanebashi Tokyo Tower view' },
-        { t: '17:25', title: 'Mita Line: Onarimon → Otemachi', d: 'ตรง ~9 นาที + เดินทางเชื่อมใต้ดิน ~5 นาที · รวมในพาส', k: 'train' },
-        { t: '17:50', title: 'KITTE Marunouchi — กดบัตรคิวชั้น 5 ทันที', d: 'กดบัตรก่อนแล้วค่อยเดินเล่น (คิวเย็นศุกร์ยาว) · ระหว่างรอ: ดาดฟ้า KITTE Garden ชั้น 6 ฟรี · Intermediatheque ชั้น 2–3 ฟรี ศุกร์เปิดถึง 20:00 · ร้านช้อปปิด ~20:00', k: 'see', map: 'KITTE Marunouchi' },
-        { t: '19:00', title: 'มื้อเย็น — Nemuro Hanamaru', d: 'ไคเต็นซูชิฮอกไกโด ชั้น 5 KITTE · จานละ ¥140–500', k: 'food', map: 'Nemuro Hanamaru KITTE Marunouchi' },
-        { t: '20:30', title: 'ดาดฟ้าชั้น 6 — ภาพกลางคืน', d: 'ตึกอิฐแดงสถานีโตเกียว + ชินคันเซ็นเข้าออกชานชาลา · ไฟตึกสถานีดับ 21:00 ต้องขึ้นก่อน (ดาดฟ้าเปิดถึง 23:00)', k: 'photo', map: 'KITTE Garden Tokyo' },
-        { t: '20:45', title: 'กลับโรงแรม ~21:15', d: 'Marunouchi Line Tokyo → Ginza เปลี่ยน Ginza Line → Asakusa ~25 นาที', k: 'train' }
-      ],
-      notes: [
-        { title: 'Subway pass วันนี้คุ้มมาก', text: 'Asakusa Line, Mita Line, Marunouchi Line, Ginza Line ครอบคลุมทุกขาของวันนี้ — ไม่ต้องจ่าย JR แยกเลย' },
-        { title: 'ต้องทำล่วงหน้า', list: ['จอง Gyutan Biyori 12:30 / 4 คน — โทร +81 3-5839-2729 หรือให้โรงแรมโทรให้ตอนเช็คอิน', 'เช็คอีกครั้งว่า Miyuki Factory ไม่หยุดพิเศษ (miyukifactory.com) ~1 สัปดาห์ก่อนไป', 'ขึ้นดาดฟ้า KITTE ก่อน 21:00 — ไฟตึกสถานีดับตรงเวลา'] }
-      ]
-    },
-    {
-      n: 8, date: '2026-10-24', dow: 'เสาร์', title: 'ศาลเจ้าเมจิ → Cat Street → กินซ่า', area: 'Tokyo', stay: 'HOTEL AMANEK Asakusa',
-      recap: 'เช้าศาลเจ้าเมจิ → Cat Street → มื้อเที่ยง ~12:00 → ถึงกินซ่าก่อน 13:15 → 13:30 HIIRAGI (จองแล้ว MLV49F) → ช้อปปิ้งกินซ่า · เช้า-เที่ยงยืดหยุ่น แต่คิว 13:30 เลื่อนไม่ได้',
-      items: [
-        { t: '~09:00', title: 'ศาลเจ้าเมจิ (Meiji Jingu)', d: 'Ginza Line Asakusa → Omotesando ~30 นาที เดินเข้าฝั่ง Harajuku · โทริอิไม้ยักษ์ ถังสาเก · เสาร์ลุ้นขบวนแต่งงานชินโต', k: 'see', map: 'Meiji Jingu' },
-        { t: '~11:00', title: 'Cat Street — เดินเล่นช้อปปิ้ง', d: 'ฮาราจูกุไล่ลงชิบุยะ ~1 กม. · แยกไป Takeshita / Omotesando ได้', k: 'walk', map: 'Cat Street Harajuku' },
-        { t: '~12:00', title: 'มื้อเที่ยง (เลือกหน้างาน — อย่าเลท)', d: 'แถวชิบุยะ หรือนั่ง Ginza Line Shibuya → Ginza ~15 นาที ไปกินโซบะ · ถึงกินซ่าก่อน 13:15', k: 'food' },
-        { t: '13:30', title: 'น้ำแข็งใส HIIRAGI Ginza', d: 'ซอยหลัง GINZA SIX ใกล้ทางออก A1 Higashi-Ginza · จ่ายแล้ว ¥19,800 (THE KOICHA · Shine Muscat · Rich Matcha ×2) · ถึงก่อน 13:20 · สายเกิน 15 นาที = ยกเลิก ไม่คืนเงิน · โทร +81 80-7508-2778', ref: 'MLV49F', k: 'food', map: 'HIIRAGI Ginza kakigori', hard: true },
-        { t: '~14:30', title: 'ช้อปปิ้งกินซ่า', d: 'ถนนคนเดิน Chuo-dori ปิดถึง 17:00 ถ่ายรูปมุม Wako · GINZA SIX (Tsutaya ชั้น 6 + ดาดฟ้าฟรี) · Uniqlo 12 ชั้น · Itoya', k: 'shop', map: 'GINZA SIX' },
-        { t: 'เย็น', title: 'อิสระ → กลับโรงแรม', d: 'Asakusa Line จาก Higashi-Ginza ตรงถึงที่พัก', k: 'train' }
-      ],
-      notes: [
-        { title: 'โน้ตวันเสาร์', text: 'ช่วงเช้า-เที่ยงหลวมโดยตั้งใจ สลับ/ตัดได้ — ยกเว้นคิว HIIRAGI 13:30 ที่เลื่อนหน้างานไม่ได้ · Subway pass ครอบคลุมทั้งวัน' }
-      ]
-    },
-    {
-      n: 9, date: '2026-10-25', dow: 'อาทิตย์', title: 'Skytree ยามเช้า → กลับกรุงเทพฯ', area: 'Tokyo → Narita', stay: 'เช็คเอาท์ AMANEK',
-      recap: 'เดินริมแม่น้ำสุมิดะเก็บมุม Skytree → Tembo Deck รอบแรก → ทสึเคเมน Rokurinsha → รับกระเป๋า → Access Express สู่นาริตะ · เดิน ~5.5 กม.',
-      items: [
-        { t: '06:45', title: 'เช็คเอาท์ + ฝากกระเป๋าที่โรงแรม', d: 'กลับมารับ ~12:45', k: 'stay' },
-        { t: '07:00', title: 'Azumabashi — Skytree + แก้วทอง Asahi', d: 'แวะไหว้พระเซนโซจิอีกรอบได้ระหว่างทาง', k: 'photo', map: 'Azumabashi Bridge' },
-        { t: '07:15', title: 'Sumida River Terrace → Sumida River Walk', d: 'เดินริมน้ำขึ้นเหนือ ข้ามสะพานเดินเท้าใต้ทางรถไฟ Tobu (เปิด 07:00)', k: 'walk', map: 'Sumida River Walk' },
-        { t: '07:40', title: 'ลานหญ้าโซโยกาเซะฮิโรบะ', d: 'ข้างสะพานมาคุระบาชิ — Skytree คู่ Mizumachi', k: 'photo', map: 'Soyokaze Hiroba Sumida Park' },
-        { t: '08:20', title: 'สะพานจุกเก็น (Jukken-bashi)', d: 'Skytree สะท้อนน้ำเต็มองค์ในคลอง Kitajukken · ขากลับแวะ Nishijukken-bashi', k: 'photo', map: 'Jukken Bridge Skytree reflection' },
-        { t: '09:00', title: 'Tokyo Skytree — Tembo Deck รอบแรก', d: 'รอบเช้าคนน้อยสุด', k: 'see', map: 'Tokyo Skytree' },
-        { t: '11:00', title: 'มื้อเที่ยง — Rokurinsha TOKYO (Solamachi ชั้น 6)', d: 'ทสึเคเมน · 10:30–23:00', k: 'food', map: 'Rokurinsha Tokyo Solamachi' },
-        { t: '12:25', title: 'Ichiya — โดรายากิ + ไดฟุกุ takeaway', d: 'เดินกลับทาง Mizumachi → รับกระเป๋า ~12:45 · ใช้เหรียญให้หมด', k: 'shop', map: 'Ichiya Sumida' },
-        { t: '13:05', title: 'Access Express — Asakusa → นาริตะ T1', d: 'Toei Asakusa Line ต่อตรง ~60–70 นาที ถึง ~14:15 · ไม่รวมในพาส · สำรอง: ออก 12:30 ถึง 13:40', cost: '¥1,400', k: 'train' },
-        { t: '17:00', title: 'ZIPAIR ZG051 — Narita T1 → Bangkok', d: 'ถึงสุวรรณภูมิ 22:15 · เช็คอิน ~2 ชม. 45 นาทีก่อนบิน', k: 'fly' }
-      ],
-      notes: []
-    }
-  ]
-};
 
 (function(){
 'use strict';
@@ -950,71 +736,11 @@ function resize(file,max,q){return new Promise(res=>{const img=new Image();const
 async function addPhotos(tr,di,itemId,files){const it=tr.days[di].items.find(x=>x.id===itemId);it.photos=it.photos||[];for(const f of files){const id=uid();const [full,thumb]=await Promise.all([resize(f,1400,0.8),resize(f,240,0.7)]);await DB.put(id,{full,thumb,at:new Date().toISOString()});it.photos.push(id)}save();render();toast(t('saved'))}
 function loadThumbs(){document.querySelectorAll('img[data-photo]').forEach(async el=>{const v=await DB.get(el.dataset.photo);if(v)el.src=v.thumb;else el.remove()})}
 
-function seedJournal(s){if(s.journalSeeded)return;const tr=s.trips.find(x=>x.id==='cnx2026');if(!tr||!tr.sample)return;
-  const D=tr.days;const set=(di,i,v)=>Object.assign(D[di].items[i],v);
-  D[0].recap='วันแรกชิลล์ ๆ แถวนิมมาน กาแฟกับข้าวซอย';
-  set(0,0,{done:true,doneAt:'10:20',t:'10:00',note:'Ristr8to คิวยาวกว่าที่คิด รอ 25 นาที แต่ลาเต้อาร์ตสวยจริง ☕',photos:['seed3'],hist:[{at:'2026-02-06T02:30:00Z',field:'t',from:'09:30',to:'10:00'}]});
-  set(0,1,{done:true,doneAt:'18:40',note:'ข้าวซอยไก่ชามใหญ่ น้ำเข้มข้น มากับหอมแดงดองเปรี้ยว ๆ สั่งเพิ่มอีกชาม',photos:['seed5']});
-  D[0].items.push({id:uid(),t:'20:30',title:'เดินตลาดนิมมาน ซอย 1',d:'เดินเล่นย่อยข้าวซอย',k:'walk',done:true,doneAt:'20:45',photos:['seed4'],note:'ไฟสวย คนไม่แน่นเท่าที่คิด'});
-  D[1].recap='ตื่นเช้าขึ้นดอยสุเทพ แล้วไปแม่กำปอง';
-  set(1,0,{done:true,doneAt:'06:50',note:'หมอกลงเต็มวิวเมืองเลย แต่บรรยากาศดีมาก คนน้อย',photos:['seed2','seed1']});
-  set(1,1,{done:true,doneAt:'12:35',t:'12:00',note:'ทางขึ้นโค้งเยอะ แวะร้านกาแฟกลางหมู่บ้าน นั่งริมลำธาร',photos:['seed3']});
-  D[1].items.push({id:uid(),t:'16:00',title:'น้ำตกแม่กำปอง',d:'เดินขึ้นไปชั้น 3',k:'hike',skipped:true,note:'ฝนตกตอนบ่าย เลยไม่ได้ไป'});
-  D[2].recap='เช้าวัดเชียงมั่น แล้วบินกลับ';
-  set(2,0,{done:true,doneAt:'09:15',note:'เจดีย์ช้างล้อม แสงเช้าสวย',photos:['seed2']});
-  set(2,1,{done:true,doneAt:'17:10'});
-  tr.closed=true;const ky=s.trips.find(x=>x.id==='kyoto2025');if(ky&&ky.sample)ky.closed=true;
-  s.journalSeeded=true}
-function seedLive(s){if(s.trips.some(x=>x.id==='live-sample'))return;
-  const today=new Date();const iso=o=>{const d=new Date(today);d.setDate(d.getDate()+o);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};const N=now();
-  const day=(o,title,area,stay,items)=>({date:iso(o),title,area,stay,recap:'',notes:[],checks:[],items:items.map(i=>Object.assign({id:uid(),k:'see'},i))});
-  const d=(t,title,dd,k,cost,extra)=>Object.assign({t,title,d:dd,k,cost:cost||'',done:false},extra||{});
-  const done=(t)=>({done:true,doneAt:t});
-  const tr={id:'live-sample',name:'Hua Hin Long Weekend',dest:'Hua Hin · Pranburi',start:iso(-1),end:iso(2),members:3,planning:false,cover:'',sample:true,mode:'car',cur:'THB',rate:1,legs:[{id:uid(),mode:'car',from:'กรุงเทพฯ',to:'หัวหิน',dep:'07:00',arr:'10:30',dur:'~3.5 ชม.',code:'ขับเอง',booked:true},{id:uid(),mode:'car',from:'หัวหิน',to:'กรุงเทพฯ',dep:'15:00',arr:'19:00',dur:'~4 ชม.',code:'ขับเอง',booked:true}],stays:[],checklist:[{id:uid(),title:'จองโรงแรม',note:'Putahracsa 3 คืน',done:true},{id:uid(),title:'ครีมกันแดด หมวก',done:true},{id:uid(),title:'ตรวจลมยาง',done:true}],
-    days:[
-      day(-1,'ขับลงหัวหิน · เช็คอิน','Hua Hin','Putahracsa Hua Hin',[d('07:00','ออกจากกรุงเทพฯ','แวะกาแฟเพชรบุรี','car','',done('07:15')),d('10:30','เช็คอิน Putahracsa','ห้องยังไม่พร้อม ฝากกระเป๋าก่อน','stay',2800,Object.assign(done('10:40'),{note:'ห้องพร้อมบ่ายสอง ไปเดินเล่นก่อน'})),d('12:00','ก๋วยเตี๋ยวเจ๊เกียว','คิวยาวช่วงเที่ยง','food',80,done('12:20')),d('16:30','เดินชายหาดหัวหิน','ถ่ายรูปช่วงแดดร่ม','walk','',done('16:45')),d('19:00','ตลาดโต้รุ่งหัวหิน','อาหารทะเล','food',350,done('19:10'))]),
-      day(0,'ปราณบุรี · เขาตะเกียบ','Pranburi','Putahracsa Hua Hin',[d('08:00','อาหารเช้าโรงแรม','','food','',done('08:05')),d('09:30','ขับไปเขาสามร้อยยอด','~45 นาที','car','',done('09:40')),d('10:30','ถ้ำพระยานคร','เดินขึ้น ~30 นาที เตรียมน้ำ','hike',200,{},),d('13:00','ร้านครัวปราณ','ปลาทอดน้ำปลา','food',250),d('16:30','เขาตะเกียบ','ไหว้พระ ชมวิวพระอาทิตย์ตก','see',''),d('18:30','ดินเนอร์ริมทะเล','ร้านตามอัธยาศัย','food',400)]),
-      day(1,'Cicada · ชิลล์ทั้งวัน','Hua Hin','Putahracsa Hua Hin',[d('09:00','ว่ายน้ำ · สระโรงแรม','','see',''),d('12:00','กาแฟ Air Space','คาเฟ่วิวทุ่ง','cafe',180),d('16:00','ตลาด Cicada','ของแฮนด์เมด ดนตรีสด','shop',300),d('19:00','มื้อเย็นที่ Cicada','','food',300)]),
-      day(2,'เช็คเอาท์ · กลับกรุงเทพฯ','Hua Hin → Bangkok','',[d('10:00','เช็คเอาท์','','stay',''),d('11:00','ซื้อของฝากตลาดฉัตรไชย','','shop',200),d('15:00','ออกเดินทางกลับ','','car','')])]};
-  s.trips.push(tr)}
-let S=load();S.simDate='';if(!S.finalv1){S.trips=S.trips.filter(x=>!x.sample);S.finalv1=true}if(!S.seedv5){S.trips.forEach(x=>{if(x.sample&&(x.id==='cnx2026'||x.id==='kyoto2025'))x.closed=true});S.seedv5=true}if(!S.day7v29){const _t=S.trips.find(x=>x.id==='perfectcrown');if(_t){const _f=seed().days.find(d=>d.date==='2026-10-23');const _d=(_t.days||[]).find(d=>d.date==='2026-10-23');if(_f&&_d){_d.title=_f.title;_d.recap=_f.recap;_d.notes=_f.notes;_d.items=_f.items.map(i=>Object.assign({},i,{id:uid(),done:false,doneAt:'',note:'',photos:[],hist:[],skipped:false}))}}S.day7v29=true}if(!S.bk30){const _t=S.trips.find(x=>x.id==='perfectcrown');if(_t){const M=[['ชินคันเซ็น Hokuriku — Ueno','shink'],['บัส National Park Liner','kami'],['บัสกลับ — Kamikochi','kami'],['Azusa 38','azusa'],['Kanden Tunnel Bus','alpine'],['รับรถเช่า Toyota','car'],['น้ำแข็งใส HIIRAGI','hiiragi'],['มื้อเย็น — Wagyu Yakiniku Tokori','tokori']];_t.days.forEach(d=>d.items.forEach(it=>{const m=M.find(x=>(it.title||'').startsWith(x[0]));if(m&&!it.bk&&_t.checklist.some(c=>c.id===m[1]))it.bk=m[1]}));S._bkSync=_t.id}S.bk30=true}save();
+let S=load();S.simDate='';if(!S.finalv1){S.trips=S.trips.filter(x=>!x.sample);S.finalv1=true}if(!S.seedv5){S.trips.forEach(x=>{if(x.sample&&(x.id==='cnx2026'||x.id==='kyoto2025'))x.closed=true});S.seedv5=true}if(!S.day7v29)S.day7v29=true;if(!S.bk30)S.bk30=true;save();
 
 const t=(k,v={})=>{let s=I[S.lang][k]??I.th[k]??k;if(typeof s!=='string')return s;return s.replace(/\{(\w+)\}/g,(_,x)=>v[x])};
 
 // ---------- state ----------
-function seed(){
-  const d=TRIP;
-  return {id:'perfectcrown',name:d.name,dest:'Japan Alps → Tokyo',start:d.start,end:d.end,members:d.members,tz:d.tz,planning:false,cover:'',seed:true,
-    legs:d.flights.map(f=>({id:uid(),mode:'fly',code:f.code,from:f.from,to:f.to,dep:f.dep,arr:f.arr,dur:f.dur,booked:true})),mode:'fly',cur:'JPY',rate:0.23,stays:d.stays,
-    days:d.days.map(x=>({date:x.date,title:x.title,area:x.area,stay:x.stay,recap:x.recap,items:x.items.map(i=>Object.assign({id:uid(),done:false},i)),notes:x.notes||[],checks:[]})),
-    checklist:[...d.bookings.map(b=>({id:b.id,title:b.title,note:[b.price,b.note].filter(Boolean).join(' · '),due:b.due?b.due.slice(0,10):'',dueLabel:b.dueLabel||'',done:!!b.done,ref:b.ref||''})),...d.checklist.map(c=>({id:c.id,title:c.title,note:c.note,done:false}))]};
-}
-function samples(){
-  const mk=(id,name,dest,start,end,members,planning,days,mode,legs)=>({id,name,dest,start,end,members,planning,cover:'',sample:true,mode:mode||'fly',legs:(legs||[]).map(l=>Object.assign({id:uid()},l)),stays:[],checklist:[],days});
-  const day=(date,title,area,stay,items)=>({date,title,area,stay,recap:'',notes:[],checks:[],items:items.map(i=>Object.assign({id:uid(),done:false,k:'see'},i))});
-  return [
-    mk('hk2026','Hong Kong Foodie','Hong Kong','2026-12-11','2026-12-14',3,false,[
-      day('2026-12-11','ถึงฮ่องกง · เดินมงก๊ก','Kowloon','Hotel Stage, Jordan',[{t:'13:30',title:'ถึงสนามบิน HKG',k:'fly'},{t:'14:30',title:'Airport Express → Kowloon',k:'train',cost:105},{t:'16:00',title:'เช็คอิน Hotel Stage',k:'stay',map:'Hotel Stage Hong Kong',cost:2400},{t:'18:30',title:'ติ่มซำ One Dim Sum',k:'food',map:'One Dim Sum Prince Edward',cost:120}]),
-      day('2026-12-12','Victoria Peak · Central','Hong Kong Island','Hotel Stage, Jordan',[{t:'09:00',title:'Peak Tram → The Peak',k:'lift',cost:148},{t:'12:30',title:'Kau Kee Beef Brisket',k:'food',cost:90},{t:'17:30',title:'Star Ferry blue hour',k:'photo',cost:5}]),
-      day('2026-12-13','Sham Shui Po · ช้อปปิ้ง','Kowloon','Hotel Stage, Jordan',[{t:'10:00',title:'Tim Ho Wan',k:'food'},{t:'15:00',title:'Apliu Street',k:'shop'}]),
-      day('2026-12-14','กลับกรุงเทพฯ','HKG → BKK','',[{t:'11:00',title:'Airport Express → HKG',k:'train'},{t:'14:20',title:'บินกลับ',k:'fly'}])]),
-    mk('cnx2026','Chiang Mai Slow Life','Chiang Mai','2026-02-06','2026-02-08',2,false,[
-      day('2026-02-06','คาเฟ่นิมมาน','Nimman','Akyra Manor',[{t:'10:00',title:'Ristr8to',k:'cafe'},{t:'18:00',title:'ข้าวซอยแม่สาย',k:'food'}]),
-      day('2026-02-07','ดอยสุเทพ · แม่กำปอง','Doi Suthep',"Akyra Manor",[{t:'06:30',title:'วัดพระธาตุดอยสุเทพ',k:'see'},{t:'12:00',title:'แม่กำปอง',k:'see'}]),
-      day('2026-02-08','ถนนคนเดิน · กลับ','Old Town','',[{t:'09:00',title:'วัดเชียงมั่น',k:'see'},{t:'17:00',title:'บินกลับ',k:'fly'}])]),
-    mk('tw2027','Taiwan Spring 2027','Taipei · Jiufen · Taichung','2027-03-20','2027-03-25',4,false,[
-      day('2027-03-20','ถึงไทเป · Ximending','Taipei','Hotel Midtown Richardson',[{t:'12:00',title:'ถึง TPE',k:'fly'},{t:'14:00',title:'Airport MRT → Taipei Main',k:'train',cost:160},{t:'18:00',title:'Ay-Chung Flour-Rice Noodle',k:'food',cost:75}]),
-      day('2027-03-21','Jiufen · Shifen','Jiufen','Hotel Midtown Richardson',[{t:'09:00',title:'บัส 1062 → Jiufen',k:'bus',cost:100},{t:'11:00',title:'A-Mei Tea House',k:'cafe',cost:300},{t:'15:00',title:'ปล่อยโคม Shifen',k:'see',cost:200}]),
-      day('2027-03-22','Taichung · Gaomei Wetland','Taichung','',[{t:'08:30',title:'HSR Taipei → Taichung',k:'train',cost:700},{t:'17:00',title:'Gaomei Wetland sunset',k:'photo'}]),
-      day('2027-03-23','','','',[]),day('2027-03-24','','','',[]),day('2027-03-25','กลับ','TPE → BKK','',[{t:'15:00',title:'บินกลับ',k:'fly'}])],'fly',[{mode:'fly',from:'BKK',to:'TPE',dep:'20 มี.ค. 07:30',arr:'20 มี.ค. 12:10',dur:'3 ชม. 40 นาที',code:'ยังไม่จอง',booked:false}]),
-    mk('kyoto2025','Kyoto Autumn 2025','Kyoto · Osaka','2025-11-20','2025-11-24',4,false,[
-      day('2025-11-20','ถึงคันไซ · Gion','Kyoto','Hotel Resol Kyoto',[{t:'15:00',title:'เช็คอิน',k:'stay'},{t:'18:00',title:'เดิน Gion ยามค่ำ',k:'walk'}]),
-      day('2025-11-21','Arashiyama','Kyoto','Hotel Resol Kyoto',[{t:'07:00',title:'ป่าไผ่',k:'see'},{t:'10:00',title:'Tenryu-ji',k:'see'}]),
-      day('2025-11-22','Fushimi Inari · Tofuku-ji','Kyoto','Hotel Resol Kyoto',[{t:'06:30',title:'Fushimi Inari',k:'see'},{t:'11:00',title:'Tofuku-ji ใบไม้แดง',k:'photo'}]),
-      day('2025-11-23','Osaka','Osaka','Hotel Resol Kyoto',[{t:'12:00',title:'Dotonbori',k:'food'}]),
-      day('2025-11-24','กลับ','KIX → BKK','',[{t:'11:30',title:'บินกลับ',k:'fly'}])])
-  ];
-}
 function load(){
   let s={};try{s=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
   s=Object.assign({palette:'cream',avatar:'',simDate:'',q:'',tq:'',tripTab:'all',name:'',lang:'th',theme:'auto',simDate:'',view:'home',homeTab:'upcoming',tripId:null,dayView:null,checkTrip:null,trips:[]},s);
@@ -1166,7 +892,7 @@ function renderTrips(){
   const hit=tr=>!q||[tr.name,tr.dest,...tr.days.flatMap(d=>[d.title,d.area,d.stay,...d.items.map(i=>i.title+' '+(i.d||''))])].join(' ').toLowerCase().includes(q);
   const tab=S.tripTab||'all';
   const shown=list.filter(tr=>hit(tr)&&(tab==='all'||status(tr)===tab));
-  el.innerHTML=`<div class="head"><div><h1>${t('trips')}</h1><div class="sub">${S.trips.length} ${S.lang==='th'?'ทริป':'trips'}</div></div><div style="display:flex;gap:8px"><label class="ibtn ghost" aria-label="import" title="${t('import_trip')}" for="importFile">${svg('M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M8 11l4 4 4-4M12 15V2','')}<input class="fh" type="file" accept=".crumb,application/json" id="importFile"></label><button class="ibtn" data-new-trip aria-label="new">${svg(P.plus,'')}</button></div></div>
+  el.innerHTML=`<div class="head"><div><h1>${t('trips')}</h1><div class="sub">${S.trips.length} ${S.lang==='th'?'ทริป':'trips'}</div></div><div style="display:flex;gap:8px"><label class="ibtn ghost" aria-label="import" title="${t('import_trip')}" for="importFile">${svg('M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M8 11l4 4 4-4M12 15V2','')}<input class="fh" type="file" id="importFile"></label><button class="ibtn" data-new-trip aria-label="new">${svg(P.plus,'')}</button></div></div>
   <div class="search"><span>${svg('M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4','')}</span><input id="tq" type="search" value="${esc(S.tq||'')}" placeholder="${t('search_ph')}"></div>
   <div class="seg wide four">${['all','upcoming','past','planning'].map(x=>`<button class="${tab===x?'on':''}" data-ttab="${x}">${x==='all'?(S.lang==='th'?'ทั้งหมด':'All'):x==='planning'?(S.lang==='th'?'วางแผน':'Planning'):t(x)}</button>`).join('')}</div>
   ${shown.map(tripCard).join('')||(S.trips.length?`<div class="empty"><b>${t('no_match')}</b></div>`:`<div class="empty"><b>${t('no_trips')}</b>${t('no_trips_h')}</div>`)}`;
@@ -1296,7 +1022,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.14</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.15</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
@@ -1328,7 +1054,7 @@ let pendingCover=null;
 function tripForm(tr){
   const isNew=!tr;calYM=null;tr=tr||{name:'',dest:'',start:'',end:'',members:4,planning:false,cover:'',mode:'fly'};pendingCover=tr.cover||'';
   openSheet(`<h2>${isNew?t('new_trip'):t('edit_trip')}</h2>
-    <label class="f">${t('name')}</label><input id="f-name" value="${esc(tr.name)}" placeholder="Perfect Crown">
+    <label class="f">${t('name')}</label><input id="f-name" value="${esc(tr.name)}" placeholder="Kansai Sakura">
     <label class="f">${t('dest')}</label><input id="f-dest" value="${esc(tr.dest||'')}" placeholder="Japan Alps → Tokyo">
     <label class="f">${t('dates')}</label><button class="rangebtn" id="f-range" data-range-toggle>${rangeLabel(tr.start,tr.end)}</button>
     <input id="f-start" type="hidden" value="${tr.start||''}"><input id="f-end" type="hidden" value="${tr.end||''}"><div id="cal" class="cal" hidden></div>
