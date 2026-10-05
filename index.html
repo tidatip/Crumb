@@ -1018,7 +1018,7 @@ function samples(){
 function load(){
   let s={};try{s=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
   s=Object.assign({palette:'cream',avatar:'',simDate:'',q:'',tq:'',tripTab:'all',name:'',lang:'th',theme:'auto',simDate:'',view:'home',homeTab:'upcoming',tripId:null,dayView:null,checkTrip:null,trips:[]},s);
-  if(!s.trips.length)s.trips=[seed()];
+  
   if(!s.seedv||s.seedv<3){const seen=new Set();s.trips=s.trips.filter(x=>{if(seen.has(x.id))return false;seen.add(x.id);return true});s.seedv=3;delete s.samplesAdded}
   if(!s.seedv4){s.trips.forEach(x=>{if(x.seed)(x.legs||[]).forEach(l=>l.booked=true)});s.seedv4=true}
   s.trips.forEach(x=>{const CURS={perfectcrown:['JPY',0.23],hk2026:['HKD',4.3],tw2027:['TWD',1.05],kyoto2025:['JPY',0.23],cnx2026:['THB',1]};if(!x.cur&&CURS[x.id]){x.cur=CURS[x.id][0];x.rate=CURS[x.id][1]}if(!x.cur)x.cur='THB';if(!x.legs)x.legs=(x.flights||[]).map(f=>Object.assign({id:uid(),mode:'fly'},f));if(!x.mode)x.mode=x.legs[0]?x.legs[0].mode:'fly';if(x.spend&&!x.spendPP){x.spendPP=Math.round(x.spend/(x.members||1));delete x.spend}if(x.id==='cnx2026'&&!x.spendPP)x.spendPP=4900;if(x.id==='kyoto2025'&&!x.spendPP)x.spendPP=38000;if(x.id==='hk2026'&&!x.legs.length)x.legs=[{id:uid(),mode:'fly',from:'BKK',to:'HKG',dep:'11 ธ.ค. 08:40',arr:'11 ธ.ค. 12:25',dur:'2 ชม. 45 นาที',code:'HK EXPRESS UO707',booked:true}];if(x.id==='cnx2026'&&!x.legs.length)x.legs=[{id:uid(),mode:'car',from:'กรุงเทพฯ',to:'เชียงใหม่',dep:'5 ก.พ. 20:00',arr:'6 ก.พ. 06:00',dur:'~10 ชม.',code:'ขับเอง'},{id:uid(),mode:'train',from:'เชียงใหม่',to:'กรุงเทพฯ',dep:'8 ก.พ. 18:00',arr:'9 ก.พ. 06:50',dur:'12 ชม.',code:'ด่วนพิเศษ 10'}]})
@@ -1169,12 +1169,13 @@ function renderTrips(){
   el.innerHTML=`<div class="head"><div><h1>${t('trips')}</h1><div class="sub">${S.trips.length} ${S.lang==='th'?'ทริป':'trips'}</div></div><div style="display:flex;gap:8px"><label class="ibtn ghost" aria-label="import" title="${t('import_trip')}" for="importFile">${svg('M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M8 11l4 4 4-4M12 15V2','')}<input class="fh" type="file" accept=".crumb,application/json" id="importFile"></label><button class="ibtn" data-new-trip aria-label="new">${svg(P.plus,'')}</button></div></div>
   <div class="search"><span>${svg('M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4','')}</span><input id="tq" type="search" value="${esc(S.tq||'')}" placeholder="${t('search_ph')}"></div>
   <div class="seg wide four">${['all','upcoming','past','planning'].map(x=>`<button class="${tab===x?'on':''}" data-ttab="${x}">${x==='all'?(S.lang==='th'?'ทั้งหมด':'All'):x==='planning'?(S.lang==='th'?'วางแผน':'Planning'):t(x)}</button>`).join('')}</div>
-  ${shown.map(tripCard).join('')||`<div class="empty"><b>${t('no_match')}</b></div>`}`;
+  ${shown.map(tripCard).join('')||(S.trips.length?`<div class="empty"><b>${t('no_match')}</b></div>`:`<div class="empty"><b>${t('no_trips')}</b>${t('no_trips_h')}</div>`)}`;
 }
 
 // ---------- CHECKLIST ----------
 function renderCheck(){
   const el=$('#s-check');
+  if(!S.trips.length){el.innerHTML=`<div class="head chead"><div><h1>${t('get_ready')}</h1></div></div><div class="empty"><b>${t('no_trips')}</b>${t('no_trips_h')}</div>`;return}
   if(!S.checkTrip||!trip(S.checkTrip)){const live=S.trips.find(x=>status(x)==='upcoming'&&dayIdx(x)>=0&&dayIdx(x)<x.days.length);const up=S.trips.filter(x=>status(x)==='upcoming').sort((a,b)=>a.start<b.start?-1:1)[0];S.checkTrip=(live||up||trip(S.tripId)||S.trips[0]).id}
   const tr=trip(S.checkTrip);
   const picker='';
@@ -1295,7 +1296,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.13</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.14</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
@@ -1338,7 +1339,7 @@ function tripForm(tr){
     <label class="f">${t('spend')}</label><input id="f-spend" class="amt" type="text" inputmode="decimal" value="${tr.spendPP?nf(tr.spendPP):''}" placeholder="38,000.00"><div class="hint" style="margin-top:4px">${t('spend_h')}</div>
     <label class="f">${t('cover')}</label><div class="photo"><div class="pv" id="f-pv">${pendingCover?`<img src="${pendingCover}" alt="">`:''}</div><div><label class="up" for="f-photo">${t('pick_photo')}<input id="f-photo" type="file" accept="image/*"></label> ${pendingCover?`<button class="danger" data-rm-photo style="margin-left:8px;font-size:14px">${t('remove')}</button>`:''}</div></div>
     ${tr.closed?`<button class="btn" style="margin-top:14px" data-reopen-trip="${tr.id}">${t('reopen_trip')}</button>`:''}
-    <div class="btns">${!isNew&&!tr.seed?`<button class="btn del" data-del-trip="${tr.id}">${t('delete')}</button>`:''}<button class="btn" data-close>${t('cancel')}</button><button class="btn pri" data-save-trip="${tr.id||''}">${t('save')}</button></div>`);
+    <div class="btns">${!isNew?`<button class="btn del" data-del-trip="${tr.id}">${t('delete')}</button>`:''}<button class="btn" data-close>${t('cancel')}</button><button class="btn pri" data-save-trip="${tr.id||''}">${t('save')}</button></div>`);
 }
 let calYM=null;
 function rangeLabel(a,b){if(!a)return `<span>${t('pick_dates')}</span>`;if(!b)return `${fdate(a)} → <span>…</span>`;const n=Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000)+1;return `${frange(a,b)} <span>${t('days',{n})}</span>`}
