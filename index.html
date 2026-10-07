@@ -729,6 +729,8 @@ textarea{min-height:76px}
 .tpskip{margin-top:12px;font-size:13px;color:var(--ink-2)}
 .tpskip summary{cursor:pointer;color:var(--muted)}
 /*fi*/
+#f-dtitle::placeholder{color:var(--muted);opacity:.75;font-style:italic}
+
 /* v3.17 find ideas */
 .fibtn{display:inline-flex;gap:5px;align-items:center}
 .fibtn svg{width:15px;height:15px}
@@ -907,7 +909,7 @@ function nextStop(tr,day){
   for(const it of day.items){const m=tmin(it.t);if(m!=null&&m>N.min&&!it.done){const diff=m-N.min;return {it,txt:diff>=60?t('in_hm',{h:Math.floor(diff/60),m:diff%60}):t('in_min',{n:diff})}}}
   return null;
 }
-function dayHead(tr,di,editable){const day=tr.days[di];return `<div class="hero" ${editable?`data-edit-day="${di}" role="button" tabindex="0"`:''}>${editable?`<span class="hedit">${svg(P.edit,'')}</span>`:''}<div class="eyebrow">${t('day_of',{a:di+1,b:tr.days.length})} · ${esc(fdate(day.date,true))}</div><h2>${esc(day.title||'')}</h2>${day.area?`<div class="area">${esc(day.area)}</div>`:''}__NEXT__</div>`}
+function dayHead(tr,di,editable){const day=tr.days[di];return `<div class="hero" ${editable?`data-edit-day="${di}" role="button" tabindex="0"`:''}>${editable?`<span class="hedit">${svg(P.edit,'')}</span>`:''}<div class="eyebrow">${t('day_of',{a:di+1,b:tr.days.length})} · ${esc(fdate(day.date,true))}</div><h2>${esc(dName(day))}</h2>${day.area?`<div class="area">${esc(day.area)}</div>`:''}__NEXT__</div>`}
 function daypick(tr,di){const N=now(tr.tz);return `<div class="daypick">${tr.days.map((d,i)=>`<button class="${i===di?'on':''} ${d.date===N.date?'today':''}" data-day="${i}">${t('day')} ${i+1}</button>`).join('')}</div>`}
 
 // ---------- HOME ----------
@@ -946,7 +948,7 @@ function renderTrips(){
       dayBar();return;}
     const N=now(tr.tz);
     const f=`<div class="sec" style="margin-top:4px"><h3>${t('transport')}${tr.closed?'':`<button class="back" style="margin:0" data-add-leg>${svg(P.plus,'')}${t('add_leg')}</button>`}</h3>${(tr.legs||[]).map(x=>`<button class="flight" data-edit-leg="${x.id}"><div><b>${esc(x.from)}</b><small>${esc(x.dep||'')}</small></div><div class="mid">${svg(ICO[x.mode]||ICO.fly,'')}<br>${esc(x.code||'')}${x.dur?'<br>'+esc(x.dur):''}</div><div class="r"><b>${esc(x.to)}</b><small>${esc(x.arr||'')}</small></div></button>`).join('')}</div>`;
-    const days=tr.days.map((d,i)=>`<button class="dayrow ${d.date===N.date?'today':''}" data-day="${i}"><div class="n">${i+1}<small>${esc(fdate(d.date,true).replace(/ \d{4}$/,''))}</small></div><div><div class="ti">${esc(d.title||(d.items&&d.items.length?t('tp_nst',{n:d.items.length}):(S.lang==='th'?'ยังไม่ได้วางแผน':'Not planned yet')))}</div><div class="st">${esc(d.stay||'')}</div></div>${svg(P.chev,'')}</button>`).join('');
+    const days=tr.days.map((d,i)=>`<button class="dayrow ${d.date===N.date?'today':''}" data-day="${i}"><div class="n">${i+1}<small>${esc(fdate(d.date,true).replace(/ \d{4}$/,''))}</small></div><div><div class="ti">${esc(dName(d)||(S.lang==='th'?'ยังไม่ได้วางแผน':'Not planned yet'))}</div><div class="st">${esc(d.stay||'')}</div></div>${svg(P.chev,'')}</button>`).join('');
     const stays=(tr.stays||[]).map((s,i)=>{const p=ePair(tr,s);return `<button class="note staycard" data-edit-stay="${i}"><div><h4>${esc(s.name)}</h4><p>${[esc(s.dates),s.nights?`${s.nights} ${S.lang==='th'?'คืน':'nights'}`:'',esc(s.note||'')].filter(Boolean).join(' · ')}</p></div>${p.has?`<span class="sv">${nf(p.use)}${s.each?` <small>${t('per_p')}</small>`:''}</span>`:''}</button>`}).join('');
     const canClose=tr.start&&!tr.closed&&dayIdx(tr)>=tr.days.length-1;
     el.innerHTML=`<div class="head"><button class="back" style="margin:0" data-tripback>${svg(P.back,'')}${t('trips')}</button><div style="display:flex;gap:8px">${canClose?`<button class="btn pri" style="flex:0 0 auto;padding:9px 14px;border-radius:999px;font-size:14px" data-close-trip="${tr.id}">${t('close_trip')}</button>`:''}<button class="ibtn ghost" data-share-trip="${tr.id}" aria-label="share">${svg('M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13','')}</button><button class="ibtn ghost" data-edit-trip="${tr.id}" aria-label="edit">${svg(P.edit,'')}</button></div></div>
@@ -982,7 +984,7 @@ function renderCheck(){
   let h=`<div class="head chead"><div><h1>${t('get_ready')}</h1><button class="tripsel" data-pick-trip>${esc(tr.name)} ${svg(P.chev,'')}</button></div><div class="cact"><button class="back" style="margin:0" data-sel-mode>${S.selMode?t('done_sel'):t('select')}</button><button class="ibtn" data-new-check aria-label="new">${svg(P.plus,'')}</button></div></div>${picker}`;
   const sections=[];
   if(tr.checklist.length||tr.checkPre)sections.push({scope:'pre',title:t('before'),items:tr.checklist});
-  tr.days.forEach((d,i)=>{if((d.checks&&d.checks.length)||d.checkOn)sections.push({scope:String(i),title:`${t('day')} ${i+1} · ${esc(fdate(d.date,true).replace(/ \d{4}$/,''))}${d.title?' · '+esc(d.title):''}`,items:d.checks||[]})});
+  tr.days.forEach((d,i)=>{if((d.checks&&d.checks.length)||d.checkOn)sections.push({scope:String(i),title:`${t('day')} ${i+1} · ${esc(fdate(d.date,true).replace(/ \d{4}$/,''))}${dName(d)?' · '+esc(dName(d)):''}`,items:d.checks||[]})});
   if(!sections.length)h+=`<div class="empty"><b>${t('no_check')}</b>${t('new_check')} → ${t('nav_check')}</div>`;
   sections.forEach(sec=>{h+=`<div class="sec"><h3><span>${sec.title}</span><button class="back" style="margin:0" data-add-check="${sec.scope}">${svg(P.plus,'')}${t('add_item')}</button></h3>${sec.items.map(c=>row(c,sec.scope)).join('')||`<div class="hint" style="margin-bottom:8px">${t('no_check')}</div>`}</div>`});
   if(sections.length)h+=`<div class="hint" style="margin-top:4px">${t('swipe_del')}</div>`;
@@ -999,7 +1001,7 @@ async function exportPNG(tr){
   push(`${t('cities',{n:cities(tr)})} · ${t('days',{n:tr.days.length})} · ${t('people',{n:tr.members||1})}`,24,fb,C.muted,6);
   (tr.legs||[]).forEach(l=>push(`${l.from} → ${l.to}  ${l.code||''} ${l.dep||''}`,24,fb,C.ink2,6));
   tr.days.forEach((d,i)=>{
-    push(`${t('day')} ${i+1} · ${fdate(d.date,true)}${d.title?' · '+d.title:''}`,32,fh,C.accent,34);
+    push(`${t('day')} ${i+1} · ${fdate(d.date,true)}${dName(d)?' · '+dName(d):''}`,32,fh,C.accent,34);
     if(d.stay)push(`${t('stay')} ${d.stay}`,22,fb,C.muted,6);
     d.items.filter(x=>!x.skipped).forEach(it=>{push(`${(it.t||'').padEnd(6,' ')}  ${it.title}`,26,fb,C.ink,10,20);if(it.d)push(dLine(it.d),22,fb,C.muted,2,96)});
   });
@@ -1021,7 +1023,7 @@ function shareSheet(tr){openSheet(`<h2>${t('share')} · ${esc(tr.name)}</h2>
   <button class="prow" data-share-days="${tr.id}"><span class="pi">${svg(P.photo,'')}</span><span class="pl">${t('share_day')}<div class="h" style="font-size:12px;color:var(--muted)">${t('share_day_h')}</div></span>${svg(P.chev,'')}</button>
   <div class="btns"><button class="btn" data-close>${t('cancel')}</button></div>`)}
 function viewOnlyHTML(tr){const C={bg:'#FBF3E6',card:'#FFFCF6',ink:'#2B211A',ink2:'#594538',muted:'#9A8770',acc:'#CF9A5E',line:'#E6D6BE'};
-  const day=(d,i)=>`<section><h2>${t('day')} ${i+1} · ${esc(fdate(d.date,true))}${d.title?' · '+esc(d.title):''}</h2>${d.stay?`<p class="m">${t('stay')} ${esc(d.stay)}</p>`:''}${d.recap?`<p class="m">${esc(d.recap)}</p>`:''}<ol>${d.items.filter(x=>!x.skipped).map(it=>`<li><span class="t">${esc(it.t)}</span><div><b>${esc(it.title)}</b>${it.d?`<div class="m">${esc(dLine(it.d))}</div>`:''}${it.cost?`<span class="tag">~${ifmt(tr,it,num(it.cost))}</span>`:''}${it.ref?`<span class="tag g">${esc(it.ref)}</span>`:''}${it.map?` <a href="${mapURL(it.map)}">${t('map_btn')}</a>`:''}</div></li>`).join('')}</ol></section>`;
+  const day=(d,i)=>`<section><h2>${t('day')} ${i+1} · ${esc(fdate(d.date,true))}${dName(d)?' · '+esc(dName(d)):''}</h2>${d.stay?`<p class="m">${t('stay')} ${esc(d.stay)}</p>`:''}${d.recap?`<p class="m">${esc(d.recap)}</p>`:''}<ol>${d.items.filter(x=>!x.skipped).map(it=>`<li><span class="t">${esc(it.t)}</span><div><b>${esc(it.title)}</b>${it.d?`<div class="m">${esc(dLine(it.d))}</div>`:''}${it.cost?`<span class="tag">~${ifmt(tr,it,num(it.cost))}</span>`:''}${it.ref?`<span class="tag g">${esc(it.ref)}</span>`:''}${it.map?` <a href="${mapURL(it.map)}">${t('map_btn')}</a>`:''}</div></li>`).join('')}</ol></section>`;
   return `<!doctype html><html lang="${S.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(tr.name)} · Crumb</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&family=Yeseva+One&display=swap"><style>body{margin:0;background:${C.bg};color:${C.ink};font-family:${S.lang==='en'?"'Prompt'":"'Prompt'"},sans-serif;padding:20px 16px 40px;max-width:640px;margin:auto}h1{font-family:'Yeseva One','Prompt',sans-serif;font-weight:500;font-size:30px;margin:0 0 4px}h2{font-family:'Yeseva One','Prompt',sans-serif;font-weight:500;font-size:20px;color:${C.acc};margin:26px 0 6px}.m{color:${C.muted};font-size:14px;margin:2px 0}ol{list-style:none;padding:0;margin:8px 0}li{display:grid;grid-template-columns:52px 1fr;gap:10px;background:${C.card};border:1px solid ${C.line};border-radius:14px;padding:12px;margin-bottom:8px}li .t{color:${C.muted};font-size:13px;padding-top:2px}li b{font-weight:500}.tag{display:inline-block;font-size:12px;background:${C.bg};border:1px solid ${C.line};border-radius:999px;padding:1px 8px;margin:6px 6px 0 0}.tag.g{background:#D9E4D1}a{color:${C.acc};font-size:13px}.hd{background:#E3BD87;border-radius:20px;padding:18px 20px;margin-bottom:6px}.legs{margin:12px 0}.leg{display:flex;justify-content:space-between;background:${C.card};border:1px solid ${C.line};border-radius:12px;padding:10px 14px;margin-bottom:6px;font-size:14px}.foot{color:${C.muted};font-size:12px;text-align:center;margin-top:30px}</style></head><body><div class="hd"><h1>${esc(tr.name)}</h1><div>${esc(frange(tr.start,tr.end))}${tr.dest?' · '+esc(tr.dest):''}</div><div class="m" style="color:${C.ink2}">${t('cities',{n:cities(tr)})} · ${t('days',{n:tr.days.length})} · ${t('people',{n:tr.members||1})}</div></div>${(tr.legs||[]).length?`<div class="legs">${tr.legs.map(l=>`<div class="leg"><b>${esc(l.from)} → ${esc(l.to)}</b><span>${esc(l.code||'')} ${esc(l.dep||'')}</span></div>`).join('')}</div>`:''}${tr.days.map(day).join('')}<p class="foot">Crumb · ${t('share_view')}</p></body></html>`}
 function wrapText(g,text,max){const out=[];for(const para of String(text).split('\n')){let line='';for(const ch of para){const test=line+ch;if(g.measureText(test).width>max&&line){out.push(line);line=ch}else line=test}out.push(line)}return out}
 async function dayJPG(tr,di,share){
@@ -1036,7 +1038,7 @@ async function dayJPG(tr,di,share){
   // header
   g.fillStyle=C.card;rr(g,40,30,W-80,150,26);g.fill();
   g.fillStyle=C.ink2;g.font=`24px ${fb}`;g.fillText(`${t('day_of',{a:di+1,b:tr.days.length})} · ${fdate(d.date,true)}`,70,74);
-  g.fillStyle=C.ink;g.font=`500 44px ${fh}`;let tt=d.title||tr.name;while(g.measureText(tt).width>W-140&&tt.length>3)tt=tt.slice(0,-2)+'…';g.fillText(tt,70,128);
+  g.fillStyle=C.ink;g.font=`500 44px ${fh}`;let tt=dName(d)||tr.name;while(g.measureText(tt).width>W-140&&tt.length>3)tt=tt.slice(0,-2)+'…';g.fillText(tt,70,128);
   g.fillStyle=C.muted;g.font=`24px ${fb}`;g.fillText([d.area,d.stay?`${t('stay')} ${d.stay}`:''].filter(Boolean).join(' · '),70,164);
   // rail
   let y=headH;g.strokeStyle=C.line;g.lineWidth=3;g.beginPath();g.moveTo(L,y+20);g.lineTo(L,H-70);g.stroke();
@@ -1062,7 +1064,7 @@ function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);
 function mapURL(v){v=String(v||'').trim();if(!v)return '';if(/^(https?:\/\/|maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.)/i.test(v))return /^https?:\/\//i.test(v)?v:'https://'+v;if(/^-?\d{1,3}\.\d+\s*,\s*-?\d{1,3}\.\d+$/.test(v))return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.replace(/\s+/g,''))}`;return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v)}`}
 function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
 function newCheckForm(tr){
-  openSheet(`<h2>${t('new_check')}</h2><label class="f">${t('check_for')}</label><div class="chips grid2c" id="f-scope"><button class="on" data-k="pre">${t('before')}</button>${tr.days.map((d,i)=>`<button data-k="${i}"><b>${t('day')} ${i+1}</b>${d.title?`<small>${esc(d.title)}</small>`:''}</button>`).join('')}</div>
+  openSheet(`<h2>${t('new_check')}</h2><label class="f">${t('check_for')}</label><div class="chips grid2c" id="f-scope"><button class="on" data-k="pre">${t('before')}</button>${tr.days.map((d,i)=>`<button data-k="${i}"><b>${t('day')} ${i+1}</b>${dName(d)?`<small>${esc(dName(d))}</small>`:''}</button>`).join('')}</div>
     <div class="btns"><button class="btn" data-close>${t('cancel')}</button><button class="btn pri" data-create-check>${t('save')}</button></div>`);
 }
 
@@ -1089,7 +1091,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.17</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.18</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
@@ -1275,7 +1277,7 @@ function journalForm(tr,di,it){jctx={di,id:it.id};
 }
 function dayForm(tr,di){const d=tr.days[di];
   openSheet(`<h2>${t('edit_day')} · ${t('day')} ${di+1}</h2>
-    <label class="f">${t('day_title')}</label><input id="f-dtitle" value="${esc(d.title||'')}">
+    <label class="f">${t('day_title')}</label><input id="f-dtitle" value="${esc(d.title||'')}" placeholder="${esc(autoDay(d))}"><div class="hint" style="margin-top:3px">${t('auto_day_h')}</div>
     <div class="grid2"><div><label class="f">${t('area')}</label><input id="f-darea" value="${esc(d.area||'')}"></div><div><label class="f">${t('stay_f')}</label><input id="f-dstay" value="${esc(d.stay||'')}"></div></div>
     <label class="f">${t('recap_f')}</label><textarea id="f-drecap">${esc(d.recap||'')}</textarea>
     <div class="btns"><button class="btn del" data-del-day="${di}">${t('delete')}</button><button class="btn" data-close>${t('cancel')}</button><button class="btn pri" data-save-day="${di}">${t('save')}</button></div>`)}
@@ -1472,8 +1474,8 @@ Object.assign(I.th,{ins_between:'แทรกระหว่าง {a} และ
 Object.assign(I.en,{ins_between:'Between {a} and {b}',mv:'Moved {x}',mv_t:'Moved {x} · now {t}',undo_mv:'Undo',drag_h:'Press and hold a time, then drag to reorder'});
 Object.assign(I.th,{fi_btn:'หาไอเดีย',fi_t:'หาไอเดียเที่ยว',fi_h:'ยังไม่รู้จะไปไหนดี? ลองหาจากเว็บหรือให้ AI แนะนำ แล้ววางรายชื่อรวมกันทีเดียว แอปจะแยกเป็นไอเดียตามย่านให้',fi_city:'เมือง / จุดหมาย',fi_s1:'ค้นในเว็บ',fi_s1_h:'เปิดผลค้นหาของเมืองนี้ เจอที่ชอบให้คัดลอกชื่อหรือลิงก์ไว้หลาย ๆ ที่ แล้วกลับมาวางในข้อ 3 ทีเดียว',fi_l_maps:'Google Maps',fi_l_maps_s:'ที่เที่ยวยอดนิยม',fi_l_blog:'บล็อกรีวิว',fi_l_blog_s:'Google ภาษาไทย',fi_l_yt:'YouTube',fi_l_yt_s:'vlog เที่ยว',fi_l_ta:'Tripadvisor',fi_l_ta_s:'Things to do',fi_s2:'ให้ AI แนะนำ',fi_s2_h:'เลือกสิ่งที่สนใจ คัดลอกพรอมต์ไปถาม ChatGPT, Gemini หรือ Claude แล้วคัดลอกคำตอบทั้งหมดกลับมาวางในข้อ 3',fi_i_food:'ของกิน',fi_i_cafe:'คาเฟ่',fi_i_sight:'วัด / ประวัติศาสตร์',fi_i_shop:'ช้อปปิ้ง',fi_i_nature:'ธรรมชาติ',fi_i_night:'วิวกลางคืน',fi_i_museum:'พิพิธภัณฑ์',fi_i_kids:'เด็ก / ครอบครัว',fi_s3:'วางรายชื่อ',fi_s3_h:'วางคำตอบจาก AI รายชื่อจากบล็อก (บรรทัดละที่) หรือลิงก์ Google Maps หลายอันรวมกันได้',fi_ph:'ย่าน: The Bund\n- The Bund — วิวริมแม่น้ำ · หัวค่ำ\n- Nanjing Road — ถนนช้อปปิ้ง\nhttps://maps.app.goo.gl/…',fi_sum:'พบ {n} ไอเดีย · {a} ย่าน',fi_x_h:'แตะ × เพื่อเอาที่ไม่สนใจออก ไอเดียจะเข้ากระเป๋าตามย่าน แล้วค่อยย้ายลงวันทีหลัง',fi_dup:'มีในกระเป๋าแล้ว',fi_go:'เพิ่ม {n} ไอเดีย',fi_done:'เพิ่ม {n} ไอเดียเข้ากระเป๋าแล้ว',fi_none:'ยังไม่เจอไอเดีย — ลองวางเป็นบรรทัดละที่',fi_noname:'สถานที่จาก Google Maps'});
 Object.assign(I.en,{fi_btn:'Find ideas',fi_t:'Find ideas',fi_h:'No idea where to go yet? Browse the web or ask an AI, then paste everything back at once — Crumb sorts it into ideas by area.',fi_city:'City / destination',fi_s1:'Search the web',fi_s1_h:'Opens results for this city. Copy the names or links you like, then paste them all into step 3 in one go',fi_l_maps:'Google Maps',fi_l_maps_s:'Top sights',fi_l_blog:'Blogs',fi_l_blog_s:'Itinerary posts',fi_l_yt:'YouTube',fi_l_yt_s:'Travel vlogs',fi_l_ta:'Tripadvisor',fi_l_ta_s:'Things to do',fi_s2:'Ask an AI',fi_s2_h:'Pick what you like, copy the prompt into ChatGPT, Gemini or Claude, then paste the whole answer into step 3',fi_i_food:'Food',fi_i_cafe:'Cafés',fi_i_sight:'Temples & history',fi_i_shop:'Shopping',fi_i_nature:'Nature',fi_i_night:'Night views',fi_i_museum:'Museums',fi_i_kids:'Kids & family',fi_s3:'Paste a list',fi_s3_h:'Paste an AI answer, a list from a blog (one place per line) or several Google Maps links together',fi_ph:'Area: The Bund\n- The Bund — riverside views · evening\n- Nanjing Road — shopping street\nhttps://maps.app.goo.gl/…',fi_sum:'{n} ideas · {a} areas',fi_x_h:'Tap × to drop what you don\'t fancy. Ideas go into the bag by area — place them on days later',fi_dup:'Already in the bag',fi_go:'Add {n} ideas',fi_done:'Added {n} ideas to the bag',fi_none:'No ideas found — try one place per line',fi_noname:'Place from Google Maps'});
-Object.assign(I.th,{tp_t:'วางแผนจากข้อความ',tp_link:'วางจากข้อความ',tp_add:'จากข้อความ',tp_h:'วางแผนที่มีอยู่แล้ว เช่น บล็อก โปรแกรมทัวร์ แชต LINE โน้ต หรือคำตอบจาก AI — บรรทัด "วันที่ 1 / Day 1" จะเป็นวัน และบรรทัดที่ขึ้นต้นด้วยเวลาจะเป็นจุดแวะ',tp_ph:'วันที่ 1 · 17 ต.ค.\nที่พัก: Wakata Lodge\n07:30 ถึงสนามบินนาริตะ — ผ่าน ตม.\n09:07 Skyliner ไปอุเอโนะ\nค่าใช้จ่าย: 2,580 JPY',tp_ai:'ใช้ ChatGPT, Gemini หรือ Claude อยู่แล้ว? คัดลอกพรอมต์นี้ไปพร้อมแผนของคุณ แล้ววางคำตอบกลับมาที่นี่ จะได้ค่าใช้จ่าย เลขจอง และขั้นตอนครบกว่า',tp_copy:'คัดลอกพรอมต์',tp_copied:'คัดลอกพรอมต์แล้ว',tp_read:'ดูตัวอย่าง',tp_empty:'วางข้อความก่อนนะ',tp_none:'ยังไม่เจอจุดแวะ — ลองใส่บรรทัด "วันที่ 1" และขึ้นต้นจุดแวะด้วยเวลา เช่น 09:30',tp_check:'ตรวจก่อนนำเข้า',tp_sum:'พบ {d} วัน · {s} จุดแวะ',tp_x_h:'แตะ × เพื่อเอาจุดที่ไม่ต้องการออก ที่เหลือแก้ได้หลังนำเข้า',tp_start:'วันแรกของแพลน',tp_start_h:'ข้อความไม่ได้ระบุวันที่ — เลือกวันแรก แล้ววันถัดไปจะเรียงต่อให้',tp_by_date:'ใช้วันที่ตามข้อความ',tp_into:'เพิ่มเข้า {n}',tp_from:'เริ่มลงที่',tp_merge_h:'จุดแวะจะต่อเข้าวันเดียวกันและเรียงตามเวลา ข้อมูลวันที่มีอยู่แล้วไม่ถูกเขียนทับ',tp_new_day:'วันใหม่',tp_noit:'ไม่มีจุดแวะ',tp_skip:'ไม่ได้นำเข้า {n} บรรทัด',tp_back:'แก้ข้อความ',tp_go:'นำเข้า',tp_done:'นำเข้า {d} วัน {s} จุดแวะแล้ว',tp_until:'ถึง {t}',tp_nst:'{n} จุดแวะ',tp_need_d:'เลือกวันแรกของแพลนก่อน'});
-Object.assign(I.en,{tp_t:'Plan from text',tp_link:'Paste a plan',tp_add:'From text',tp_h:'Paste a plan you already have — a blog, tour programme, chat, notes or an AI answer. "Day 1" lines become days; lines starting with a time become stops.',tp_ph:'Day 1 · 17 Oct\nStay: Wakata Lodge\n07:30 Narita Airport — immigration\n09:07 Skyliner to Ueno\nCost: 2,580 JPY',tp_ai:'Using ChatGPT, Gemini or Claude? Copy this prompt, send it with your plan, then paste the answer here — costs, booking refs and steps come through too.',tp_copy:'Copy prompt',tp_copied:'Prompt copied',tp_read:'Preview',tp_empty:'Paste some text first',tp_none:'No stops found — try a "Day 1" line and start each stop with a time like 09:30',tp_check:'Check before import',tp_sum:'{d} days · {s} stops',tp_x_h:'Tap × to leave a stop out — edit the rest after importing',tp_start:'First day',tp_start_h:'No dates in the text — pick the first day and the rest follow on',tp_by_date:'Using the dates in the text',tp_into:'Add to {n}',tp_from:'Start at',tp_merge_h:'Stops join the matching days in time order; existing day details are kept',tp_new_day:'New day',tp_noit:'No stops',tp_skip:'{n} lines left out',tp_back:'Edit text',tp_go:'Import',tp_done:'Imported {d} days, {s} stops',tp_until:'until {t}',tp_nst:'{n} stops',tp_need_d:'Pick the first day first'});
+Object.assign(I.th,{tp_t:'วางแผนจากข้อความ',tp_link:'วางจากข้อความ',tp_add:'จากข้อความ',tp_h:'วางแผนที่มีอยู่แล้ว เช่น บล็อก โปรแกรมทัวร์ แชต LINE โน้ต หรือคำตอบจาก AI — บรรทัด "วันที่ 1 / Day 1" จะเป็นวัน และบรรทัดที่ขึ้นต้นด้วยเวลาจะเป็นจุดแวะ',tp_ph:'วันที่ 1 · 17 ต.ค.\nที่พัก: Wakata Lodge\n07:30 ถึงสนามบินนาริตะ — ผ่าน ตม.\n09:07 Skyliner ไปอุเอโนะ\nค่าใช้จ่าย: 2,580 JPY',tp_ai:'ใช้ ChatGPT, Gemini หรือ Claude อยู่แล้ว? คัดลอกพรอมต์นี้ไปพร้อมแผนของคุณ แล้ววางคำตอบกลับมาที่นี่ จะได้ค่าใช้จ่าย เลขจอง และขั้นตอนครบกว่า',tp_copy:'คัดลอกพรอมต์',tp_copied:'คัดลอกพรอมต์แล้ว',tp_read:'ดูตัวอย่าง',tp_empty:'วางข้อความก่อนนะ',tp_none:'ยังไม่เจอจุดแวะ — ลองใส่บรรทัด "วันที่ 1" และขึ้นต้นจุดแวะด้วยเวลา เช่น 09:30',tp_check:'ตรวจก่อนนำเข้า',tp_sum:'พบ {d} วัน · {s} จุดแวะ',tp_x_h:'แตะ × เพื่อเอาจุดที่ไม่ต้องการออก ที่เหลือแก้ได้หลังนำเข้า',tp_start:'วันแรกของแพลน',tp_start_h:'ข้อความไม่ได้ระบุวันที่ — เลือกวันแรก แล้ววันถัดไปจะเรียงต่อให้',tp_by_date:'ใช้วันที่ตามข้อความ',tp_into:'เพิ่มเข้า {n}',tp_from:'เริ่มลงที่',tp_merge_h:'จุดแวะจะต่อเข้าวันเดียวกันและเรียงตามเวลา ข้อมูลวันที่มีอยู่แล้วไม่ถูกเขียนทับ',tp_new_day:'วันใหม่',tp_noit:'ไม่มีจุดแวะ',tp_skip:'ไม่ได้นำเข้า {n} บรรทัด',tp_back:'แก้ข้อความ',tp_go:'นำเข้า',tp_done:'นำเข้า {d} วัน {s} จุดแวะแล้ว',tp_until:'ถึง {t}',tp_nst:'{n} จุดแวะ',tp_need_d:'เลือกวันแรกของแพลนก่อน',auto_day_h:'เว้นว่างไว้ แอปจะตั้งชื่อให้จากจุดแวะของวันนั้น'});
+Object.assign(I.en,{tp_t:'Plan from text',tp_link:'Paste a plan',tp_add:'From text',tp_h:'Paste a plan you already have — a blog, tour programme, chat, notes or an AI answer. "Day 1" lines become days; lines starting with a time become stops.',tp_ph:'Day 1 · 17 Oct\nStay: Wakata Lodge\n07:30 Narita Airport — immigration\n09:07 Skyliner to Ueno\nCost: 2,580 JPY',tp_ai:'Using ChatGPT, Gemini or Claude? Copy this prompt, send it with your plan, then paste the answer here — costs, booking refs and steps come through too.',tp_copy:'Copy prompt',tp_copied:'Prompt copied',tp_read:'Preview',tp_empty:'Paste some text first',tp_none:'No stops found — try a "Day 1" line and start each stop with a time like 09:30',tp_check:'Check before import',tp_sum:'{d} days · {s} stops',tp_x_h:'Tap × to leave a stop out — edit the rest after importing',tp_start:'First day',tp_start_h:'No dates in the text — pick the first day and the rest follow on',tp_by_date:'Using the dates in the text',tp_into:'Add to {n}',tp_from:'Start at',tp_merge_h:'Stops join the matching days in time order; existing day details are kept',tp_new_day:'New day',tp_noit:'No stops',tp_skip:'{n} lines left out',tp_back:'Edit text',tp_go:'Import',tp_done:'Imported {d} days, {s} stops',tp_until:'until {t}',tp_nst:'{n} stops',tp_need_d:'Pick the first day first',auto_day_h:'Leave empty and Crumb names the day from its stops'});
 Object.assign(I.th,{costs:'ค่าใช้จ่าย',c_travel:'การเดินทาง',c_stay:'ที่พัก',c_stops:'ระหว่างทริป',c_extra:'อื่น ๆ',per_p:'ต่อคน',per_g:'ทั้งกลุ่ม',c_est:'ประมาณการ',c_paid:'จ่ายแล้ว',c_pp:'ต่อคน {v}',c_none:'ยังไม่มีค่าใช้จ่าย · ใส่ค่าตั๋วกับค่าที่พักก่อนก็ได้',add_extra:'เพิ่มค่าใช้จ่ายอื่น',edit_extra:'แก้ไขค่าใช้จ่าย',extra_ph:'เช่น ประกันเดินทาง · eSIM · วีซ่า',c_of:'จ่ายแล้ว {a} จาก {b}',add_stay:'เพิ่มที่พัก',edit_stay:'แก้ไขที่พัก',stay_name:'ชื่อที่พัก',stay_dates:'ช่วงวันที่',nights_n:'จำนวนคืน',c_none_g:'ยังไม่ใส่',c_all:'ดูทั้งหมด',cur_main:'สกุลหลัก',cur_trip:'สกุลทริป',c_unpaid:'ยังไม่จ่าย',c_pu:'จ่ายแล้ว {a} · ยังไม่จ่าย {b}',f_paid:'จ่ายแล้ว',f_unpaid:'ยังไม่จ่าย',c_rate:'อัตราแลกเปลี่ยน {c} 1 = {v} บาท (ตามที่ตั้งไว้ในทริป)',c_tot:'ทั้งกลุ่ม',c_total_line:'ทั้งกลุ่ม {v} THB',c_day:'วัน {n}',c_spend_h:'คำนวณจากค่าใช้จ่ายทั้งหมด ใส่เองในแก้ไขทริปเพื่อทับค่านี้',c_ov:'ใส่เอง',c_pie:'ที่นี่เก็บเฉพาะเงินก้อนที่จ่ายก่อนไป เช่น ตั๋ว ที่พัก ประกัน · ค่าใช้จ่ายระหว่างทริปและกองกลาง ใช้ PiePot'});
 Object.assign(I.en,{costs:'Costs',c_travel:'Getting there',c_stay:'Stays',c_stops:'On the trip',c_extra:'Other',per_p:'Per person',per_g:'Whole group',c_est:'Estimate',c_paid:'Paid',c_pp:'{v} per person',c_none:'No costs yet — start with tickets and hotels',add_extra:'Add other cost',edit_extra:'Edit cost',extra_ph:'e.g. travel insurance · eSIM · visa',c_of:'Paid {a} of {b}',add_stay:'Add a stay',edit_stay:'Edit stay',stay_name:'Hotel / place',stay_dates:'Dates',nights_n:'Nights',c_none_g:'Not set',c_all:'See all',cur_main:'Home',cur_trip:'Trip',c_unpaid:'Unpaid',c_pu:'Paid {a} · unpaid {b}',f_paid:'Paid',f_unpaid:'Unpaid',c_rate:'Exchange rate {c} 1 = {v} THB (from the trip settings)',c_tot:'Whole group',c_total_line:'{v} THB for the group',c_day:'Day {n}',c_spend_h:'Worked out from every cost — fill it in Edit trip to override',c_ov:'Manual',c_pie:'This page is for money paid before the trip — tickets, stays, insurance · day-to-day and shared spending lives in PiePot'});
 
@@ -1615,7 +1617,7 @@ document.addEventListener('click',e=>{
   if(d.shareTrip){shareSheet(trip(d.shareTrip));return}
   if(d.shareApp){const x=trip(d.shareApp);const blob=new Blob([JSON.stringify({crumb:2,trip:stripTrip(x)})],{type:'application/json'});shareFile(blob,`${x.name.replace(/\s+/g,'-')}.crumb`,x.name);closeSheet();return}
   if(d.shareView){const x=trip(d.shareView);const blob=new Blob([viewOnlyHTML(x)],{type:'text/html'});shareFile(blob,`${x.name.replace(/\s+/g,'-')}.html`,x.name);closeSheet();return}
-  if(d.shareDays){const x=trip(d.shareDays);openSheet(`<h2>${t('share_day')}</h2><div class="chips grid2c"><button data-day-jpg="${x.id}:all"><b>${t('all_days_x')}</b></button>${x.days.map((dd,i)=>`<button data-day-jpg="${x.id}:${i}"><b>${t('day')} ${i+1}</b>${dd.title?`<small>${esc(dd.title)}</small>`:''}</button>`).join('')}</div><div class="btns"><button class="btn" data-close>${t('cancel')}</button></div>`);return}
+  if(d.shareDays){const x=trip(d.shareDays);openSheet(`<h2>${t('share_day')}</h2><div class="chips grid2c"><button data-day-jpg="${x.id}:all"><b>${t('all_days_x')}</b></button>${x.days.map((dd,i)=>`<button data-day-jpg="${x.id}:${i}"><b>${t('day')} ${i+1}</b>${dName(dd)?`<small>${esc(dName(dd))}</small>`:''}</button>`).join('')}</div><div class="btns"><button class="btn" data-close>${t('cancel')}</button></div>`);return}
   if(d.dayJpg){const [id,w]=d.dayJpg.split(':');const x=trip(id);closeSheet();(async()=>{await document.fonts.ready;if(w==='all'){for(let i=0;i<x.days.length;i++){await dayJPG(x,i,true)}}else await dayJPG(x,+w,true)})();return}
   if(d.closeTrip){if(!confirm(t('close_confirm')))return;trip(d.closeTrip).closed=true;save();render();toast(t('saved'));return}
   if(d.reopenTrip){trip(d.reopenTrip).closed=false;save();closeSheet();render();return}
@@ -1734,6 +1736,27 @@ let mvDrag=null,undoMove=null;
 })();
 
 
+
+// ---- v3.18 automatic day names (shown only when the day has no title) ----
+function autoDay(d){const its=((d&&d.items)||[]).filter(x=>!x.skipped);if(!its.length)return '';const th=S.lang==='th';
+  const TR={fly:1,train:1,bus:1,car:1,ferry:1,stay:1},FD={food:1,cafe:1};const tm=its.map(x=>tmin(x.t));
+  const dur=its.map((x,i)=>{const a=tm[i];if(a==null)return 30;let b=null;for(let j=i+1;j<its.length;j++)if(tm[j]!=null&&tm[j]>a){b=tm[j];break}return b==null?60:Math.min(b-a,600)});
+  const all=its.map((x,i)=>({x,i,dur:dur[i]}));const act=all.filter(o=>!TR[o.x.k]);const nTr=all.length-act.length;const areas=areaToks(d.area);
+  const short=v=>{v=String(v||'').split(/\s+[—–-]\s+|\s*[·|(（]\s*|[:：]\s/)[0].trim();return v.length>26?v.slice(0,25).trim()+'…':v};
+  if(!act.length||(nTr>=act.length*2&&areas.length>1))return areas.length>1?areas.join(' → '):(th?'วันเดินทาง':'Travel day');
+  const cnt=(...k)=>act.filter(o=>k.includes(o.x.k)).length,n=act.length;
+  if(cnt('shop')>=2&&cnt('shop')>=n/2)return th?'วันช้อปปิ้ง':'Shopping day';
+  if(cnt('food','cafe')>=3&&cnt('food','cafe')>=n*0.6)return th?'วันตะลุยกิน':'Food day';
+  const main=act.filter(o=>!FD[o.x.k]);const pool=main.length?main:act;
+  if(cnt('hike')&&main.every(o=>['hike','lift','walk','photo'].includes(o.x.k))&&main.length>2){const h=main.find(o=>o.x.k==='hike');return short(h.x.title)}
+  const big=pool.slice().sort((a,b)=>b.dur-a.dur)[0];if(big.dur>=240&&big.dur>=pool.reduce((s,o)=>s+o.dur,0)*0.5)return short(big.x.title);
+  return pool.slice().sort((a,b)=>b.dur-a.dur||a.i-b.i).slice(0,2).sort((a,b)=>a.i-b.i).map(o=>short(o.x.title)).join(' · ')}
+function dName(d){return (d&&d.title)||autoDay(d)}
+// ---- v3.18 keep pasted text when the app is closed in the background ----
+let draftT=0;const keepDraft=()=>{clearTimeout(draftT);draftT=setTimeout(save,400)};
+document.addEventListener('input',e=>{const id=e.target&&e.target.id;
+  if(id==='tp-text'&&tpCtx){tpCtx.text=e.target.value;S.tpDraft={mode:tpCtx.mode,tid:tpCtx.tid||null,text:e.target.value};keepDraft()}
+  if(id==='fi-text'&&fiCtx){fiCtx.text=e.target.value;S.fiDraft={tid:fiCtx.tid,text:e.target.value};keepDraft()}});
 // ---- v3.17 find ideas: web search links + AI prompt + paste many ideas ----
 let fiCtx=null;
 const FIINT=['food','cafe','sight','shop','nature','night','museum','kids'];
@@ -1744,7 +1767,7 @@ function fiLinks(city){const q=encodeURIComponent,th=S.lang==='th';const L=[
   ['youtube',`https://www.youtube.com/results?search_query=${q(th?`เที่ยว ${city}`:`${city} travel guide`)}`,'M3 7a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM10 9l5 3-5 3z',t('fi_l_yt'),t('fi_l_yt_s')],
   ['tripadvisor',`https://www.tripadvisor.com/Search?q=${q(city+' things to do')}`,'M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z',t('fi_l_ta'),t('fi_l_ta_s')]];
   return L.map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${svg(x[2],'')}<span>${x[3]}<small>${x[4]}</small></span></a>`).join('')}
-function findIdeas(tr){if(!fiCtx||fiCtx.tid!==tr.id)fiCtx={tid:tr.id,city:fiCity(tr),text:'',p:null};const c=fiCtx;const ints=S.fiInt||[];
+function findIdeas(tr){if(!fiCtx||fiCtx.tid!==tr.id)fiCtx={tid:tr.id,city:fiCity(tr),text:'',p:null};const c=fiCtx;if(!c.text&&S.fiDraft&&S.fiDraft.tid===tr.id)c.text=S.fiDraft.text||'';const ints=S.fiInt||[];
   openSheet(`<div id="fi"><h2>${t('fi_t')}</h2><div class="hint" style="margin:2px 0 8px">${t('fi_h')}</div>
     <label class="f">${t('fi_city')}</label><input id="fi-city" value="${esc(c.city)}" placeholder="Shanghai">
     <div class="fisec"><h4><i>1</i>${t('fi_s1')}</h4><div class="hint">${t('fi_s1_h')}</div><div class="figrid" id="fi-links">${fiLinks(c.city)}</div></div>
@@ -1794,7 +1817,7 @@ function fiPreview(){const c=fiCtx,tr=trip(c.tid),p=c.p;const have=new Set((tr.i
 function fiRead(){if(!fiCtx)return;const a=$('#fi-city'),b=$('#fi-text');if(a)fiCtx.city=a.value.trim();if(b)fiCtx.text=b.value}
 function fiApply(){const c=fiCtx,tr=trip(c.tid);const add=c.p.ideas.filter(i=>!i.dup);if(!add.length){toast(t('fi_none'));return}
   tr.ideas=tr.ideas||[];add.forEach(i=>{const o={id:uid(),title:i.title,map:i.map||'',area:i.area||'',k:i.k||'see',cost:'',note:i.note||''};if(i.cost&&i.cost.cur===(tr.cur||'THB'))o.cost=i.cost.v;tr.ideas.push(o)});
-  fiCtx=null;S.ideaView=true;S.ideaArea='';S.dayView=null;save();closeSheet();go('trips');toast(t('fi_done',{n:add.length}))}
+  fiCtx=null;delete S.fiDraft;S.ideaView=true;S.ideaArea='';S.dayView=null;save();closeSheet();go('trips');toast(t('fi_done',{n:add.length}))}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-find-ideas],#fi button');if(!b)return;const d=b.dataset;const stop=()=>{e.stopImmediatePropagation();e.preventDefault()};const tr=trip(S.tripId);if(!tr)return;
   if(b.hasAttribute('data-find-ideas')){stop();findIdeas(tr);return}
   if(!$('#fi'))return;
@@ -1873,7 +1896,7 @@ function tpStopText(stop,rest){rest=String(rest||'').trim();const u=rest.match(T
 let tpCtx=null;
 function tpBase(c){if(c.mode==='merge'){const tr=trip(c.tid);return (tr.days[c.from]||tr.days[0]||{}).date||c.start}return c.start}
 function tpLayout(c){const p=c.p;const base=tpBase(c);let prev='';return p.days.map((d,i)=>{let date=d.date;if(!date)date=prev?isoAdd(prev,1):(base?isoAdd(base,i):'');prev=date;let idx=-1;if(c.mode==='merge'&&date){idx=trip(c.tid).days.findIndex(x=>x.date===date)}return {date,idx}})}
-function tpOpen(mode,tid){tpCtx=tpCtx&&tpCtx.mode===mode&&tpCtx.tid===tid?tpCtx:{mode,tid,text:'',from:0,start:'',name:''};const c=tpCtx;
+function tpOpen(mode,tid){tpCtx=tpCtx&&tpCtx.mode===mode&&tpCtx.tid===tid?tpCtx:{mode,tid,text:'',from:0,start:'',name:''};const c=tpCtx;if(!c.text&&S.tpDraft&&S.tpDraft.mode===mode&&(S.tpDraft.tid||null)===(tid||null))c.text=S.tpDraft.text||'';
   openSheet(`<div id="tp"><h2>${t('tp_t')}</h2>${mode==='merge'?`<div class="tpinto">${t('tp_into',{n:`<b>${esc(trip(tid).name)}</b>`})}</div>`:''}<div class="hint" style="margin:2px 0 8px">${t('tp_h')}</div>
     <textarea id="tp-text" class="tpin" placeholder="${esc(t('tp_ph'))}">${esc(c.text)}</textarea>
     <div class="tpai"><p>${t('tp_ai')}</p><button type="button" data-tp-copy>${svg('M8 8h11v12H8zM5 16V4h11','')}${t('tp_copy')}</button></div>
@@ -1908,7 +1931,7 @@ function tpApply(){const c=tpCtx,p=c.p;const lay=tpLayout(c);const all=[];const 
     p.days.forEach((d,i)=>{const date=lay[i].date;let x=tr.days.find(y=>y.date===date);if(!x){x={date,title:'',area:'',stay:'',recap:'',notes:[],checks:[],items:[]};tr.days.push(x)}
       if(!x.title)x.title=d.title||'';if(!x.area)x.area=d.area;if(!x.stay)x.stay=d.stay;if(!x.recap)x.recap=d.recap;const its=d.items.map(it=>tpItem(it,tr.cur||'THB'));x.items.push(...its);x.items.sort(byT);all.push(...its);if(first==null)first=date});
     tr.days.sort((a,b)=>a.date<b.date?-1:1);tr.start=tr.days[0].date;tr.end=tr.days[tr.days.length-1].date;tpLink(tr,all);const fi=tr.days.findIndex(y=>y.date===first);S.dayView=fi>=0?fi:null}
-  tpCtx=null;save();closeSheet();go('trips');toast(t('tp_done',{d:p.days.length,s:nS}))}
+  tpCtx=null;delete S.tpDraft;save();closeSheet();go('trips');toast(t('tp_done',{d:p.days.length,s:nS}))}
 function tpPrompt(){return S.lang==='th'?`ช่วยจัดแผนเที่ยวด้านล่างให้อยู่ในรูปแบบนี้ เพื่อนำเข้าแอป Crumb — ตอบเป็นข้อความธรรมดา ไม่ใช้ตาราง ไม่ใช้ตัวหนา
 
 ชื่อทริป: ...
