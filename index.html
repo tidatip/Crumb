@@ -986,7 +986,7 @@ function renderCheck(){
   if(tr.checklist.length||tr.checkPre)sections.push({scope:'pre',title:t('before'),items:tr.checklist});
   tr.days.forEach((d,i)=>{if((d.checks&&d.checks.length)||d.checkOn)sections.push({scope:String(i),title:`${t('day')} ${i+1} · ${esc(fdate(d.date,true).replace(/ \d{4}$/,''))}${dName(d)?' · '+esc(dName(d)):''}`,items:d.checks||[]})});
   if(!sections.length)h+=`<div class="empty"><b>${t('no_check')}</b>${t('new_check')} → ${t('nav_check')}</div>`;
-  sections.forEach(sec=>{h+=`<div class="sec"><h3><span>${sec.title}</span><button class="back" style="margin:0" data-add-check="${sec.scope}">${svg(P.plus,'')}${t('add_item')}</button></h3>${sec.items.map(c=>row(c,sec.scope)).join('')||`<div class="hint" style="margin-bottom:8px">${t('no_check')}</div>`}</div>`});
+  sections.forEach(sec=>{h+=`<div class="sec"><h3><span>${sec.title}</span><button class="back" style="margin:0" data-add-check="${sec.scope}">${svg(P.plus,'')}${t('add_item')}</button></h3>${[...sec.items.filter(c=>!c.done),...sec.items.filter(c=>c.done)].map(c=>row(c,sec.scope)).join('')||`<div class="hint" style="margin-bottom:8px">${t('no_check')}</div>`}</div>`});
   if(sections.length)h+=`<div class="hint" style="margin-top:4px">${t('swipe_del')}</div>`;
   if(S.selMode)h+=`<div class="selbar"><button class="btn del" data-del-selected ${S.sel&&S.sel.length?'':'disabled'}>${t('del_n',{n:(S.sel||[]).length})}</button></div>`;
   el.innerHTML=h;
@@ -1091,7 +1091,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.18</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.19</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
