@@ -219,6 +219,19 @@ input.thin::placeholder{font-weight:300;font-size:13px}
 .stadd{display:flex;align-items:center;gap:6px;padding:4px 0;margin:2px 0 0 32px;border:0;background:none;font:inherit;font-size:14px;color:var(--ink-2)}
 .stadd svg{width:16px;height:16px}
 .sdtags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.arrbtn{display:flex;gap:12px;align-items:center;width:100%;margin-top:14px;padding:12px 14px;border-radius:16px;background:var(--surface);text-align:left;color:var(--ink);font-size:15px;font-weight:500;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.arrbtn>svg{width:22px;height:22px;color:var(--accent);flex:0 0 auto}
+.arrbtn>span{flex:1;min-width:0}
+.arrbtn b{font-weight:600;margin-left:4px}
+.arrbtn small{display:block;font-size:13px;color:var(--muted);font-weight:400;margin-top:1px}
+.arrbtn .pen{width:18px;height:18px;color:var(--muted)}
+.arrbtn.todo{background:transparent;border:1px dashed var(--line);box-shadow:none;color:var(--ink-2)}
+.arrin{margin-top:14px;padding:12px 14px 14px;border-radius:16px;background:var(--surface);box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.arrin .l{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink-2);margin-bottom:8px}
+.arrin .l svg{width:18px;height:18px;color:var(--accent)}
+.arrin input{font-size:20px;font-weight:500;text-align:center;height:48px}
+.arrin .row2{display:flex;gap:8px;margin-top:10px}
+.arrin .row2 .btn{flex:1}
 .sdsec{font-size:13px;color:var(--muted);margin:16px 0 8px;font-weight:500}
 .sdpics{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none}
 .sdpics::-webkit-scrollbar{display:none}
@@ -1091,7 +1104,7 @@ function renderSet(){
   <div class="set">
     <div class="row"><div><div class="l">${t('export_png')}</div><div class="h">${t('export_h')}</div></div><button class="back" style="margin:0" data-export-png>${svg(P.photo,'')}PNG</button></div>
   </div>
-  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.19</p>`;
+  <p class="hint">${t('hint')}</p><p class="hint" style="margin-top:10px;text-align:left">Crumb v3.20</p>`;
 }
 function appearanceSheet(){
   const PALS=[['cream','pal_cream','#FFF9F0','#EACB9D','#D6A76F'],['lavender','pal_lav','#F5F0FF','#D0B8F2','#9B82CF'],['teal','pal_teal','#EFF8F5','#B7E1D9','#55ADA2'],['pastel','pal_pastel','#FFF9F0','#FFE6E1','#DFF6EB'],['bright','pal_bright','#58A6FF','#EE6158','#FBE449'],['sunny','pal_sunny','#FFF6C7','#FBE449','#D4A017']];
@@ -1216,16 +1229,36 @@ function sdSteps(d){const parts=d.split(/\s*\n+\s*|\s+[·•]\s+/).map(x=>x.trim
 function stopDetail(tr,di,it){sdctx={di,id:it.id};const pics=it.pics||[];const tags=stopTags(tr,it);
   const steps=it.d?sdSteps(it.d):[];
   const map=it.map?`<a class="btn" href="${mapURL(it.map)}" target="_blank" rel="noopener">${svg(P.pin,'')} ${t('map_btn')}</a>`:'';
-  openSheet(`<div class="sdh">${t('day')} ${di+1} · ${esc(it.t)}${it.doneAt?` · ${arrLine(it)}`:''}</div>
+  openSheet(`<div class="sdh">${t('day')} ${di+1} · ${esc(it.t)}</div>
     <h2 class="sdttl">${svg(ICO[it.k]||ICO.see)}<span>${esc(it.title)}</span></h2>
     ${isSteps(it.d)?`<ol class="sdsteps">${steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`:it.d?`<div class="sdd">${esc(it.d)}</div>`:''}
     ${tags.length?`<div class="sdtags">${tags.join('')}</div>`:''}
+    ${arrRow(tr,it)}
     <div class="sdsec">${t('pics')}</div>
     ${pics.length?`<div class="sdpics">${pics.map(pid=>`<button data-view-pic="${pid}"><img data-pfull="${pid}" alt=""></button>`).join('')}</div>`:`<div class="hint">${t('pics_none')}</div>`}
     ${tr.closed?'':`<label class="jadd" for="sd-pic">${svg(P.plus,'')}<span>${t('add_pic')}</span><input class="fh" type="file" accept="image/*" multiple id="sd-pic"></label>`}
     <div class="btns">${map}${tr.closed?'':`<button class="btn" data-edit-stop="${di}:${it.id}">${svg(P.edit,'')} ${t('edit')}</button>`}<button class="btn pri" data-close>${t('close')}</button></div>`);
   document.querySelectorAll('img[data-pfull]').forEach(async el=>{const v=await DB.get(el.dataset.pfull);if(v)el.src=v.full;else el.closest('button').remove()});
 }
+// ---- edit the real arrival time (เวลาจริง) after the fact
+Object.assign(I.th,{arr_edit:'แตะเพื่อแก้เวลา',arr_none:'ลืมติ๊กว่าถึง?',arr_none_h:'ใส่เวลาจริงย้อนหลังได้',arr_q:'ถึงที่นี่กี่โมง',arr_ok:'บันทึกเวลาจริงแล้ว'});
+Object.assign(I.en,{arr_edit:'Tap to change the time',arr_none:'Forgot to tick arrived?',arr_none_h:'Add the real arrival time',arr_q:'What time did you get here?',arr_ok:'Arrival time saved'});
+const ARR_IC='M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18zM12 7.5V12l3 2';
+function arrRow(tr,it){
+  if(it.done&&it.doneAt){const p=(it.t||'').replace('~','');
+    return `<div id="sd-arr"><button type="button" class="arrbtn" data-arr-edit>${svg(ARR_IC,'')}<span>${t('arrived')}<b>${esc(it.doneAt)}</b><small>${p&&p!==it.doneAt?`${t('orig')} ${esc(p)} · `:''}${t('arr_edit')}</small></span>${svg(P.edit,'pen')}</button></div>`}
+  if(tr.closed)return '';
+  return `<div id="sd-arr"><button type="button" class="arrbtn todo" data-arr-edit>${svg(ARR_IC,'')}<span>${t('arr_none')}<small>${t('arr_none_h')}</small></span>${svg(P.plus,'pen')}</button></div>`}
+function arrForm(tr,it){const p=(it.t||'').replace('~','').trim();const N=now(tr.tz);
+  const v=it.doneAt||(/^\d{1,2}:\d{2}$/.test(p)?p.padStart(5,'0'):`${N.hh}:${N.mm}`);
+  return `<div class="arrin" id="sd-arr"><div class="l">${svg(ARR_IC,'')}${t('arr_q')}</div><input type="time" id="sd-arrt" value="${esc(v)}"><div class="row2"><button type="button" class="btn" data-arr-x>${t('cancel')}</button><button type="button" class="btn pri" data-arr-save>${t('save')}</button></div></div>`}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-arr-edit],[data-arr-save],[data-arr-x]');if(!b)return;
+  e.stopImmediatePropagation();e.preventDefault();const tr=trip(S.tripId);const it=sdItem();const box=$('#sd-arr');if(!tr||!it||!box)return;
+  if(b.hasAttribute('data-arr-edit')){box.outerHTML=arrForm(tr,it);const inp=$('#sd-arrt');if(inp)inp.focus();return}
+  if(b.hasAttribute('data-arr-x')){box.outerHTML=arrRow(tr,it);return}
+  const v=($('#sd-arrt').value||'').slice(0,5);if(!/^\d{2}:\d{2}$/.test(v)){toast(t('arr_q'));return}
+  it.done=true;it.doneAt=v;it.skipped=false;save();renderTrips();try{loadThumbs()}catch(_){}
+  const nb=$('#sd-arr');if(nb)nb.outerHTML=arrRow(tr,it);toast(t('arr_ok'))},true);
 function sdItem(){if(!sdctx)return null;const tr=trip(S.tripId);return tr&&tr.days[sdctx.di]&&tr.days[sdctx.di].items.find(x=>x.id===sdctx.id)}
 document.addEventListener('click',e=>{const c=e.target.closest('.card[data-sd]');if(!c||e.target.closest('button,a,label,input'))return;if(Date.now()-lastSwipe<500)return;const tr=trip(S.tripId);if(!tr)return;const [di,id]=c.dataset.sd.split(':');const it=tr.days[+di].items.find(x=>x.id===id);if(it)stopDetail(tr,+di,it)});
 function stopTags(tr,it){const tags=[];
